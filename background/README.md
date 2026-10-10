@@ -174,3 +174,19 @@ The same sampler ran around each probe, restoring the user's window on top first
 | `chooseShape Circle` (picker popover) | One circle added | Stayed at 15 | `chooseShapeCircle.*` |
 
 **Conclusion:** the clipboard-free paths keep Freeform both inactive and hidden. Context menus are what raise the window. A hidden diagram builder could rely on picker inserts, typing and moves; fills and sizing without handles are still open. The probe board now has 15 objects (adds a second "Second background text — verified" text box and a Circle), and Background A is 220 wide and shifted +20.
+
+## Round 7: fills, sizing, and New Board without context menus
+
+Window order was sampled around every run. The user's app stayed frontmost (Safari, or System Settings for two runs), with no activation. Evidence is in `round7/`.
+
+| Operation | Result | Freeform window |
+| --- | --- | --- |
+| Selected object's custom action **Show format options** | Shows a format bar: Fill Inspector (value = current fill name, e.g. `teal`), Stroke Inspector, Text Inspector | Stayed hidden (`format-options.*`) |
+| Fill Inspector AXPress | Popover with 12 named swatches (black, gray, white, cyan, magenta pink, dark indigo, red, orange, light amber, green, teal, blue), No Fill, Color Picker | Stayed hidden (`fill-inspector.*`) |
+| Press swatch `red` | Fill Inspector value changed `teal` → `red`; object count unchanged | Stayed hidden (`fill-red.*`) |
+| Press **Color Picker** | AX success but nothing happened: no Colors panel, no new popover controls, value unchanged (twice) | Stayed hidden (`color-picker*.json`) |
+| Lower middle handle +30 | Height 150 → 180 exactly, width unchanged | Index 1 for ~0.2 s, then back (`resize-height.*`) |
+| Lower right handle +20,+20 | 150×180 → 170×200 exactly | Index 1 for ~0.2 s, then back (`resize-corner.*`) |
+| New Board (AXPress) | Created an empty board (`Untitled 6` again, since the earlier one was renamed); AX rename failed as before | **Rose to index 1 (just below the key window) and stayed**; reported window y moved 107 → 386 (`new-board.*`) |
+
+**What a hidden diagram builder can do:** picker shapes, typed labels, moves, and fills from the 12 named swatches all keep Freeform inactive and hidden. Sizing via handles works on both axes, with a ~0.2 s rise to just below the key window. Custom (hex) colors are **not** available this way. The Color Picker is inert in the background, so arbitrary colors still require context-menu Paste, which raises the window. Board creation leaves the window just below the key window, and rename (card context menu) raises it to the top. Connectors and stroke/text styling were not tested. The probe board's Circle is now red and 170×200, and a new empty `Untitled 6` exists in the library.

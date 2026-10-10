@@ -23,12 +23,14 @@ Drew wants a model to create and edit native boards in the regular Freeform app 
 | Insert shape from the picker popover | none | **stays hidden** | none | `zorder-clipboard-free/chooseShapeCircle.*` |
 | Type or replace a label (PID Unicode) | none | **stays hidden** | none | `zorder-clipboard-free/replaceLabel.*` |
 | Move one object (AXPosition) | none | **stays hidden** | none | `zorder-clipboard-free/positionSelected.*` |
-| Resize via middle-right handle | none | **brief rise to just below the key window (~0.3 s), then back** | none | `zorder-clipboard-free/resizeHandle.*` |
+| Resize via any handle (width, height, corner verified) | none | **brief rise to just below the key window (~0.2–0.3 s), then back** | none | `zorder-clipboard-free/resizeHandle.*`, `round7/resize-*` |
 | Switch boards (library Go Back + card AXPress) | none | **stays hidden** | none | `zorder-clipboard-free/openBoard.*` |
 | Window screenshot | none | **stays hidden** | none | `zorder-screenshot.txt` |
 | Context-menu Copy readback | none | **raised to top** | temporary, restored | `context-copy-repeats.json`, `zorder-context-copy.txt` |
 | Context-menu Paste of N objects (verified up to 4) | none | **raised (same menu path; not separately sampled)** | temporary, restored | `context-paste-two.json`, `context-paste-diagram.json` |
-| Create board (New Board AXPress) | none | **not sampled** | none | `create-board-bg.json` |
+| Create board (New Board AXPress) | none | **rises to just below the key window and stays** | none | `round7/new-board.*` |
+| Set fill to a named swatch (Show format options → Fill Inspector → swatch) | none | **stays hidden** | none | `round7/fill-red.*` |
+| Custom color via Color Picker | none | stays hidden | none | **inert in the background** (`round7/color-picker*.json`) |
 | Paste onto an empty board (bootstrap circle, then delete) | none | **raised (context menu)** | temporary, restored | `empty-paste.json` |
 | Rename board (library card Show Menu → Rename) and reopen | none | **raised to top** | none | `rename-board-bg-2.json`, `rename-zorder-2.txt` |
 
@@ -42,8 +44,9 @@ Other facts established this session:
 
 | Board | Last observed contents |
 | --- | --- |
-| **Background Bridge Probe — 2026-10-09** | 13 objects: Background A, Background B edited without clipboard, a sticky note, two text boxes, Circle, Background paste (oval), Multi paste one/two, Diagram input, `to` (arrow), Diagram process, Diagram output. Frames in `round3-screenshot-proof.json`. Overlaps are a side effect of insertion tests. |
-| **Background Empty Paste — 2026-10-09** (was Untitled 6) | Exactly the four diagram objects (`empty-paste-screenshot.png`). It was the open board at handoff. |
+| **Background Bridge Probe — 2026-10-09** | 15 objects after Round 6 (adds a second text box and a Circle, now red and 170×200; Background A is 220 wide and shifted +20). Originally 13: Background A, Background B edited without clipboard, a sticky note, two text boxes, Circle, Background paste (oval), Multi paste one/two, Diagram input, `to` (arrow), Diagram process, Diagram output. Frames in `round3-screenshot-proof.json`. Overlaps are a side effect of insertion tests. |
+| **Background Empty Paste — 2026-10-09** (was Untitled 6) | Exactly the four diagram objects (`empty-paste-screenshot.png`). Synced to the user's iPad. |
+| **Untitled 6** (new, from Round 7) | Empty board created by the New Board window test. It was the open board at handoff. Safe to delete or reuse. |
 
 These are saved observations. Revalidate them with `inspect` or `screenshot` before editing.
 
@@ -87,6 +90,8 @@ If `BOARD_MISMATCH` occurs, check Freeform's actual window and menu state. Don't
 | `createBoard "Background …"` | Presses New Board; tries an AX-only rename (fails: title has no actions); leaves the board as `Untitled N` |
 | `renameBoard "Background …"` | Library → card `Show Menu` → Rename → AXConfirm → reopens the board |
 | `openBoard "<exact title>"` | Library → card AXPress; switches boards without activation or raising the window |
+| `formatOptions ["<Inspector>" ["<swatch>"]]` | Last object: Show format options, optionally open an inspector and press one of its controls; reports the inspector value before and after |
+| `resizeAny "<handle>" dx dy` | Drags a named handle of the last object via AXPosition |
 | `chooseShape`, `createTextAndType`, `replaceLabel`, `resizeHandle`, `positionSelected`, … | Earlier clipboard-free mutations; not idempotent |
 
 | File | Purpose |
@@ -112,7 +117,7 @@ If `BOARD_MISMATCH` occurs, check Freeform's actual window and menu state. Don't
 
 ## Next experiments
 
-1. **A fully invisible diagram builder.** Clipboard-free paths stay hidden (Round 6), so a diagram could be built from picker shapes, typed labels and AXPosition moves without any context menu. Open questions: setting fill colors and shape size without context menus or handle drags (format controls may be popovers; sample them), New Board's window behavior (not sampled), and speed relative to a single paste.
+1. **A fully invisible diagram builder.** Rounds 6–7 show picker shapes, typed labels, moves and 12 named fill colors all stay hidden, and handle sizing only flickers just below the key window. Remaining questions: arrows and connectors without context menus (picker Arrow shape; Connection Line attachment), stroke and text styling via the other inspectors, building on an existing board without New Board's lingering raise, and speed compared with a single paste. Custom hex colors need Paste.
 2. **Built-in window restoration.** Record the window that was topmost before each context-menu step, AXRaise it afterward, and measure how long Freeform stays visible. Find out whether hiding the menu sooner, or skipping the extra wait, shortens it. Consider whether showing a menu without raising is possible at all; that hasn't been explored.
 3. **Import robustness.** Larger payloads, grouped payloads, fill/path readback of multi-object pastes (a per-object Copy loop or multi-selection), duplicate prevention after timeouts, and repeating paste placement then AXPosition layout.
 4. **Clipboard-free editing.** Both resize axes, other zoom levels, more picker shapes, format controls, and Connection Line endpoints. Prove an attachment by moving the connected shape.

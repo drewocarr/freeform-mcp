@@ -340,6 +340,83 @@ do {
                 return ["bootstrapRemoved": removed, "remainingCount": remaining.count, "pastedIntact": pastedIntact]
             })
         }
+    } else if mode == "resizeAny" {
+        // resizeAny "<handle name>" dx dy: drags one handle of the last object via AXPosition and reports the size change.
+        let item = initial.last!
+        let name = CommandLine.arguments[2]
+        let dx = Double(CommandLine.arguments[3])!, dy = Double(CommandLine.arguments[4])!
+        try record("Select object", { ["axResult": AXUIElementSetAttributeValue(area, kAXSelectedChildrenAttribute as CFString, [item] as CFArray).rawValue] })
+        guard selectionMatches(area, [item]) else { throw BridgeError("SELECTION_UNVERIFIED") }
+        guard let handles = attribute(item, "AXHandles") as? [AXUIElement], let handle = handles.first(where: { objectDescription($0) == name }) else { throw BridgeError("NO_HANDLE") }
+        try record("Drag " + name, {
+            let old = try frame(item)
+            var position = try frame(handle).origin; position.x += dx; position.y += dy
+            let result = AXUIElementSetAttributeValue(handle, kAXPositionAttribute as CFString, AXValueCreate(.cgPoint, &position)!)
+            probeWait()
+            let new = try frame(item)
+            return ["axResult": result.rawValue, "before": [old.minX, old.minY, old.width, old.height], "after": [new.minX, new.minY, new.width, new.height]]
+        })
+        try targetedKey(running.processIdentifier, 53)
+    } else if mode == "formatOptions" {
+        // Discovery: select the last object, invoke its "Show format options" custom action, and list what appears.
+        let item = initial.last!
+        try record("Select object", { ["axResult": AXUIElementSetAttributeValue(area, kAXSelectedChildrenAttribute as CFString, [item] as CFArray).rawValue] })
+        guard selectionMatches(area, [item]) else { throw BridgeError("SELECTION_UNVERIFIED") }
+        func summary(_ e: AXUIElement) -> [String: Any] {
+            var acts: CFArray?; AXUIElementCopyActionNames(e, &acts)
+            return ["role": string(e, kAXRoleAttribute) ?? "", "subrole": string(e, kAXSubroleAttribute) ?? "", "title": string(e, kAXTitleAttribute) ?? "",
+                    "description": objectDescription(e), "value": attribute(e, kAXValueAttribute).map { "\($0)" } ?? "",
+                    "actions": ((acts as? [String]) ?? []).map { $0.components(separatedBy: "\n").first ?? $0 }]
+        }
+        let before = descendants(app, depth: 20)
+        var itemActions: CFArray?; AXUIElementCopyActionNames(item, &itemActions)
+        guard let action = ((itemActions as? [String]) ?? []).first(where: { $0.hasPrefix("Name:Show format options") }) else { throw BridgeError("NO_FORMAT_ACTION") }
+        try record("Show format options", {
+            let result = AXUIElementPerformAction(item, action as CFString)
+            probeWait(1)
+            let appeared = descendants(app, depth: 20).filter { e in !before.contains { CFEqual($0, e) } }
+            return ["axResult": result.rawValue, "appearedCount": appeared.count,
+                    "appeared": appeared.filter { !["AXGroup", "AXUnknown", "AXScrollArea", "AXLayoutArea"].contains(string($0, kAXRoleAttribute) ?? "") }.prefix(150).map(summary)]
+        })
+        // Optional: open one inspector (e.g. "Fill Inspector") and list its controls.
+        if CommandLine.arguments.count > 2 {
+            let inspector = CommandLine.arguments[2]
+            let beforeInspector = descendants(app, depth: 25)
+            guard let button = beforeInspector.first(where: { string($0, kAXRoleAttribute) == "AXButton" && objectDescription($0) == inspector }) else { throw BridgeError("NO_INSPECTOR") }
+            try record("Open " + inspector, {
+                let result = AXUIElementPerformAction(button, kAXPressAction as CFString)
+                probeWait(1)
+                let appeared = descendants(app, depth: 25).filter { e in !beforeInspector.contains { CFEqual($0, e) } }
+                return ["axResult": result.rawValue, "appearedCount": appeared.count,
+                        "appeared": appeared.filter { !["AXGroup", "AXUnknown", "AXScrollArea"].contains(string($0, kAXRoleAttribute) ?? "") }.prefix(200).map(summary)]
+            })
+            // Optional: press one swatch/control in the inspector popover, then read the inspector button's value back.
+            if CommandLine.arguments.count > 3 {
+                let choice = CommandLine.arguments[3]
+                guard let popover = descendants(app, depth: 25).first(where: { string($0, kAXRoleAttribute) == "AXPopover" }),
+                      let control = descendants(popover).first(where: { string($0, kAXRoleAttribute) == "AXButton" && (objectDescription($0) == choice || string($0, kAXTitleAttribute) == choice) }) else { throw BridgeError("NO_CHOICE") }
+                try record("Choose " + choice, {
+                    let before = attribute(button, kAXValueAttribute).map { "\($0)" } ?? ""
+                    let result = AXUIElementPerformAction(control, kAXPressAction as CFString)
+                    probeWait(1)
+                    let after = attribute(button, kAXValueAttribute).map { "\($0)" } ?? ""
+                    let windows = children(app).filter { string($0, kAXRoleAttribute) == "AXWindow" }.map { string($0, kAXTitleAttribute) ?? "" }
+                    // A system Colors panel, if one opened: list its editable controls, then close it.
+                    var panel: [[String: Any]] = []
+                    if let colors = children(app).first(where: { string($0, kAXRoleAttribute) == "AXWindow" && string($0, kAXTitleAttribute) == "Colors" }) {
+                        panel = descendants(colors, depth: 12).filter { ["AXTextField", "AXRadioButton", "AXPopUpButton", "AXSlider", "AXTabGroup"].contains(string($0, kAXRoleAttribute) ?? "") }.prefix(60).map(summary)
+                        if let raw = attribute(colors, kAXCloseButtonAttribute), CFGetTypeID(raw) == AXUIElementGetTypeID() {
+                            _ = AXUIElementPerformAction(unsafeBitCast(raw, to: AXUIElement.self), kAXPressAction as CFString)
+                        }
+                    }
+                    let popoverNow = descendants(app, depth: 25).filter { string($0, kAXRoleAttribute) == "AXPopover" }.flatMap { descendants($0, depth: 15) }
+                        .filter { !["AXGroup", "AXUnknown"].contains(string($0, kAXRoleAttribute) ?? "") }.prefix(120).map(summary)
+                    return ["axResult": result.rawValue, "inspectorValueBefore": before, "inspectorValueAfter": after, "appWindows": windows, "colorsPanel": panel, "popoverAfter": popoverNow]
+                })
+                _ = AXUIElementPerformAction(popover, kAXCancelAction as CFString)
+            }
+        }
+        try targetedKey(running.processIdentifier, 53)
     } else if mode == "replaceLabel" {
         let index = Int(CommandLine.arguments[2])!
         guard [0, 1].contains(index) else { throw BridgeError("CONTROL_ONLY") }
