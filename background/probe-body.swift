@@ -423,6 +423,42 @@ do {
                                        "lineDescription": objectDescription(line)]])
         let arrow = try insertFromPicker("Line Arrow")
         log.append(["lineArrow": objectDescription(arrow), "lineArrowFrame": (try? frame(arrow)).map { [$0.minX, $0.minY, $0.width, $0.height] } ?? []])
+    } else if mode == "attachLineArrow" {
+        // Attach the existing free "Line" (picker Line Arrow) between the two squares via its endpoint handles, then move one square.
+        let lines = initial.filter { objectDescription($0) == "Line" }
+        let squares = initial.filter { objectDescription($0).hasPrefix("Square") }.sorted { ((try? frame($0).minX) ?? 0) < ((try? frame($1).minX) ?? 0) }
+        guard lines.count == 1, squares.count == 2 else { throw BridgeError("UNEXPECTED_OBJECTS") }
+        let line = lines[0], a = squares[0], b = squares[1]
+        _ = AXUIElementSetAttributeValue(area, kAXSelectedChildrenAttribute as CFString, [line] as CFArray)
+        guard selectionMatches(area, [line]) else { throw BridgeError("SELECTION_UNVERIFIED") }
+        let handles = (attribute(line, "AXHandles") as? [AXUIElement]) ?? []
+        log.append(["handles": handles.map { h in ["description": objectDescription(h), "frame": (try? frame(h)).map { [$0.minX, $0.minY, $0.width, $0.height] } ?? []] }])
+        let tail = handles.first { objectDescription($0).hasPrefix("Tail") }, head = handles.first { objectDescription($0).hasPrefix("Head") }
+        guard let tail, let head else { throw BridgeError("NO_ENDPOINT_HANDLES") }
+        // Below the connector: from A's lower right area to B's left edge.
+        let fa = try frame(a), fb = try frame(b)
+        for (handle, target, name) in [(tail, CGPoint(x: fa.maxX - 10, y: fa.maxY - 20), "tail onto A"), (head, CGPoint(x: fb.minX + 10, y: fb.maxY - 20), "head onto B")] {
+            let hf = try frame(handle)
+            try record("Drag " + name, {
+                var p = CGPoint(x: target.x - hf.width / 2, y: target.y - hf.height / 2)
+                let r = AXUIElementSetAttributeValue(handle, kAXPositionAttribute as CFString, AXValueCreate(.cgPoint, &p)!)
+                probeWait()
+                return ["axResult": r.rawValue, "handle": objectDescription(handle), "line": objectDescription(line)]
+            })
+        }
+        try targetedKey(running.processIdentifier, 53)
+        let before = try frame(line)
+        _ = AXUIElementSetAttributeValue(area, kAXSelectedChildrenAttribute as CFString, [b] as CFArray)
+        guard selectionMatches(area, [b]) else { throw BridgeError("SELECTION_UNVERIFIED") }
+        try record("Move B up 100", {
+            var p = CGPoint(x: fb.minX, y: fb.minY - 100)
+            return ["axResult": AXUIElementSetAttributeValue(b, kAXPositionAttribute as CFString, AXValueCreate(.cgPoint, &p)!).rawValue]
+        })
+        try targetedKey(running.processIdentifier, 53)
+        let after = try frame(line)
+        log.append(["attachmentTest": ["description": objectDescription(line), "before": [before.minX, before.minY, before.width, before.height],
+                                       "after": [after.minX, after.minY, after.width, after.height],
+                                       "followed": abs(after.height - before.height) > 50 || abs(after.minY - before.minY) > 50]])
     } else if mode == "resizeAny" {
         // resizeAny "<handle name>" dx dy: drags one handle of the last object via AXPosition and reports the size change.
         let item = initial.last!
@@ -441,8 +477,11 @@ do {
         })
         try targetedKey(running.processIdentifier, 53)
     } else if mode == "formatOptions" {
-        // Discovery: select the last object, invoke its "Show format options" custom action, and list what appears.
-        let item = initial.last!
+        // Discovery: select the last object (or FREEFORM_PROBE_TARGET description prefix), invoke "Show format options", and list what appears.
+        let targetPrefix = ProcessInfo.processInfo.environment["FREEFORM_PROBE_TARGET"]
+        let matching = targetPrefix.map { p in initial.filter { objectDescription($0).hasPrefix(p) } } ?? [initial.last!]
+        guard matching.count == 1 else { throw BridgeError("TARGET_NOT_UNIQUE: \(matching.count)") }
+        let item = matching[0]
         try record("Select object", { ["axResult": AXUIElementSetAttributeValue(area, kAXSelectedChildrenAttribute as CFString, [item] as CFArray).rawValue] })
         guard selectionMatches(area, [item]) else { throw BridgeError("SELECTION_UNVERIFIED") }
         func summary(_ e: AXUIElement) -> [String: Any] {
@@ -476,12 +515,41 @@ do {
             // Optional: press one swatch/control in the inspector popover, then read the inspector button's value back.
             if CommandLine.arguments.count > 3 {
                 let choice = CommandLine.arguments[3]
-                guard let popover = descendants(app, depth: 25).first(where: { string($0, kAXRoleAttribute) == "AXPopover" }),
-                      let control = descendants(popover).first(where: { string($0, kAXRoleAttribute) == "AXButton" && (objectDescription($0) == choice || string($0, kAXTitleAttribute) == choice) }) else { throw BridgeError("NO_CHOICE") }
+                guard let popover = descendants(app, depth: 25).first(where: { string($0, kAXRoleAttribute) == "AXPopover" }) else { throw BridgeError("NO_POPOVER") }
+                // "popup:<index>:<item>" picks a menu item from the index-th pop-up button; otherwise press a button or segment by name.
+                let parts = choice.split(separator: ":", maxSplits: 2).map(String.init)
+                let isPopup = parts.count == 3 && parts[0] == "popup"
+                let popups = descendants(popover).filter { string($0, kAXRoleAttribute) == "AXPopUpButton" }
+                guard let control = (isPopup || (parts.count == 3 && ["popupvalue", "popupkey"].contains(parts[0]))) ? (Int(parts[1]).flatMap { popups.indices.contains($0) ? popups[$0] : nil })
+                        : descendants(popover).first(where: { ["AXButton", "AXCheckBox"].contains(string($0, kAXRoleAttribute) ?? "") && (objectDescription($0) == choice || string($0, kAXTitleAttribute) == choice) })
+                else { throw BridgeError("NO_CHOICE") }
                 try record("Choose " + choice, {
                     let before = attribute(button, kAXValueAttribute).map { "\($0)" } ?? ""
-                    let result = AXUIElementPerformAction(control, kAXPressAction as CFString)
+                    let controlBefore = attribute(control, kAXValueAttribute).map { "\($0)" } ?? ""
+                    let pressFirst = !(parts.count == 3 && ["popupvalue", "popupkey"].contains(parts[0]))
+                    var result = pressFirst ? AXUIElementPerformAction(control, kAXPressAction as CFString) : .success
+                    if parts.count == 3 && parts[0] == "popupkey" {
+                        result = AXUIElementSetAttributeValue(control, kAXFocusedAttribute as CFString, kCFBooleanTrue)
+                        for _ in 0..<(Int(parts[2]) ?? 0) { try targetedKey(running.processIdentifier, 125) }
+                    }
+                    var menuItems: [String] = []
+                    if parts.count == 3 && parts[0] == "popupvalue" {
+                        var settable = DarwinBoolean(false)
+                        AXUIElementIsAttributeSettable(control, kAXValueAttribute as CFString, &settable)
+                        menuItems = ["valueSettable=\(settable.boolValue)"]
+                        result = AXUIElementSetAttributeValue(control, kAXValueAttribute as CFString, parts[2] as CFString)
+                    }
+                    if isPopup {
+                        probeWait(0.5)
+                        let menu = descendants(control, depth: 4).first { string($0, kAXRoleAttribute) == "AXMenu" }
+                        let items = menu.map { children($0).filter { string($0, kAXRoleAttribute) == "AXMenuItem" } } ?? []
+                        menuItems = items.compactMap { string($0, kAXTitleAttribute) ?? objectDescription($0) }
+                        if let item = items.first(where: { string($0, kAXTitleAttribute) == parts[2] || objectDescription($0) == parts[2] }) {
+                            result = AXUIElementPerformAction(item, kAXPressAction as CFString)
+                        } else if let menu { _ = AXUIElementPerformAction(menu, kAXCancelAction as CFString) }
+                    }
                     probeWait(1)
+                    let controlAfter = attribute(control, kAXValueAttribute).map { "\($0)" } ?? ""
                     let after = attribute(button, kAXValueAttribute).map { "\($0)" } ?? ""
                     let windows = children(app).filter { string($0, kAXRoleAttribute) == "AXWindow" }.map { string($0, kAXTitleAttribute) ?? "" }
                     // A system Colors panel, if one opened: list its editable controls, then close it.
@@ -494,7 +562,8 @@ do {
                     }
                     let popoverNow = descendants(app, depth: 25).filter { string($0, kAXRoleAttribute) == "AXPopover" }.flatMap { descendants($0, depth: 15) }
                         .filter { !["AXGroup", "AXUnknown"].contains(string($0, kAXRoleAttribute) ?? "") }.prefix(120).map(summary)
-                    return ["axResult": result.rawValue, "inspectorValueBefore": before, "inspectorValueAfter": after, "appWindows": windows, "colorsPanel": panel, "popoverAfter": popoverNow]
+                    return ["axResult": result.rawValue, "inspectorValueBefore": before, "inspectorValueAfter": after, "controlBefore": controlBefore, "controlAfter": controlAfter,
+                            "menuItems": menuItems, "appWindows": windows, "colorsPanel": panel, "popoverAfter": popoverNow]
                 })
                 _ = AXUIElementPerformAction(popover, kAXCancelAction as CFString)
             }

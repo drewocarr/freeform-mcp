@@ -34,7 +34,9 @@ Drew wants a model to create and edit native boards in the regular Freeform app 
 | Paste onto an empty board (bootstrap circle, then delete) | none | **raised (context menu)** | temporary, restored | `empty-paste.json` |
 | Rename board (library card Show Menu → Rename) and reopen | none | **raised to top** | none | `rename-board-bg-2.json`, `rename-zorder-2.txt` |
 | **Attached connector** (picker Connection Line, then drag Tail/Head handles onto shapes) | none | **stays hidden** | none | `round8/connector.*` (line follows a moved shape) |
-| Free arrow (picker Line Arrow) | none | stays hidden | none | `round8/connector.json` |
+| Free arrow (picker Line Arrow) | none | stays hidden | none | `round8/connector.json`; free lines do not attach |
+| Connector style: straight / corner / curve, stroke style and width | none | **stays hidden** | none | `round8/style-straight.*` |
+| Connector arrowhead (Line Ends pop-up menu) | none | **raised to top when the menu closes** | none | `round8/line-end-menu.*` |
 
 Taken together, you can create a board, name it, import a diagram, and move, resize and relabel objects without activating Freeform. **The clipboard-free paths (toolbar and picker inserts, typing, moving, switching boards) also keep Freeform's window hidden**, so they're invisible to the user. Handle resize briefly lifts the window to just below the key window. Every context-menu step (Copy, Paste, card menu) **visibly raises Freeform's window** over the user's work and leaves it there. The window rose about 0.6–1.7 s after the menu call. One manual test of the mitigation worked: AXRaise on the frontmost app's main window put it back on top with no activation, and Freeform dropped to second place, ahead of that app's other windows. A brief visible flash per menu operation would remain.
 
@@ -94,6 +96,8 @@ If `BOARD_MISMATCH` occurs, check Freeform's actual window and menu state. Don't
 | `openBoard "<exact title>"` | Library → card AXPress; switches boards without activation or raising the window |
 | `formatOptions ["<Inspector>" ["<swatch>"]]` | Last object: Show format options, optionally open an inspector and press one of its controls; reports the inspector value before and after |
 | `resizeAny "<handle>" dx dy` | Drags a named handle of the last object via AXPosition |
+| `formatOptions … "popup:<i>:<item>"` | Picks a pop-up menu item in an inspector (raises the window); `popupvalue:` and `popupkey:` were failed alternatives |
+| `attachLineArrow` | Tries attaching the free Line Arrow between the squares (does not attach) |
 | `connectorTest` | Empty board only: two picker squares, Connection Line attached via Tail/Head handles, moves one square to prove attachment, adds a Line Arrow |
 | `chooseShape`, `createTextAndType`, `replaceLabel`, `resizeHandle`, `positionSelected`, … | Earlier clipboard-free mutations; not idempotent |
 
@@ -120,7 +124,7 @@ If `BOARD_MISMATCH` occurs, check Freeform's actual window and menu state. Don't
 
 ## Next experiments
 
-1. **A fully invisible diagram builder.** Rounds 6–7 show picker shapes, typed labels, moves and 12 named fill colors all stay hidden, and handle sizing only flickers just below the key window. Round 8 added native attached connectors (Connection Line handles dragged onto shapes; the line follows moves). Remaining questions: connector arrowheads and line style, stroke and text styling via the other inspectors, building on an existing board without New Board's lingering raise, and speed compared with a single paste. Custom hex colors need Paste.
+1. **A fully invisible diagram builder.** Rounds 6–7 show picker shapes, typed labels, moves and 12 named fill colors all stay hidden, and handle sizing only flickers just below the key window. Round 8 added native attached connectors (Connection Line handles dragged onto shapes; the line follows moves) and hidden straight/corner style. Arrowheads need a pop-up menu (one raise per connector) unless the user agrees to a one-time Save as Insert Style default. Remaining questions: stroke and text styling via the other inspectors, building on an existing board without New Board's lingering raise, and speed compared with a single paste. Custom hex colors need Paste.
 2. **Built-in window restoration.** Record the window that was topmost before each context-menu step, AXRaise it afterward, and measure how long Freeform stays visible. Find out whether hiding the menu sooner, or skipping the extra wait, shortens it. Consider whether showing a menu without raising is possible at all; that hasn't been explored.
 3. **Import robustness.** Larger payloads, grouped payloads, fill/path readback of multi-object pastes (a per-object Copy loop or multi-selection), duplicate prevention after timeouts, and repeating paste placement then AXPosition layout.
 4. **Clipboard-free editing.** Both resize axes, other zoom levels, more picker shapes, format controls, and Connection Line endpoints. Prove an attachment by moving the connected shape.

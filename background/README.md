@@ -204,3 +204,18 @@ Window order was sampled around every run. The user's app stayed frontmost (Safa
 | Picker **Line Arrow** | Inserted a free arrow line (AX description `Line`), not attached |
 
 The window capture (`round8/connector-screenshot.png`) shows the curved connector joining both squares after the move. **Native attached connectors therefore work with Freeform inactive and hidden, without clipboard or context menus.** Still open: arrowheads and straight/elbow style for connection lines (likely Stroke Inspector or format bar), attaching to labeled shapes and specific edges, and whether connectors survive sync (the paste route's flat arrows were never attached).
+
+### Connector style (Round 8, continued)
+
+The connection line's **Show format options** bar has Stroke Inspector, Line Ends Inspector, and Connection Line Style Inspector (`round8/connector-stroke.json`, `round8/line-ends-inspector.json`, `round8/connection-line-style-inspector.json`). Every inspector opened with the window hidden.
+
+| Attempt | Result | Freeform window |
+| --- | --- | --- |
+| Style segment **Straight Connection Type** | Line became `…Connected from Square to Square, straight` | Hidden (`style-straight.*`) |
+| Stroke Inspector contents | Solid / Dotted / Dashed / Feathered segments, Stroke Width field and incrementor, color well | Hidden |
+| Line Ends pop-up (index 1 = head) via AXPress + menu item | Menu items: None, Simple arrow, Filled circle, Open arrow, Filled arrow, Open circle, Line. Choosing **Filled arrow** made the line `…straight, End: Filled arrow` | **Raised to top** when the menu closed (`line-end-menu.*`) |
+| Set the pop-up's AXValue directly | Not settable | (a probe bug pressed the button first, which opened the menu: `line-end-value.*`) |
+| Focus the pop-up, then PID Down arrow ×2 | No change | Hidden (`line-end-key.*`) |
+| Attach the free picker **Line Arrow** by dragging its Tail/Head onto squares | Did not attach; did not follow a moved square | Hidden (`attach-line-arrow.*`) |
+
+**Conclusion:** straight, corner and curved connectors, stroke style and stroke width are hidden operations. **Arrowheads need the Line Ends pop-up menu, which raises the window once per connector** (restorable with AXRaise of the user's window). Untested alternative: a one-time **Save as Insert Style** on a connector with an arrowhead, so future Connection Lines inherit it. It changes the user's default connector style, so it needs the user's agreement.
