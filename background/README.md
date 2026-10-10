@@ -2,11 +2,13 @@
 
 **Continuing this work? Read [HANDOFF.md](HANDOFF.md) first.** It gives the last observed board state, exact resume commands, probe limitations, and next experiments with success criteria. This file is the evidence and results reference.
 
-Tested 2026-10-09 on the regular Apple-signed Freeform 5.0 (656.1.2), macOS 27.0 (26A428). The production MCP bridge is unchanged. These are research probes against the disposable **Background Bridge Probe — 2026-10-09** board.
+Tested 2026-10-09 on the regular Apple-signed Freeform 5.0 (656.1.2), macOS 27.0 (26A428). The production MCP bridge is unchanged. These are research probes against the disposable **Background Bridge Probe — 2026-10-09** and **Background Empty Paste — 2026-10-09** boards.
 
-## Result
+> **Read this before the tables: "background" has three separate meanings.** (1) **No activation:** Freeform never becomes frontmost and the user keeps keyboard focus. (2) **Window stays hidden:** Freeform's window doesn't rise above the user's windows. (3) **No clipboard.** Rounds 1–4 measured only (1). Phrases such as "Finder remained frontmost" or "without activation" in those rounds mean exactly that, **not** that Freeform stayed out of sight. Round 5 sampled window order and found that **Accessibility context menus (object Copy/Paste, board-card menu) raise Freeform's window to the top** without activating it. Clipboard-free toolbar, typing and position paths have not been window-sampled yet. [HANDOFF.md](HANDOFF.md) has a per-capability status table across all three properties.
 
-**Native insertion, label replacement, movement, and resizing work without activating Freeform.** Several paths also avoid the clipboard entirely. Accessibility toolbar actions created a native sticky note and text boxes. Unicode keyboard events posted directly to Freeform's PID supplied their text. Accessibility position setters moved individual selected objects. Another application remained frontmost, and the successful probes recorded no application-activation notifications.
+## Result (Rounds 1–2; activation only)
+
+**Native insertion, label replacement, movement, and resizing work without activating Freeform** (property 1; window order not measured). Several paths also avoid the clipboard entirely. Accessibility toolbar actions created a native sticky note and text boxes. Unicode keyboard events posted directly to Freeform's PID supplied their text. Accessibility position setters moved individual selected objects. Another application remained frontmost, and the successful probes recorded no application-activation notifications.
 
 This corrects the previous assumption that regular-app editing necessarily needs foreground focus. It does not establish a background replacement for every existing bridge operation.
 
@@ -104,7 +106,9 @@ Clipboard-free native creation and text editing avoid clipboard sharing. Context
 
 **Confirmed after removing Pure Paste (`context-copy-no-purepaste.json`):** the user uninstalled Pure Paste. The same `contextCopy --last` run then published the native payload at 18 ms, it stayed stable with no further clipboard changes during the 3 s post-watch, and readback returned exact label `Background paste`, size 140 × 70, model position (594, 403). The clipboard was restored (expected and observed change count 1209). Ghostty stayed frontmost with no activation events. This is one successful run, not yet a repeatability result.
 
-### Remaining avenues, in priority order
+### Remaining avenues, as of Round 2 (superseded)
+
+Rounds 3–5 below completed multi-object and empty-canvas import, background board creation and rename. They also found the window-raising behavior. The current prioritized list is in [HANDOFF.md](HANDOFF.md#next-experiments).
 
 1. **Expand the successful background import path:** multi-object payloads, an initially empty canvas, paste positioning, connector relationships, grouped payloads, and duplicate prevention after timeouts. Test readback and restore behavior repeatedly with clipboard utilities present.
 2. **Finish clipboard-free editing:** more shape-picker entries, both resize axes and non-100-percent zoom, style popovers, and Connection Line endpoints. The picker exposes Connection Line, but attachment to existing objects is not verified.

@@ -4,7 +4,9 @@ JavaScript and MCP tools for creating editable objects in the regular macOS Free
 
 Start with [bridge setup and tools](bridge/README.md). The [FigJam recreation](bridge/examples/laa-lot-tracker/README.md) includes the source board export, conversion scripts, and verification evidence.
 
-For ongoing background-editing work, start with the [agent handoff](background/HANDOFF.md), then the [experiment results](background/README.md). The handoff covers the last observed disposable board, commands, unresolved failures, and prioritized next experiments. Background editing is still a research prototype; the production MCP has not switched to it.
+For ongoing background-editing work, start with the [agent handoff](background/HANDOFF.md), then the [experiment results](background/README.md). Background editing is still a research prototype; the production MCP has not switched to it.
+
+**Background status, 2026-10-09:** without activating Freeform or taking keyboard focus, probes can create and rename a board, import a multi-object diagram (including onto an empty canvas), and insert, move, resize and relabel objects. **Caveat:** Accessibility context menus, which import, readback and rename depend on, raise Freeform's window above the user's work even though Freeform doesn't activate. Raising the user's window again afterward restored the order in one test. The handoff tracks activation, window visibility and clipboard use as separate properties.
 
 This repository contains the bridge, tests, import tools, fixtures, and research notes. Copied Apple binaries, lab runtime data, generated disassembly, logs, and build outputs are kept locally but excluded from Git. Historical evidence retains the paths where it was originally collected. The original research folder is preserved at `/Users/drewcarr/freeform-bridge-research`.
 
