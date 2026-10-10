@@ -28,10 +28,10 @@ const valid = {
   objects: [{ shape: 'rectangle', x: 0, y: 0, width: 200, height: 100, fill: '#abcdef', text: 'Hello' }],
 };
 
-test('MCP advertises the clipboard and native lab tools and their mutation behavior', async (t) => {
+test('MCP advertises the clipboard, background, and native lab tools and their mutation behavior', async (t) => {
   const { client } = await harness(t);
   const { tools } = await client.listTools();
-  assert.deepEqual(tools.map(tool => tool.name).sort(), ['freeform_align_objects', 'freeform_create_board', 'freeform_group_objects', 'freeform_insert_objects', 'freeform_list_objects', 'freeform_move_object', 'freeform_native_list_boards', 'freeform_native_list_objects', 'freeform_native_move_object', 'freeform_native_status', 'freeform_open_board', 'freeform_read_selection', 'freeform_screenshot', 'freeform_status', 'freeform_undo']);
+  assert.deepEqual(tools.map(tool => tool.name).sort(), ['freeform_align_objects', 'freeform_bg_add_shape', 'freeform_bg_connect', 'freeform_bg_create_board', 'freeform_bg_delete_object', 'freeform_bg_list_objects', 'freeform_bg_open_board', 'freeform_bg_rename_board', 'freeform_bg_screenshot', 'freeform_bg_status', 'freeform_bg_update_object', 'freeform_create_board', 'freeform_group_objects', 'freeform_insert_objects', 'freeform_list_objects', 'freeform_move_object', 'freeform_native_list_boards', 'freeform_native_list_objects', 'freeform_native_move_object', 'freeform_native_status', 'freeform_open_board', 'freeform_read_selection', 'freeform_screenshot', 'freeform_status', 'freeform_undo']);
   const insertion = tools.find(tool => tool.name === 'freeform_insert_objects');
   assert.equal(insertion.annotations.readOnlyHint, false);
   assert.equal(insertion.annotations.destructiveHint, false);
@@ -83,7 +83,7 @@ test('real stdio entry point initializes and lists tools without touching Freefo
   const client = new Client({ name: 'freeform-stdio-smoke', version: '1.0.0' });
   t.after(async () => { await client.close(); });
   await client.connect(transport);
-  assert.equal((await client.listTools()).tools.length, 15);
+  assert.equal((await client.listTools()).tools.length, 25);
   assert.equal(stderr, '');
 });
 

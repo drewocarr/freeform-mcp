@@ -88,7 +88,7 @@ npm run build:native
 npm test
 ```
 
-**27 automated tests passed**, covering generated geometry/content, rejected inputs, observed Freeform normalization, MCP tool schemas/errors, and actual stdio initialization/discovery.
+**30 automated tests passed**, covering generated geometry/content, rejected inputs, observed Freeform normalization, MCP tool schemas/errors, and actual stdio initialization/discovery.
 
 The opt-in live test inserts into the supplied board:
 
@@ -192,7 +192,7 @@ Readback no longer adopts arbitrary clipboard change counts as safe to restore o
 
 The follow-up populated-board test also passed on the same board without a restart: added two objects, verified only those two were selected and copied, then undid the insertion and confirmed the original five descriptions remained.
 
-27 automated tests pass. `npm run test:clipboard` separately uses a unique private AppKit pasteboard to verify multi-format restoration, preservation of a newer copy, rejection of a conflicting write, and empty-clipboard restoration. It does not touch the general clipboard. The live populated-board test is `node test/live-existing-board.mjs 'Disposable Board Title'`; inspect its [evidence](examples/existing-board-proof.json) before rerunning after any failure.
+30 automated tests pass. `npm run test:clipboard` separately uses a unique private AppKit pasteboard to verify multi-format restoration, preservation of a newer copy, rejection of a conflicting write, and empty-clipboard restoration. It does not touch the general clipboard. The live populated-board test is `node test/live-existing-board.mjs 'Disposable Board Title'`; inspect its [evidence](examples/existing-board-proof.json) before rerunning after any failure.
 
 Partial native errors now retain machine-readable outcome flags and `retryAutomatically:false` in MCP responses. No mutation is automatically retried. This prevents the bridge itself from blindly duplicating an uncertain insertion; it does not deduplicate a caller's repeated request or automatically recover an interrupted call. `freeform_undo` still reports `verified:false`; the full live test independently verifies its effect. Killing or timing out the helper can still interrupt clipboard restoration.
 
@@ -235,4 +235,51 @@ The bridge selects exactly the requested objects, reads their native data, perfo
 
 Live MCP verification passed on **Bridge Arrangement Test — 2026-10-09 A**: window screenshot (visually inspected), grouping three shapes while leaving a fourth untouched, ungrouping, all six alignments with Undo between them, stale-snapshot rejection before mutation, and wrong-board screenshot rejection. All arrangement calls reported successful clipboard restoration. Evidence: [live proof](examples/arrangement-mcp-proof.json), [screenshot](examples/arrangement-screenshot.png). This test did not verify iCloud delivery.
 
-The opt-in test `node test/live-arrangement-mcp.mjs 'Unique Disposable Title'` creates a board with four test objects and stops on any failure. The server now advertises 15 tools: 11 regular-app tools and four isolated-lab tools.
+The opt-in test `node test/live-arrangement-mcp.mjs 'Unique Disposable Title'` creates a board with four test objects and stops on any failure. (Tool counts: see Background editing below.)
+
+## Background editing (keep working in another app)
+
+The `freeform_bg_*` tools edit the regular Freeform app **while another app stays frontmost**. They call a separate helper, `bin/freeform-background`, that never activates Freeform, clicks, or posts global keystrokes. It uses only Accessibility actions and keyboard events addressed to Freeform's process. If Freeform is frontmost, the tools refuse; there is no foreground fallback. `npm run build:native` builds both helpers. Foreground and background operations share one lock, so they never overlap.
+
+Every result includes `background`:
+
+| Field | Meaning |
+| --- | --- |
+| `activated` | Freeform became the frontmost app at any point (expected `false`) |
+| `windowRaised` | Freeform's window rose above every other window at any point (sampled every 100 ms) |
+| `windowRestored` | After a raise, whether the user's window was put back on top (`null` when no raise happened) |
+| `clipboardUsed` | Always `false` for these tools |
+
+| Tool | What it does | Window |
+| --- | --- | --- |
+| `freeform_bg_status` | Running, Accessibility trust, frontmost app, focused board | — |
+| `freeform_bg_list_objects` | Objects with temporary indices, descriptions, frames in visible-canvas points, and a `snapshotToken` | Hidden |
+| `freeform_bg_screenshot` | PNG of the board window, without bringing it forward | Hidden |
+| `freeform_bg_open_board` | Switch boards through the library | Hidden |
+| `freeform_bg_add_shape` | Picker shape (square, circle, roundedRectangle, diamond, triangle, parallelogram, pentagon, terminator, arrow), text box, or sticky note; optional `x`, `y`, `width`, `height`, `text`, `fill` | Hidden; resizing briefly lifts it to just below the frontmost window |
+| `freeform_bg_update_object` | Move, resize, relabel, recolor; restyle a connection line (`style`, `arrowhead`) | Hidden, except arrowheads |
+| `freeform_bg_connect` | Native Connection Line attached to two objects (follows them when moved); `style` straight/corner/curve | Hidden; `arrowhead` raises it |
+| `freeform_bg_delete_object` | Delete one object | Hidden |
+| `freeform_bg_create_board`, `freeform_bg_rename_board` | Create and name, or rename, a board | **Raises** (board card context menu) |
+
+**Limits:**
+- Fills are limited to Freeform's 12 named swatches. Custom hex colors need `freeform_insert_objects`, which runs in the foreground.
+- Text cannot contain newlines.
+- Coordinates are points from the top-left of the visible canvas at the current zoom and scroll.
+
+**Window raising:** anything that needs a context or pop-up menu (naming boards, arrowheads) requires `allowWindowRaise: true`. Afterward the helper restores the window order: first by raising the frontmost app's main window, and for apps without Accessibility windows by hiding and unhiding Freeform, which leaves its window just below the frontmost window.
+
+**Identity and retries:** edits require the `snapshotToken` from the latest list (each edit returns a fresh one) plus the object's index and exact description. Stale requests are refused. No mutation is retried automatically, with one exception: typing is retried once, and only when no object's text changed. An error after `mayHaveChanged` means the board may already be edited, so inspect it before retrying.
+
+**Freeform behaviors this works around:**
+- **Empty boards are discarded.** Freeform deletes a new board that is still empty when it is left. `freeform_bg_create_board` therefore keeps a placeholder sticky note on the new board until it is named, then deletes it.
+- **New boards ignore early actions.** Presses right after creation are retried only while nothing has changed.
+- **Menus are lazy.** Pop-up menu items can have blank titles until they render, so arrowheads fall back to the observed fixed menu order and are then verified from the connector's description.
+
+**Live test passed** with Safari frontmost on **Background MCP Flowchart D — 2026-10-09**. Steps: create and name the board, add three labeled and filled shapes, attach two connectors (one with a filled arrowhead), relabel, resize and recolor a shape, add a text box, and take a screenshot. `activated` was `false` throughout. The window rose only during naming and the arrowhead step, and both times `windowRestored` was `true`. An independent 100 ms window-order sampler agreed. Evidence: [proof](examples/background-mcp-proof.json), [screenshot](examples/background-mcp-proof.png), [window samples](examples/background-mcp-zorder.txt). Rename evidence: [result](examples/background-rename-result.json). To rerun, put another app in front first:
+
+```sh
+node test/live-background-mcp.mjs 'Unique Disposable Title' /tmp/proof.json
+```
+
+Device sync has not been checked for this board. An earlier board built by the research probes did reach the user's iPad. The server now advertises 25 tools: 11 regular-app, 10 background, and 4 isolated-lab. 30 automated tests pass.

@@ -219,3 +219,20 @@ The connection line's **Show format options** bar has Stroke Inspector, Line End
 | Attach the free picker **Line Arrow** by dragging its Tail/Head onto squares | Did not attach; did not follow a moved square | Hidden (`attach-line-arrow.*`) |
 
 **Conclusion:** straight, corner and curved connectors, stroke style and stroke width are hidden operations. **Arrowheads need the Line Ends pop-up menu, which raises the window once per connector** (restorable with AXRaise of the user's window). Untested alternative: a one-time **Save as Insert Style** on a connector with an arrowhead, so future Connection Lines inherit it. It changes the user's default connector style, so it needs the user's agreement.
+
+## Round 9: production background mode
+
+The findings were promoted into the MCP as the `freeform_bg_*` tools. Build issues found while doing so:
+
+| Issue | Cause | Fix |
+| --- | --- | --- |
+| Coordinates far outside the window | AXLayoutArea is the full scrollable canvas | Use its parent AXScrollArea as the viewport |
+| Go Back ignored after New Board | New board not ready | Retry Go Back while still on the board |
+| New board card missing from library | Freeform discards an empty new board when it is left; the card can also appear late | Placeholder sticky note until named, then deleted; wait up to 5 s for the card |
+| Shape picker without buttons on a new board | Popover content loads late | Wait for the specific button; placeholder uses the toolbar sticky note instead |
+| Inspector not found | "Show format options" toggles the format bar | Invoke it only when the bar is not showing |
+| Arrowhead menu items blank | Lazy rendering of pop-up item titles | Fixed-order fallback, verified by `End: …` in the connector description |
+| `windowRestored: false` with herdr frontmost | The app exposes no AX windows | Hide and unhide Freeform, which returns its window just below the frontmost window |
+| Intermittent missing label | Typing before selection settled | Pause after selecting; one retry only when no object's text changed |
+
+Hiding Freeform during edits was tested as an alternative and rejected: listing works while hidden, but the shape picker popover never appears.

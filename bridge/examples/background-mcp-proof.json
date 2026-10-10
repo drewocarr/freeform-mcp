@@ -1,0 +1,174 @@
+{
+  "title": "Background MCP Flowchart D — 2026-10-09",
+  "passed": true,
+  "objects": [
+    "Start, Rounded rectangle",
+    "Process, Rectangle",
+    "Finished, Circle",
+    "connection line, Connected from Start, Rounded rectangle to Process, Rectangle, straight",
+    "connection line, Connected from Process, Rectangle to Finished, Circle, straight, End: Filled arrow",
+    "Built in the background, text box"
+  ],
+  "steps": [
+    {
+      "tool": "freeform_bg_status",
+      "ms": 241,
+      "ok": true
+    },
+    {
+      "tool": "freeform_bg_create_board",
+      "ms": 7870,
+      "ok": true,
+      "background": {
+        "activated": false,
+        "clipboardUsed": false,
+        "frontmostApp": "com.apple.Safari",
+        "windowRaised": true,
+        "windowRestored": true
+      }
+    },
+    {
+      "tool": "freeform_bg_add_shape",
+      "ms": 4612,
+      "ok": true,
+      "background": {
+        "activated": false,
+        "clipboardUsed": false,
+        "frontmostApp": "com.apple.Safari",
+        "windowRaised": false,
+        "windowRestored": null
+      }
+    },
+    {
+      "tool": "freeform_bg_add_shape",
+      "ms": 4861,
+      "ok": true,
+      "background": {
+        "activated": false,
+        "clipboardUsed": false,
+        "frontmostApp": "com.apple.Safari",
+        "windowRaised": false,
+        "windowRestored": null
+      }
+    },
+    {
+      "tool": "freeform_bg_add_shape",
+      "ms": 5024,
+      "ok": true,
+      "background": {
+        "activated": false,
+        "clipboardUsed": false,
+        "frontmostApp": "com.apple.Safari",
+        "windowRaised": false,
+        "windowRestored": null
+      }
+    },
+    {
+      "tool": "freeform_bg_list_objects",
+      "ms": 168,
+      "ok": true,
+      "background": {
+        "activated": false,
+        "clipboardUsed": false,
+        "frontmostApp": "com.apple.Safari",
+        "windowRaised": false,
+        "windowRestored": null
+      }
+    },
+    {
+      "tool": "freeform_bg_connect",
+      "ms": 4844,
+      "ok": true,
+      "background": {
+        "activated": false,
+        "clipboardUsed": false,
+        "frontmostApp": "com.apple.Safari",
+        "windowRaised": false,
+        "windowRestored": null
+      }
+    },
+    {
+      "tool": "freeform_bg_list_objects",
+      "ms": 160,
+      "ok": true,
+      "background": {
+        "activated": false,
+        "clipboardUsed": false,
+        "frontmostApp": "com.apple.Safari",
+        "windowRaised": false,
+        "windowRestored": null
+      }
+    },
+    {
+      "tool": "freeform_bg_connect",
+      "ms": 7059,
+      "ok": true,
+      "background": {
+        "activated": false,
+        "clipboardUsed": false,
+        "frontmostApp": "com.apple.Safari",
+        "windowRaised": true,
+        "windowRestored": true
+      }
+    },
+    {
+      "tool": "freeform_bg_list_objects",
+      "ms": 154,
+      "ok": true,
+      "background": {
+        "activated": false,
+        "clipboardUsed": false,
+        "frontmostApp": "com.apple.Safari",
+        "windowRaised": false,
+        "windowRestored": null
+      }
+    },
+    {
+      "tool": "freeform_bg_update_object",
+      "ms": 4059,
+      "ok": true,
+      "background": {
+        "activated": false,
+        "clipboardUsed": false,
+        "frontmostApp": "com.apple.Safari",
+        "windowRaised": false,
+        "windowRestored": null
+      }
+    },
+    {
+      "tool": "freeform_bg_add_shape",
+      "ms": 2587,
+      "ok": true,
+      "background": {
+        "activated": false,
+        "clipboardUsed": false,
+        "frontmostApp": "com.apple.Safari",
+        "windowRaised": false,
+        "windowRestored": null
+      }
+    },
+    {
+      "tool": "freeform_bg_list_objects",
+      "ms": 136,
+      "ok": true,
+      "background": {
+        "activated": false,
+        "clipboardUsed": false,
+        "frontmostApp": "com.apple.Safari",
+        "windowRaised": false,
+        "windowRestored": null
+      }
+    },
+    {
+      "tool": "freeform_bg_screenshot",
+      "ok": true,
+      "background": {
+        "activated": false,
+        "clipboardUsed": false,
+        "frontmostApp": "com.apple.Safari",
+        "windowRaised": false,
+        "windowRestored": null
+      }
+    }
+  ]
+}

@@ -7,9 +7,9 @@ import { verifyImportedObjects } from './verify.mjs';
 const executable = fileURLToPath(new URL('../bin/freeform-bridge', import.meta.url));
 let queue = Promise.resolve();
 
-function runNative(request) {
+export function runHelper(path, request) {
   return new Promise((resolve, reject) => {
-    const child = spawn(executable, [], { stdio: ['pipe', 'pipe', 'pipe'] });
+    const child = spawn(path, [], { stdio: ['pipe', 'pipe', 'pipe'] });
     let stdout = '', stderr = '', settled = false;
     const finish = (error, result) => {
       if (settled) return;
@@ -47,8 +47,11 @@ function runNative(request) {
   });
 }
 
-// A server has one clipboard and one focused Freeform board. Serialize its calls.
-function serialized(task) {
+const runNative = request => runHelper(executable, request);
+
+// A server has one clipboard and one focused Freeform board. Serialize its calls,
+// including the background helper's (see background.mjs).
+export function serialized(task) {
   const result = queue.then(task);
   queue = result.catch(() => {});
   return result;

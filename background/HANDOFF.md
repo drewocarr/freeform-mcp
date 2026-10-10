@@ -2,6 +2,23 @@
 
 Updated 2026-10-09 (end of the resume session). Start here to continue the investigation without repeating completed experiments. [README.md](README.md) holds the full results matrix, round by round, with evidence filenames.
 
+## Status: background mode is now in the MCP
+
+As of 2026-10-09 the production MCP has a background mode: `freeform_bg_*` tools backed by `bridge/native/FreeformBackground.swift`. See the [bridge README](../bridge/README.md#background-editing-keep-working-in-another-app). A full flowchart was built through the real MCP server with Safari frontmost, no activation, and the window raised only for naming and an arrowhead (restored both times). The research findings below are what it is built on. Notable additions found while building it:
+- **Freeform discards empty new boards when they are left**, so creation keeps a placeholder until the board is named.
+- **New boards ignore early actions.**
+- **"Show format options" toggles** the format bar.
+- **Inspector popovers load lazily**, and arrowhead menu items can have blank titles.
+- **Hiding then unhiding Freeform puts its window just below the frontmost window.** This is the restore fallback for apps without Accessibility windows.
+- **AX edits are not possible while Freeform is hidden:** reading works, but popovers do not appear.
+
+Next steps for the mode:
+- device-sync check of a background-built board
+- custom colors (paste route, with window restore)
+- removing arrowheads
+- multi-select and grouping
+- fewer per-step waits for speed
+
 ## Goal
 
 Drew wants a model to create and edit native boards in the regular Freeform app while he keeps working in another application. Boards should remain normal Freeform boards that can sync to his phone and iPad.

@@ -11,7 +11,7 @@
     "start": "node src/server.mjs",
     "test": "node --test test/*.test.mjs",
     "test:mcp": "node --test test/mcp.test.mjs",
-    "build:native": "mkdir -p bin && swiftc native/FreeformBridge.swift -o bin/freeform-bridge",
+    "build:native": "mkdir -p bin && swiftc native/FreeformBridge.swift -o bin/freeform-bridge && node native/build-background.mjs",
     "test:clipboard": "node test/run-clipboard-tests.mjs"
   },
   "dependencies": {

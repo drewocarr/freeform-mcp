@@ -4,6 +4,7 @@ import { McpServer } from '@modelcontextprotocol/server';
 import { StdioServerTransport } from '@modelcontextprotocol/server/stdio';
 import { z } from 'zod';
 import { createNativeBridge } from './native-bridge.mjs';
+import { ARROWHEADS, CONNECTION_STYLES, SHAPES, SWATCHES, createBackgroundBridge } from './background.mjs';
 
 const boardTitle = z.string().min(1).max(512)
   .describe('Exact title of the already open Freeform board. The bridge refuses to act on a different board.');
@@ -45,7 +46,7 @@ function handler(operation) {
   };
 }
 
-export function createServer({ getStatus, insertObjects, readSelection, createBoard, openBoard, listObjects, moveObject, undo, screenshot, arrangeObjects }, native = createNativeBridge()) {
+export function createServer({ getStatus, insertObjects, readSelection, createBoard, openBoard, listObjects, moveObject, undo, screenshot, arrangeObjects }, native = createNativeBridge(), background = createBackgroundBridge()) {
   const server = new McpServer({ name: 'freeform-js-bridge', version: '0.1.0' });
   server.registerTool('freeform_status', {
     description: 'Inspect Freeform availability, permissions, and the current board without changing board content.',
@@ -138,7 +139,78 @@ export function createServer({ getStatus, insertObjects, readSelection, createBo
     inputSchema: z.object({ boardId: nativeId, objectId: nativeId, x: position, y: position, expectedGeometry: geometry }).strict(),
     annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
   }, handler(args => native.moveObject(args)));
+  registerBackgroundTools(server, background);
   return server;
+}
+
+// Background tools act on the regular Freeform app while another app stays frontmost.
+function registerBackgroundTools(server, background) {
+  const guarantees = 'Never activates Freeform or takes keyboard focus; refuses to run if Freeform is frontmost, with no foreground fallback. Results report background.activated, background.windowRaised, background.windowRestored, and background.clipboardUsed.';
+  const title = z.string().min(1).max(512).describe('Exact title of the board open in Freeform\'s focused window.');
+  const snapshot = z.string().regex(/^[a-f0-9]{64}$/).describe('snapshotToken from freeform_bg_list_objects or the previous background edit.');
+  const index = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
+  const description = z.string().min(1).max(10000).refine(value => value.trim().length > 0);
+  const target = z.object({ objectIndex: index, expectedDescription: description }).strict();
+  const coordinate = z.number().finite().min(-100000).max(100000).describe('Points from the top-left of the visible canvas at the current zoom and scroll.');
+  const size = z.number().finite().min(10).max(10000);
+  const text = z.string().min(1).max(1000).regex(/^[^\u0000-\u001f\u007f]*$/, 'No newlines or control characters');
+  const fill = z.enum(SWATCHES).describe('One of Freeform\'s named swatches. Custom colors are not available in the background.');
+  const readOnly = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
+  const mutation = { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false };
+  server.registerTool('freeform_bg_status', {
+    description: 'Report whether background editing is possible: Freeform running, Accessibility trust, the frontmost app, and the focused board. Does not change anything.',
+    inputSchema: z.object({}).strict(), annotations: readOnly,
+  }, handler(() => background.getStatus()));
+  server.registerTool('freeform_bg_list_objects', {
+    description: `List objects on the board with temporary indices, Accessibility descriptions, and frames in visible-canvas coordinates, plus a snapshotToken for edits. Read-only. ${guarantees}`,
+    inputSchema: z.object({ expectedBoardTitle: title }).strict(), annotations: readOnly,
+  }, handler(args => background.listObjects(args)));
+  server.registerTool('freeform_bg_screenshot', {
+    description: `Capture the Freeform board window as a PNG without bringing it forward. Requires Screen Recording permission. ${guarantees}`,
+    inputSchema: z.object({ expectedBoardTitle: title }).strict(), annotations: readOnly,
+  }, handler(args => background.screenshot(args)));
+  server.registerTool('freeform_bg_open_board', {
+    description: `Switch Freeform to a board by exact title through its library, keeping its window hidden. ${guarantees}`,
+    inputSchema: z.object({ title }).strict(), annotations: { ...mutation, idempotentHint: true },
+  }, handler(args => background.openBoard(args)));
+  server.registerTool('freeform_bg_create_board', {
+    description: `Create and name a board. Naming uses the board card's context menu, which raises Freeform's window briefly; allowWindowRaise must be true, and the window order is restored afterward. An error may follow a created board: inspect before retrying. ${guarantees}`,
+    inputSchema: z.object({ title, allowWindowRaise: z.literal(true) }).strict(), annotations: mutation,
+  }, handler(args => background.createBoard(args)));
+  server.registerTool('freeform_bg_rename_board', {
+    description: `Rename a board by exact current title through its library card's context menu, which raises Freeform's window briefly; allowWindowRaise must be true, and the window order is restored. Reopens the board afterward. ${guarantees}`,
+    inputSchema: z.object({ fromTitle: title, title, allowWindowRaise: z.literal(true) }).strict(), annotations: mutation,
+  }, handler(args => background.renameBoard(args)));
+  server.registerTool('freeform_bg_add_shape', {
+    description: `Add one native object without the clipboard: a picker shape (optionally sized, positioned, labeled, and filled with a named swatch), a text box, or a sticky note. Resizing briefly lifts Freeform's window just below the frontmost window. Repeating adds duplicates; on error, inspect before retrying. ${guarantees}`,
+    inputSchema: z.object({ expectedBoardTitle: title, shape: z.enum(SHAPES), x: coordinate.optional(), y: coordinate.optional(),
+      width: size.optional(), height: size.optional(), text: text.optional(), fill: fill.optional() }).strict(),
+    annotations: mutation,
+  }, handler(args => background.addShape(args)));
+  server.registerTool('freeform_bg_update_object', {
+    description: `Move, resize, relabel, or recolor one existing object, or restyle a connection line, without the clipboard. Requires a fresh snapshotToken and the object's index and exact description. Setting an arrowhead raises the window (allowWindowRaise required; order restored). ${guarantees}`,
+    inputSchema: z.object({ expectedBoardTitle: title, expectedSnapshot: snapshot, objectIndex: index, expectedDescription: description,
+      x: coordinate.optional(), y: coordinate.optional(), width: size.optional(), height: size.optional(), text: text.optional(), fill: fill.optional(),
+      style: z.enum(CONNECTION_STYLES).optional().describe('Connection lines only.'),
+      arrowhead: z.enum(ARROWHEADS.filter(a => a !== 'none')).optional().describe('Connection lines only; raises the window, so requires allowWindowRaise.'),
+      allowWindowRaise: z.boolean().optional() }).strict()
+      .refine(a => ['x', 'y', 'width', 'height', 'text', 'fill', 'style', 'arrowhead'].some(key => a[key] !== undefined), 'Provide at least one change')
+      .refine(a => a.arrowhead === undefined || a.allowWindowRaise === true, 'Arrowheads require allowWindowRaise: true'),
+    annotations: mutation,
+  }, handler(args => background.updateObject(args)));
+  server.registerTool('freeform_bg_connect', {
+    description: `Connect two objects with a native Connection Line that stays attached when they move. Straight, corner, or curved style keep Freeform hidden. Arrowheads use a pop-up menu that raises the window: they require allowWindowRaise true, and the window order is restored. ${guarantees}`,
+    inputSchema: z.object({ expectedBoardTitle: title, expectedSnapshot: snapshot, from: target, to: target,
+      style: z.enum(CONNECTION_STYLES).optional(), arrowhead: z.enum(ARROWHEADS).optional(), allowWindowRaise: z.boolean().optional() }).strict()
+      .refine(a => a.from.objectIndex !== a.to.objectIndex, 'from and to must differ')
+      .refine(a => (a.arrowhead ?? 'none') === 'none' || a.allowWindowRaise === true, 'Arrowheads require allowWindowRaise: true'),
+    annotations: mutation,
+  }, handler(args => background.connect(args)));
+  server.registerTool('freeform_bg_delete_object', {
+    description: `Delete one object, identified by a fresh snapshotToken plus its index and exact description. ${guarantees}`,
+    inputSchema: z.object({ expectedBoardTitle: title, expectedSnapshot: snapshot, objectIndex: index, expectedDescription: description }).strict(),
+    annotations: { ...mutation, destructiveHint: true },
+  }, handler(args => background.deleteObject(args)));
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
