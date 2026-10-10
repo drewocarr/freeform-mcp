@@ -111,7 +111,7 @@ Two observed normalizations are explicitly handled: empty labels become one U+20
 - Labels use Freeform's default text formatting. Explicit fonts, rich styling, images, tables, and arbitrary imported paths are outside this API.
 - Guarded grouping/ungrouping and six alignment commands are available for explicitly listed unrotated, unflipped shapes; see below.
 - Tested on the installed Freeform/macOS version only. The content-language format is private and may change.
-- The user confirmed the test boards and their generated shapes appeared on iPhone. iPad delivery and cross-device editing remain unverified.
+- The user confirmed the test boards and their generated shapes appeared on iPhone. iPad delivery was confirmed for a background-probe board, not yet for one made by these tools. Cross-device editing remains unverified.
 
 ## Clipboard and failure handling
 
