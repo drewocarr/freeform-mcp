@@ -4,7 +4,7 @@ JavaScript and MCP tools for creating editable objects in the regular macOS Free
 
 Start with [bridge setup and tools](bridge/README.md). The [FigJam recreation](bridge/examples/laa-lot-tracker/README.md) includes the source board export, conversion scripts, and verification evidence.
 
-For ongoing background-editing work, start with the [agent handoff](background/HANDOFF.md), then the [experiment results](background/README.md). Background editing is still a research prototype; the production MCP has not switched to it.
+For ongoing background-editing work, start with the [agent handoff](background/HANDOFF.md), then the [experiment results](background/README.md). The MCP now includes **background tools** (`freeform_bg_*`) that edit boards while you keep working in another app. See [Background editing](bridge/README.md#background-editing-keep-working-in-another-app). The regular tools are unchanged.
 
 **Background status, 2026-10-09:** without activating Freeform or taking keyboard focus, probes can create and rename a board, import a multi-object diagram (including onto an empty canvas), and insert, move, resize and relabel objects. **Caveat:** Accessibility context menus, which import, readback and rename depend on, raise Freeform's window above the user's work even though Freeform doesn't activate. Raising the user's window again afterward restored the order in one test. Clipboard-free operations (toolbar and picker inserts, typing, moving, switching boards) keep Freeform's window hidden as well. Those hidden paths also cover 12 named fill colors and **native connectors that stay attached** when shapes move. The handoff tracks activation, window visibility and clipboard use as separate properties.
 
