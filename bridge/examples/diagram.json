@@ -1,0 +1,7 @@
+[
+  { "shape": "roundedRectangle", "x": 0, "y": 0, "width": 220, "height": 120, "fill": "#A7D8FF", "text": "1. Describe a diagram" },
+  { "shape": "arrow", "x": 235, "y": 45, "width": 50, "height": 30, "fill": "#64748B" },
+  { "shape": "rectangle", "x": 300, "y": 0, "width": 220, "height": 120, "fill": "#BDE5C8", "text": "2. JavaScript builds it" },
+  { "shape": "arrow", "x": 535, "y": 45, "width": 50, "height": 30, "fill": "#64748B" },
+  { "shape": "ellipse", "x": 600, "y": 0, "width": 220, "height": 120, "fill": "#FFD596", "text": "3. Edit in Freeform" }
+]

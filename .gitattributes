@@ -1,0 +1,5 @@
+# Preserve exported documents and extracted evidence exactly as collected.
+*.pdf binary
+*-strings.txt -whitespace
+*-symbols.txt -whitespace
+bridge/examples/** -whitespace

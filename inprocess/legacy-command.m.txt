@@ -1,0 +1,73 @@
+#import <Foundation/Foundation.h>
+#import <CoreGraphics/CoreGraphics.h>
+#import <objc/runtime.h>
+#import <objc/message.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <math.h>
+
+extern id FFMovementObservedItem(void);
+extern id FFMovementObservedController(void);
+static NSString *const CommandPath=@"/Users/drewcarr/freeform-bridge-research/inprocess/logs/command.json";
+static void Log(NSDictionary *event) {
+ const char *path=getenv("FF_PROBE_LOG"); if(!path)return;
+ NSData *json=[NSJSONSerialization dataWithJSONObject:event options:0 error:NULL]; if(!json)return;
+ NSMutableData *line=[json mutableCopy]; [line appendBytes:"\n" length:1];
+ int fd=open(path,O_WRONLY|O_APPEND|O_NOFOLLOW); if(fd<0)return; write(fd,line.bytes,line.length);close(fd);
+}
+static BOOL ABI(id object,SEL selector,const char *expected) {
+ Method method=object?class_getInstanceMethod(object_getClass(object),selector):NULL;
+ return method && !strcmp(method_getTypeEncoding(method),expected);
+}
+static id Get(id object,SEL selector) { return ((id(*)(id,SEL))objc_msgSend)(object,selector); }
+static NSDictionary *Geometry(id item) {
+ SEL gs=sel_registerName("geometry");
+ if(!ABI(item,gs,"@16@0:8"))return @{@"error":@"geometry_getter_abi"};
+ id g=Get(item,gs);
+ if(!ABI(g,sel_registerName("position"),"{CGPoint=dd}16@0:8") || !ABI(g,sel_registerName("size"),"{CGSize=dd}16@0:8")) return @{@"error":@"geometry_value_abi"};
+ CGPoint p=((CGPoint(*)(id,SEL))objc_msgSend)(g,sel_registerName("position"));
+ CGSize s=((CGSize(*)(id,SEL))objc_msgSend)(g,sel_registerName("size"));
+ return @{@"x":@(p.x),@"y":@(p.y),@"width":@(s.width),@"height":@(s.height)};
+}
+typedef id __attribute__((ns_returns_retained)) (*InitIMP)(id __attribute__((ns_consumed)),SEL,id,id);
+static void Execute(NSDictionary *request) {
+ NSCAssert([NSThread isMainThread],@"Main thread required");
+ id item=FFMovementObservedItem(), controller=FFMovementObservedController();
+ NSString *identifier=request[@"id"];
+ if(!item || !controller) {Log(@{@"event":@"command_result",@"id":identifier,@"error":@"no_captured_item_or_controller"});return;}
+ NSDictionary *before=Geometry(item);
+ if([request[@"action"] isEqual:@"inspect"]) {Log(@{@"event":@"command_result",@"id":identifier,@"geometry":before,@"item_class":@(object_getClassName(item)),@"controller_class":@(object_getClassName(controller))});return;}
+ if(![request[@"action"] isEqual:@"move"] || before[@"error"]) {Log(@{@"event":@"command_result",@"id":identifier,@"error":@"unsupported_action_or_geometry"});return;}
+ NSNumber *dx=request[@"dx"],*dy=request[@"dy"];
+ if(![dx isKindOfClass:[NSNumber class]] || ![dy isKindOfClass:[NSNumber class]] || !isfinite(dx.doubleValue) || !isfinite(dy.doubleValue) || fabs(dx.doubleValue)>500 || fabs(dy.doubleValue)>500) {Log(@{@"event":@"command_result",@"id":identifier,@"error":@"invalid_delta"});return;}
+ SEL parent=sel_registerName("parentBoard"), boardSel=sel_registerName("board");
+ if(!ABI(item,parent,"@16@0:8") || !ABI(controller,boardSel,"@16@0:8") || Get(item,parent)!=Get(controller,boardSel)) {Log(@{@"event":@"command_result",@"id":identifier,@"error":@"board_identity_not_verified"});return;}
+ id geometry=[Get(item,sel_registerName("geometry")) mutableCopy];
+ SEL setPosition=sel_registerName("setPosition:");
+ Class cls=objc_getClass("Freeform.CRLCommandSetInfoGeometry");
+ SEL init=sel_registerName("initWithBoardItem:geometry:"),enqueue=sel_registerName("enqueueCommand:");
+ Method constructor=cls?class_getInstanceMethod(cls,init):NULL;
+ if(!ABI(geometry,setPosition,"v32@0:8{CGPoint=dd}16") || !constructor || strcmp(method_getTypeEncoding(constructor),"@32@0:8@16@24") || !ABI(controller,enqueue,"v24@0:8@16")) {Log(@{@"event":@"command_result",@"id":identifier,@"error":@"command_abi_mismatch"});return;}
+ CGPoint target=CGPointMake([before[@"x"] doubleValue]+dx.doubleValue,[before[@"y"] doubleValue]+dy.doubleValue);
+ ((void(*)(id,SEL,CGPoint))objc_msgSend)(geometry,setPosition,target);
+ id command=((InitIMP)objc_msgSend)([cls alloc],init,item,geometry);
+ Log(@{@"event":@"native_command_submit",@"id":identifier,@"before":before,@"target":@{@"x":@(target.x),@"y":@(target.y)},@"command_class":@(object_getClassName(command))});
+ ((void(*)(id,SEL,id))objc_msgSend)(controller,enqueue,command);
+ Log(@{@"event":@"command_result",@"id":identifier,@"before":before,@"after":Geometry(item)});
+}
+void FFCommandStart(void) {
+ static dispatch_source_t timer; static NSString *lastID;
+ // Existing requests are never replayed on a new process launch.
+ NSDictionary *existing=[NSJSONSerialization JSONObjectWithData:[NSData dataWithContentsOfFile:CommandPath]?:[NSData data] options:0 error:NULL];
+ if([existing isKindOfClass:[NSDictionary class]])lastID=existing[@"id"];
+ timer=dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER,0,0,dispatch_get_main_queue());
+ dispatch_source_set_timer(timer,dispatch_time(DISPATCH_TIME_NOW,NSEC_PER_SEC),NSEC_PER_SEC/4,NSEC_PER_SEC/20);
+ dispatch_source_set_event_handler(timer,^{
+  NSData *data=[NSData dataWithContentsOfFile:CommandPath]; if(!data || data.length>4096)return;
+  id request=[NSJSONSerialization JSONObjectWithData:data options:0 error:NULL];
+  if(![request isKindOfClass:[NSDictionary class]] || ![request[@"id"] isKindOfClass:[NSString class]] || [request[@"id"] isEqual:lastID])return;
+  lastID=[request[@"id"] copy];
+  @try { Execute(request); } @catch(NSException *exception) {Log(@{@"event":@"command_result",@"id":lastID,@"error":@"exception",@"reason":exception.reason?:@""});}
+ }); dispatch_resume(timer);
+ Log(@{@"event":@"command_listener_started",@"path":CommandPath});
+}

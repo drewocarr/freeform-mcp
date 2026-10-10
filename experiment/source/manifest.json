@@ -1,0 +1,44 @@
+[
+  {
+    "bytes" : 31,
+    "file" : "item-0-type-0.bin",
+    "item" : 0,
+    "type" : "com.apple.freeform.CRLNativeMetadata"
+  },
+  {
+    "bytes" : 963,
+    "file" : "item-0-type-1.bin",
+    "item" : 0,
+    "type" : "com.apple.freeform.CRLNativeData"
+  },
+  {
+    "bytes" : 123,
+    "file" : "item-0-type-2.bin",
+    "item" : 0,
+    "type" : "com.apple.freeform.TSUDescription"
+  },
+  {
+    "bytes" : 0,
+    "file" : "item-0-type-3.bin",
+    "item" : 0,
+    "type" : "com.apple.freeform.pasteboardState.hasNativeTypes"
+  },
+  {
+    "bytes" : 0,
+    "file" : "item-0-type-4.bin",
+    "item" : 0,
+    "type" : "com.apple.freeform.pasteboardState.hasNativeBoardItems"
+  },
+  {
+    "bytes" : 9116,
+    "file" : "item-0-type-5.bin",
+    "item" : 0,
+    "type" : "com.apple.apps.content-language.canvas-object-1.0"
+  },
+  {
+    "bytes" : 6000,
+    "file" : "item-0-type-6.bin",
+    "item" : 0,
+    "type" : "public.png"
+  }
+]

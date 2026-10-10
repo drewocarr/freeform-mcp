@@ -1,0 +1,6 @@
+{"event":"loaded","pid":58495,"executable":"\/Users\/drewcarr\/freeform-bridge-research\/inprocess\/fixture"}
+{"event":"class","name":"CRLPasteboardController","present":0}
+{"event":"class","name":"CRLBoardItem","present":0}
+{"event":"class","name":"Freeform.CRLBoardItem","present":0}
+{"event":"class","name":"_TtC8Freeform12CRLBoardItem","present":0}
+{"selector":"finishLaunching","encoding":"v16@0:8","event":"hook_installed","class":"NSApplication"}

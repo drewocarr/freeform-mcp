@@ -1,0 +1,30 @@
+{
+  "type": "com.apple.apps.content-language.shape",
+  "rgb": [
+    1,
+    0.20000000298023224,
+    0.15000000596046448
+  ],
+  "geometry": {
+    "angle": 0,
+    "height_valid": true,
+    "width_valid": true,
+    "position": {
+      "y": 413,
+      "x": 639,
+      "version": "1.0",
+      "type_identifier": "com.apple.apps.content-language.position"
+    },
+    "flip_horizontally": false,
+    "type_identifier": "com.apple.apps.content-language.geometry",
+    "size": {
+      "version": "1.0",
+      "height": 150.000000863618,
+      "type_identifier": "com.apple.apps.content-language.size",
+      "width": 150.000000863618
+    },
+    "version": "1.0"
+  },
+  "path": "bezier",
+  "nativeBytes": 1599
+}

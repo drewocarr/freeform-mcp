@@ -1,0 +1,10 @@
+{"event":"loaded","pid":58966,"executable":"\/Users\/drewcarr\/freeform-bridge-research\/inprocess\/fixture"}
+{"event":"class","name":"CRLPasteboardController","present":0}
+{"event":"class","name":"CRLBoardItem","present":0}
+{"event":"class","name":"Freeform.CRLBoardItem","present":0}
+{"event":"class","name":"_TtC8Freeform12CRLBoardItem","present":0}
+{"selector":"finishLaunching","encoding":"v16@0:8","event":"hook_installed","class":"NSApplication"}
+{"selector":"init","reason":"missing_or_unexpected_abi","event":"hook_rejected","class":"CRLPasteboardController","encoding":""}
+{"selector":"finishLaunching","encoding":"v16@0:8","event":"hook_installed","class":"NSApplication"}
+{"selector":"finishLaunching","event":"hook_called","class":"NSApplication","pid":58966}
+{"selector":"finishLaunching","event":"hook_return","class":"NSApplication","pid":58966}

@@ -1,0 +1,22 @@
+# Local dependencies and build products
+.DS_Store
+node_modules/
+bridge/bin/
+__pycache__/
+*.pyc
+*.dylib
+/clipboard-probe
+/inprocess/fixture
+/inprocess/fixture-arm64e
+/inprocess/launch-probe
+
+# Copied Apple application, private runtime state, and generated traces
+/inprocess/lab/
+/inprocess/logs/
+/direct-import/Freeform.arm64e
+/direct-import/disassembly.txt
+/direct-import/objc-metadata.txt
+/direct-import/objc-stubs.txt
+.env
+.env.*
+!.env.example

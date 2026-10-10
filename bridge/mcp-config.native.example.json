@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "freeform": {
+      "command": "/opt/homebrew/opt/node@22/bin/node",
+      "args": [
+        "/Users/drewcarr/freeform-mcp/bridge/src/server.mjs"
+      ],
+      "env": {
+        "FREEFORM_NATIVE_SESSION_FILE": "/Users/drewcarr/freeform-mcp/inprocess/lab/data/transport/session.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "freeform-js-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local experimental JavaScript and MCP bridge for Apple Freeform",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.mjs",
+    "test": "node --test test/*.test.mjs",
+    "test:mcp": "node --test test/mcp.test.mjs",
+    "build:native": "mkdir -p bin && swiftc native/FreeformBridge.swift -o bin/freeform-bridge",
+    "test:clipboard": "node test/run-clipboard-tests.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.3.1",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "2.3.1"
+  }
+}

@@ -1,0 +1,5464 @@
+{
+  "actions": {
+    "CRLAddItemToBoardIntent": {
+      "actionConfiguration": {
+        "whenClause": {
+          "wrapper": {
+            "condition": {
+              "comparisonOperator": 0,
+              "parameterIdentifier": "itemType"
+            },
+            "otherwise": {
+              "actionSummary": {
+                "wrapper": {
+                  "otherParameterIdentifiers": [],
+                  "summaryString": {
+                    "formatString": "Add ${itemType} to ${target}",
+                    "parameterIdentifiers": [
+                      "itemType",
+                      "target"
+                    ]
+                  },
+                  "table": "CRLAppIntents"
+                }
+              }
+            },
+            "when": {
+              "switchStatement": {
+                "wrapper": {
+                  "cases": [
+                    {
+                      "configuration": {
+                        "actionSummary": {
+                          "wrapper": {
+                            "otherParameterIdentifiers": [
+                              "mediaItems"
+                            ],
+                            "summaryString": {
+                              "formatString": "Add ${itemType} to ${target}",
+                              "parameterIdentifiers": [
+                                "itemType",
+                                "target"
+                              ]
+                            },
+                            "table": "CRLAppIntents"
+                          }
+                        }
+                      },
+                      "isDefaultCase": false,
+                      "value": {
+                        "array": {
+                          "values": [
+                            {
+                              "enumeration": {
+                                "identifier": "CRLCanvasItemType",
+                                "value": "media"
+                              }
+                            }
+                          ],
+                          "valueType": {
+                            "linkEnumeration": {
+                              "wrapper": {
+                                "identifier": "CRLCanvasItemType"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "configuration": {
+                        "actionSummary": {
+                          "wrapper": {
+                            "otherParameterIdentifiers": [],
+                            "summaryString": {
+                              "formatString": "Add ${itemType} to ${target}",
+                              "parameterIdentifiers": [
+                                "itemType",
+                                "target"
+                              ]
+                            },
+                            "table": "CRLAppIntents"
+                          }
+                        }
+                      },
+                      "isDefaultCase": false,
+                      "value": {
+                        "array": {
+                          "values": [
+                            {
+                              "enumeration": {
+                                "identifier": "CRLCanvasItemType",
+                                "value": "line"
+                              }
+                            }
+                          ],
+                          "valueType": {
+                            "linkEnumeration": {
+                              "wrapper": {
+                                "identifier": "CRLCanvasItemType"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "configuration": {
+                        "actionSummary": {
+                          "wrapper": {
+                            "otherParameterIdentifiers": [
+                              "url"
+                            ],
+                            "summaryString": {
+                              "formatString": "Add ${itemType} to ${target}",
+                              "parameterIdentifiers": [
+                                "itemType",
+                                "target"
+                              ]
+                            },
+                            "table": "CRLAppIntents"
+                          }
+                        }
+                      },
+                      "isDefaultCase": false,
+                      "value": {
+                        "array": {
+                          "values": [
+                            {
+                              "enumeration": {
+                                "identifier": "CRLCanvasItemType",
+                                "value": "url"
+                              }
+                            }
+                          ],
+                          "valueType": {
+                            "linkEnumeration": {
+                              "wrapper": {
+                                "identifier": "CRLCanvasItemType"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "configuration": {
+                        "actionSummary": {
+                          "wrapper": {
+                            "otherParameterIdentifiers": [
+                              "text"
+                            ],
+                            "summaryString": {
+                              "formatString": "Add ${itemType} to ${target}",
+                              "parameterIdentifiers": [
+                                "itemType",
+                                "target"
+                              ]
+                            },
+                            "table": "CRLAppIntents"
+                          }
+                        }
+                      },
+                      "isDefaultCase": true
+                    }
+                  ],
+                  "parameterIdentifier": "itemType"
+                }
+              }
+            }
+          }
+        }
+      },
+      "assistantDefinedSchemas": [
+        {
+          "domain": "whiteboard",
+          "name": "CreateCanvasItemIntent",
+          "version": "1.0.0"
+        }
+      ],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLAddItemToBoardIntent",
+      "identifier": "CRLAddItemToBoardIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform23CRLAddItemToBoardIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform23CRLAddItemToBoardIntentV",
+      "openAppWhenRun": false,
+      "outputFlags": 1,
+      "outputType": {
+        "entity": {
+          "wrapper": {
+            "typeName": "CRLBoardEntity"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 2,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "target",
+          "resolvableInputTypes": [],
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": true,
+          "name": "itemType",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Item to add",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Item",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "linkEnumeration": {
+              "wrapper": {
+                "identifier": "CRLCanvasItemType"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": true,
+          "name": "text",
+          "resolvableInputTypes": [
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 0
+                  }
+                }
+              }
+            },
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 12
+                  }
+                }
+              }
+            }
+          ],
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 12
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 1,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "mediaItems",
+          "resolvableInputTypes": [],
+          "typeSpecificMetadata": [
+            "LNValueTypeSpecificMetadataKeyDefaultValue",
+            {
+              "array": {
+                "elements": []
+              }
+            },
+            "LNValueTypeMetadataKeyFileSupportedTypes",
+            {
+              "array": {
+                "elements": [
+                  {
+                    "string": {
+                      "wrapper": "public.item"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "valueType": {
+            "array": {
+              "wrapper": {
+                "capabilities": 3,
+                "memberValueType": {
+                  "intents": {
+                    "wrapper": {
+                      "typeIdentifier": 12
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": true,
+          "name": "url",
+          "resolvableInputTypes": [
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 0
+                  }
+                }
+              }
+            },
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 11
+                  }
+                }
+              }
+            }
+          ],
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 11
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [
+        "com.apple.link.systemProtocol.AssistantIntent",
+        {
+          "empty": {}
+        }
+      ],
+      "systemProtocolMetadataV2": [
+        "com.apple.link.systemProtocol.AssistantIntent",
+        {
+          "empty": {}
+        }
+      ],
+      "systemProtocols": [
+        "com.apple.link.systemProtocol.AssistantIntent"
+      ],
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLAddStickyNoteToBoardIntent": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "Add sticky note with ${string} to ${board}",
+              "parameterIdentifiers": [
+                "string",
+                "board"
+              ]
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "deprecationMetadata": {
+        "messageText": {
+          "alternatives": [],
+          "key": "This app intent is scheduled to be deleted."
+        },
+        "replacedByIntentIdentifier": "CRLAddItemToBoardIntent"
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Adds a sticky note to a board (empty or with text in it).",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLAddStickyNoteToBoardIntent",
+      "identifier": "CRLAddStickyNoteToBoardIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform29CRLAddStickyNoteToBoardIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform29CRLAddStickyNoteToBoardIntentV",
+      "openAppWhenRun": false,
+      "outputFlags": 1,
+      "outputType": {
+        "entity": {
+          "wrapper": {
+            "typeName": "CRLBoardEntity"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 2,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "board",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board to add a sticky note to",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": true,
+          "name": "string",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Text in the sticky note (optional)",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 0
+                  }
+                }
+              }
+            },
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 12
+                  }
+                }
+              }
+            }
+          ],
+          "title": {
+            "alternatives": [],
+            "key": "Text",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 12
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Add Sticky Note to Board",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLAddTextToBoardIntent": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "Add text box with ${string} to ${board}",
+              "parameterIdentifiers": [
+                "string",
+                "board"
+              ]
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "deprecationMetadata": {
+        "messageText": {
+          "alternatives": [],
+          "key": "This app intent is scheduled to be deleted."
+        },
+        "replacedByIntentIdentifier": "CRLAddItemToBoardIntent"
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Adds a text box to a board (empty or with text in it).",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLAddTextToBoardIntent",
+      "identifier": "CRLAddTextToBoardIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform23CRLAddTextToBoardIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform23CRLAddTextToBoardIntentV",
+      "openAppWhenRun": false,
+      "outputFlags": 1,
+      "outputType": {
+        "entity": {
+          "wrapper": {
+            "typeName": "CRLBoardEntity"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 2,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "board",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board to add a text box to",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": true,
+          "name": "string",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Text in the text box (optional)",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 12
+                  }
+                }
+              }
+            },
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 0
+                  }
+                }
+              }
+            }
+          ],
+          "title": {
+            "alternatives": [],
+            "key": "Text",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 12
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Add Text to Board",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLChangeBoardCanvasGridIntent": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "${operation} dot grid for ${entity}",
+              "parameterIdentifiers": [
+                "operation",
+                "entity"
+              ]
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Shows or hides the dot grid for a board.",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLChangeBoardCanvasGridIntent",
+      "identifier": "CRLChangeBoardCanvasGridIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform30CRLChangeBoardCanvasGridIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform30CRLChangeBoardCanvasGridIntentV",
+      "openAppWhenRun": false,
+      "outputFlags": 1,
+      "outputType": {
+        "entity": {
+          "wrapper": {
+            "typeName": "CRLBoardEntity"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 2,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "entity",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board to show or hide the dot grid for",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 1,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "operation",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "State of the dot grid for a board (shown or hidden)",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "State",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [
+            "LNValueTypeSpecificMetadataKeyDefaultValue",
+            {
+              "string": {
+                "wrapper": "show"
+              }
+            }
+          ],
+          "valueType": {
+            "linkEnumeration": {
+              "wrapper": {
+                "identifier": "CRLVisibilityOperation"
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Show/Hide Dot Grid",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLChangeBoardObjectConnectorsIntent": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "${operation} object connectors for ${entity}",
+              "parameterIdentifiers": [
+                "operation",
+                "entity"
+              ]
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Shows or hides object connectors for a board.",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLChangeBoardObjectConnectorsIntent",
+      "identifier": "CRLChangeBoardObjectConnectorsIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform36CRLChangeBoardObjectConnectorsIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform36CRLChangeBoardObjectConnectorsIntentV",
+      "openAppWhenRun": false,
+      "outputFlags": 1,
+      "outputType": {
+        "entity": {
+          "wrapper": {
+            "typeName": "CRLBoardEntity"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 2,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "entity",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board to show or hide object connectors for",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 1,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "operation",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "State of object connectors for a board (shown or hidden)",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "State",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [
+            "LNValueTypeSpecificMetadataKeyDefaultValue",
+            {
+              "string": {
+                "wrapper": "show"
+              }
+            }
+          ],
+          "valueType": {
+            "linkEnumeration": {
+              "wrapper": {
+                "identifier": "CRLVisibilityOperation"
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Show/Hide Object Connectors",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLChangeSelectionColorIntent": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "Change fill color of object on ${board} to ${color}",
+              "parameterIdentifiers": [
+                "board",
+                "color"
+              ]
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Changes the fill color of the shape, sticky note, or text box selected on the board.",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLChangeSelectionColorIntent",
+      "identifier": "CRLChangeSelectionColorIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": false,
+      "mangledTypeName": "8Freeform29CRLChangeSelectionColorIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform29CRLChangeSelectionColorIntentV",
+      "openAppWhenRun": true,
+      "outputFlags": 0,
+      "parameters": [
+        {
+          "capabilities": 8,
+          "dynamicOptionsSupport": 1,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "board",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board containing the object to change",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "color",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Fill color to change the selected object to",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Color",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "linkEnumeration": {
+              "wrapper": {
+                "identifier": "CRLColorEnum"
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [],
+      "supportedModes": 2,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Change Fill Color",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": true,
+        "isDiscoverable": true
+      }
+    },
+    "CRLChangeSelectionFontSizeIntent": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "Change font size on ${board} to ${size}",
+              "parameterIdentifiers": [
+                "board",
+                "size"
+              ]
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Changes the font size of the text selected on the board.",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLChangeSelectionFontSizeIntent",
+      "identifier": "CRLChangeSelectionFontSizeIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": false,
+      "mangledTypeName": "8Freeform32CRLChangeSelectionFontSizeIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform32CRLChangeSelectionFontSizeIntentV",
+      "openAppWhenRun": true,
+      "outputFlags": 0,
+      "parameters": [
+        {
+          "capabilities": 8,
+          "dynamicOptionsSupport": 1,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "board",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board containing the text to change",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "size",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Font size to change the selected text to",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Size",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "linkEnumeration": {
+              "wrapper": {
+                "identifier": "CRLFontSizeEnum"
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [],
+      "supportedModes": 2,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Change Font Size",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": true,
+        "isDiscoverable": true
+      }
+    },
+    "CRLChangeSelectionFontStyleIntent": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "Change font style on ${board} to ${style}",
+              "parameterIdentifiers": [
+                "board",
+                "style"
+              ]
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Applies a font style to the text selected on the board.",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLChangeSelectionFontStyleIntent",
+      "identifier": "CRLChangeSelectionFontStyleIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": false,
+      "mangledTypeName": "8Freeform33CRLChangeSelectionFontStyleIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform33CRLChangeSelectionFontStyleIntentV",
+      "openAppWhenRun": true,
+      "outputFlags": 0,
+      "parameters": [
+        {
+          "capabilities": 8,
+          "dynamicOptionsSupport": 1,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "board",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board containing the text to change",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "style",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Font style to apply to the selected text",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Style",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "linkEnumeration": {
+              "wrapper": {
+                "identifier": "CRLFontStyleEnum"
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [],
+      "supportedModes": 2,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Change Font Style",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": true,
+        "isDiscoverable": true
+      }
+    },
+    "CRLCreateBoardIntent": {
+      "assistantDefinedSchemas": [
+        {
+          "domain": "whiteboard",
+          "name": "CreateCanvasBoardIntent",
+          "version": "1.0.0"
+        }
+      ],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLCreateBoardIntent",
+      "identifier": "CRLCreateBoardIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform20CRLCreateBoardIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform20CRLCreateBoardIntentV",
+      "openAppWhenRun": false,
+      "outputFlags": 1,
+      "outputType": {
+        "entity": {
+          "wrapper": {
+            "typeName": "CRLBoardEntity"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": true,
+          "name": "title",
+          "resolvableInputTypes": [
+            {
+              "kindValue": 0,
+              "valueType": {
+                "array": {
+                  "wrapper": {
+                    "capabilities": 3,
+                    "memberValueType": {
+                      "primitive": {
+                        "wrapper": {
+                          "typeIdentifier": 2
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 0
+                  }
+                }
+              }
+            },
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 2
+                  }
+                }
+              }
+            }
+          ],
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 0
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [
+        "com.apple.link.systemProtocol.AssistantIntent",
+        {
+          "empty": {}
+        }
+      ],
+      "systemProtocolMetadataV2": [
+        "com.apple.link.systemProtocol.AssistantIntent",
+        {
+          "empty": {}
+        }
+      ],
+      "systemProtocols": [
+        "com.apple.link.systemProtocol.AssistantIntent"
+      ],
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLDeleteBoardIntent": {
+      "assistantDefinedSchemas": [
+        {
+          "domain": "whiteboard",
+          "name": "DeleteCanvasBoardIntent",
+          "version": "1.0.0"
+        }
+      ],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLDeleteBoardIntent",
+      "identifier": "CRLDeleteBoardIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform20CRLDeleteBoardIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform20CRLDeleteBoardIntentV",
+      "openAppWhenRun": false,
+      "outputFlags": 0,
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 2,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "entities",
+          "resolvableInputTypes": [],
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "array": {
+              "wrapper": {
+                "capabilities": 3,
+                "memberValueType": {
+                  "entity": {
+                    "wrapper": {
+                      "typeName": "CRLBoardEntity"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [
+        "com.apple.link.systemProtocol.DeleteEntity",
+        {
+          "empty": {}
+        },
+        "com.apple.link.systemProtocol.AssistantIntent",
+        {
+          "empty": {}
+        }
+      ],
+      "systemProtocolMetadataV2": [
+        "com.apple.link.systemProtocol.DeleteEntity",
+        {
+          "empty": {}
+        },
+        "com.apple.link.systemProtocol.AssistantIntent",
+        {
+          "empty": {}
+        }
+      ],
+      "systemProtocols": [
+        "com.apple.link.systemProtocol.DeleteEntity",
+        "com.apple.link.systemProtocol.AssistantIntent"
+      ],
+      "typeSpecificMetadata": [
+        "LNActionTypeMetadataKeyEntityType",
+        {
+          "string": {
+            "wrapper": "CRLBoardEntity"
+          }
+        },
+        "LNActionTypeMetadataKeyEntityMetadata",
+        {
+          "entityMetadata": {
+            "wrapper": {
+              "assistantDefinedSchemas": [
+                {
+                  "domain": "whiteboard",
+                  "name": "CanvasEntity",
+                  "version": "1.0.0"
+                }
+              ],
+              "availabilityAnnotations": {
+                "LNPlatformNameWildcard": {
+                  "introducedVersion": "*"
+                }
+              },
+              "defaultQueryIdentifier": "Freeform.CRLBoardQuery",
+              "displayTypeName": {
+                "alternatives": [],
+                "key": ""
+              },
+              "effectiveBundleIdentifiers": [],
+              "entitySyncMetadata": {
+                "entitySyncType": 1
+              },
+              "fullyQualifiedTypeName": "Freeform.CRLBoardEntity",
+              "mangledTypeName": "8Freeform14CRLBoardEntityV",
+              "mangledTypeNameByBundleIdentifier": {},
+              "properties": [
+                {
+                  "capabilities": 0,
+                  "identifier": "title",
+                  "isOptional": false,
+                  "spotlightAttributeKey": "title",
+                  "title": {
+                    "alternatives": [],
+                    "key": ""
+                  },
+                  "valueType": {
+                    "primitive": {
+                      "wrapper": {
+                        "typeIdentifier": 0
+                      }
+                    }
+                  }
+                },
+                {
+                  "capabilities": 0,
+                  "identifier": "creationDate",
+                  "isOptional": false,
+                  "spotlightAttributeKey": "contentCreationDate",
+                  "title": {
+                    "alternatives": [],
+                    "key": ""
+                  },
+                  "valueType": {
+                    "primitive": {
+                      "wrapper": {
+                        "typeIdentifier": 8
+                      }
+                    }
+                  }
+                },
+                {
+                  "capabilities": 0,
+                  "identifier": "lastModificationDate",
+                  "isOptional": false,
+                  "spotlightAttributeKey": "contentModificationDate",
+                  "title": {
+                    "alternatives": [],
+                    "key": ""
+                  },
+                  "valueType": {
+                    "primitive": {
+                      "wrapper": {
+                        "typeIdentifier": 8
+                      }
+                    }
+                  }
+                },
+                {
+                  "capabilities": 0,
+                  "identifier": "isFavorite",
+                  "isOptional": true,
+                  "valueType": {
+                    "primitive": {
+                      "wrapper": {
+                        "typeIdentifier": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "capabilities": 0,
+                  "identifier": "isCanvasDotGridEnabled",
+                  "isOptional": true,
+                  "valueType": {
+                    "primitive": {
+                      "wrapper": {
+                        "typeIdentifier": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "capabilities": 0,
+                  "identifier": "isConnectorModeEnabled",
+                  "isOptional": true,
+                  "valueType": {
+                    "primitive": {
+                      "wrapper": {
+                        "typeIdentifier": 1
+                      }
+                    }
+                  }
+                }
+              ],
+              "requiredCapabilities": [],
+              "systemProtocolMetadata": [
+                "com.apple.appintents.entity.URLRepresentable",
+                {
+                  "empty": {}
+                },
+                "com.apple.appintents.entity.Syncable",
+                {
+                  "empty": {}
+                },
+                "com.apple.appintents.entity.AssistantEntity",
+                {
+                  "empty": {}
+                },
+                "com.apple.appintents.entity.Indexed",
+                {
+                  "empty": {}
+                }
+              ],
+              "systemProtocolMetadataV2": [
+                "com.apple.appintents.entity.URLRepresentable",
+                {
+                  "empty": {}
+                },
+                "com.apple.appintents.entity.Syncable",
+                {
+                  "empty": {}
+                },
+                "com.apple.appintents.entity.AssistantEntity",
+                {
+                  "empty": {}
+                },
+                "com.apple.appintents.entity.Indexed",
+                {
+                  "empty": {}
+                }
+              ],
+              "transferableContentTypes": {
+                "exportableTypes": [
+                  {
+                    "contentType": "com.apple.cloudkit.sharingsupport.container"
+                  },
+                  {
+                    "contentType": "com.apple.cloudkit.sharingsupport.pre"
+                  },
+                  {
+                    "contentType": "com.apple.cloudkit.sharingsupport.post"
+                  },
+                  {
+                    "contentType": "UTCollaborationOptionsType"
+                  }
+                ],
+                "importableTypes": []
+              },
+              "transient": false,
+              "typeName": "CRLBoardEntity",
+              "typeSpecificMetadata": [],
+              "visibilityMetadata": {
+                "assistantOnly": false,
+                "isDiscoverable": true
+              }
+            }
+          }
+        }
+      ],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLFavoriteBoardIntent_v2": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "${operation} ${entity}",
+              "parameterIdentifiers": [
+                "operation",
+                "entity"
+              ]
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Adds a board to Favorites or removes a board from Favorites.",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLFavoriteBoardIntent_v2",
+      "identifier": "CRLFavoriteBoardIntent_v2",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform25CRLFavoriteBoardIntent_v2V",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform25CRLFavoriteBoardIntent_v2V",
+      "openAppWhenRun": false,
+      "outputFlags": 0,
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 2,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "entity",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board to favorite or unfavorite",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 1,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "operation",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "State of the board in Favorites (added to Favorites or removed from Favorites)",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "State",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [
+            "LNValueTypeSpecificMetadataKeyDefaultValue",
+            {
+              "string": {
+                "wrapper": "favorite"
+              }
+            }
+          ],
+          "valueType": {
+            "linkEnumeration": {
+              "wrapper": {
+                "identifier": "CRLFavoriteOperation"
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Favorite/Unfavorite Board",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLInsertFilesToBoardIntent": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "Add ${files} to ${board}",
+              "parameterIdentifiers": [
+                "files",
+                "board"
+              ]
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Adds one or more files to a board.",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLInsertFilesToBoardIntent",
+      "identifier": "CRLInsertFilesToBoardIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform27CRLInsertFilesToBoardIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform27CRLInsertFilesToBoardIntentV",
+      "openAppWhenRun": false,
+      "outputFlags": 1,
+      "outputType": {
+        "entity": {
+          "wrapper": {
+            "typeName": "CRLBoardEntity"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 2,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "board",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board to add files to",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "files",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "One or more files to add to the board",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Files",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [
+            "LNValueTypeMetadataKeyFileSupportedTypes",
+            {
+              "array": {
+                "elements": [
+                  {
+                    "string": {
+                      "wrapper": "public.item"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "valueType": {
+            "array": {
+              "wrapper": {
+                "capabilities": 3,
+                "memberValueType": {
+                  "intents": {
+                    "wrapper": {
+                      "typeIdentifier": 12
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Add Files to Board",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLInsertPhotosToBoardIntent": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "Add ${images} to ${board}",
+              "parameterIdentifiers": [
+                "images",
+                "board"
+              ]
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Adds one or more photos to a board.",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLInsertPhotosToBoardIntent",
+      "identifier": "CRLInsertPhotosToBoardIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform28CRLInsertPhotosToBoardIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform28CRLInsertPhotosToBoardIntentV",
+      "openAppWhenRun": false,
+      "outputFlags": 1,
+      "outputType": {
+        "entity": {
+          "wrapper": {
+            "typeName": "CRLBoardEntity"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 2,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "board",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board to add photos to",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "images",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "One or more photos to add to the board",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Photos",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [
+            "LNValueTypeMetadataKeyFileSupportedTypes",
+            {
+              "array": {
+                "elements": [
+                  {
+                    "string": {
+                      "wrapper": "public.image"
+                    }
+                  },
+                  {
+                    "string": {
+                      "wrapper": "public.movie"
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "valueType": {
+            "array": {
+              "wrapper": {
+                "capabilities": 3,
+                "memberValueType": {
+                  "intents": {
+                    "wrapper": {
+                      "typeIdentifier": 12
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Add Photos to Board",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLInsertShapeToBoardIntent": {
+      "actionConfiguration": {
+        "whenClause": {
+          "wrapper": {
+            "condition": {
+              "comparisonOperator": 2,
+              "parameterIdentifier": "shapes",
+              "value": {
+                "enumeration": {
+                  "identifier": "CRLShapeTypeEnum",
+                  "value": "line"
+                }
+              }
+            },
+            "otherwise": {
+              "actionSummary": {
+                "wrapper": {
+                  "otherParameterIdentifiers": [],
+                  "summaryString": {
+                    "formatString": "Add ${shapes} with ${string} to ${board}",
+                    "parameterIdentifiers": [
+                      "shapes",
+                      "string",
+                      "board"
+                    ]
+                  },
+                  "table": "CRLAppIntents"
+                }
+              }
+            },
+            "when": {
+              "actionSummary": {
+                "wrapper": {
+                  "otherParameterIdentifiers": [],
+                  "summaryString": {
+                    "formatString": "Add ${shapes} to ${board}",
+                    "parameterIdentifiers": [
+                      "shapes",
+                      "board"
+                    ]
+                  },
+                  "table": "CRLAppIntents"
+                }
+              }
+            }
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "deprecationMetadata": {
+        "messageText": {
+          "alternatives": [],
+          "key": "This app intent is scheduled to be deleted."
+        },
+        "replacedByIntentIdentifier": "CRLAddItemToBoardIntent"
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Adds a shape to a board (empty or with text in it).",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLInsertShapeToBoardIntent",
+      "identifier": "CRLInsertShapeToBoardIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform27CRLInsertShapeToBoardIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform27CRLInsertShapeToBoardIntentV",
+      "openAppWhenRun": false,
+      "outputFlags": 1,
+      "outputType": {
+        "entity": {
+          "wrapper": {
+            "typeName": "CRLBoardEntity"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 2,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "board",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board to add a shape to",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 8,
+          "dynamicOptionsSupport": 1,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "shapes",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Shape to add to the board",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Shape",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "linkEnumeration": {
+              "wrapper": {
+                "identifier": "CRLShapeTypeEnum"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": true,
+          "name": "string",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Text in the shape (optional)",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 12
+                  }
+                }
+              }
+            },
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 0
+                  }
+                }
+              }
+            }
+          ],
+          "title": {
+            "alternatives": [],
+            "key": "Text",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 12
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Add Shape to Board",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLInsertTextToBoardIntent": {
+      "actionConfiguration": {
+        "whenClause": {
+          "wrapper": {
+            "condition": {
+              "comparisonOperator": 0,
+              "parameterIdentifier": "container"
+            },
+            "otherwise": {
+              "actionSummary": {
+                "wrapper": {
+                  "otherParameterIdentifiers": [
+                    "container"
+                  ],
+                  "summaryString": {
+                    "formatString": "Insert ${strings} on ${board}",
+                    "parameterIdentifiers": [
+                      "strings",
+                      "board"
+                    ]
+                  },
+                  "table": "CRLAppIntents"
+                }
+              }
+            },
+            "when": {
+              "actionSummary": {
+                "wrapper": {
+                  "otherParameterIdentifiers": [],
+                  "summaryString": {
+                    "formatString": "Insert ${strings} in ${container} on ${board}",
+                    "parameterIdentifiers": [
+                      "strings",
+                      "container",
+                      "board"
+                    ]
+                  },
+                  "table": "CRLAppIntents"
+                }
+              }
+            }
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "deprecationMetadata": {
+        "messageText": {
+          "alternatives": [],
+          "key": "This app intent is scheduled to be deleted."
+        },
+        "replacedByIntentIdentifier": "CRLAddItemToBoardIntent"
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Adds text to a board in a text box or a specified container.",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLInsertTextToBoardIntent",
+      "identifier": "CRLInsertTextToBoardIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": false,
+      "mangledTypeName": "8Freeform26CRLInsertTextToBoardIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform26CRLInsertTextToBoardIntentV",
+      "openAppWhenRun": false,
+      "outputFlags": 1,
+      "outputType": {
+        "entity": {
+          "wrapper": {
+            "typeName": "CRLBoardEntity"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 2,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "board",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board to add text to",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 2,
+          "isInput": true,
+          "isOptional": false,
+          "name": "strings",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Text to add to the board",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 0
+                  }
+                }
+              }
+            },
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 12
+                  }
+                }
+              }
+            }
+          ],
+          "title": {
+            "alternatives": [],
+            "key": "Text",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 12
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": true,
+          "name": "container",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Container for the text added to the board (optional)",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Container",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "linkEnumeration": {
+              "wrapper": {
+                "identifier": "CRLSupportedTextContainerEnum"
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Insert Text",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": true,
+        "isDiscoverable": true
+      }
+    },
+    "CRLInsertURLToBoardIntent": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "Add ${url} to ${board}",
+              "parameterIdentifiers": [
+                "url",
+                "board"
+              ]
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "deprecationMetadata": {
+        "messageText": {
+          "alternatives": [],
+          "key": "This app intent is scheduled to be deleted."
+        },
+        "replacedByIntentIdentifier": "CRLAddItemToBoardIntent"
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Adds a web link to a board.",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLInsertURLToBoardIntent",
+      "identifier": "CRLInsertURLToBoardIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform25CRLInsertURLToBoardIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform25CRLInsertURLToBoardIntentV",
+      "openAppWhenRun": false,
+      "outputFlags": 1,
+      "outputType": {
+        "entity": {
+          "wrapper": {
+            "typeName": "CRLBoardEntity"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 2,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "board",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board to add a link to",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 2,
+          "isInput": true,
+          "isOptional": false,
+          "name": "url",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "URL for the link to add to the board",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 11
+                  }
+                }
+              }
+            },
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 0
+                  }
+                }
+              }
+            }
+          ],
+          "title": {
+            "alternatives": [],
+            "key": "URL",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 11
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Add Link to Board",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLiOSCreateBoardIntent": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "Create Board",
+              "parameterIdentifiers": []
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameIOS": {
+          "introducedVersion": "17.0"
+        },
+        "LNPlatformNameMACOS": {
+          "obsoletedVersion": "*"
+        },
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "deprecationMetadata": {
+        "messageText": {
+          "alternatives": [],
+          "key": "Deprecated"
+        },
+        "replacedByIntentIdentifier": "CRLCreateBoardIntent"
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Create a new board for Freeform",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLiOSCreateBoardIntent",
+      "identifier": "CRLiOSCreateBoardIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform23CRLiOSCreateBoardIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform23CRLiOSCreateBoardIntentV",
+      "openAppWhenRun": true,
+      "outputFlags": 0,
+      "parameters": [],
+      "presentationStyle": 0,
+      "requiredCapabilities": [],
+      "supportedModes": 2,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Create New Freeform Board",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLiOSOpenBoardIntent": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "Open Board ${board}",
+              "parameterIdentifiers": [
+                "board"
+              ]
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameIOS": {
+          "introducedVersion": "17.0"
+        },
+        "LNPlatformNameMACOS": {
+          "obsoletedVersion": "*"
+        },
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "deprecationMetadata": {
+        "messageText": {
+          "alternatives": [],
+          "key": "Deprecated"
+        },
+        "replacedByIntentIdentifier": "CRLOpenBoardIntent"
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Open the specified board in Freeform",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLiOSOpenBoardIntent",
+      "identifier": "CRLiOSOpenBoardIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform21CRLiOSOpenBoardIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform21CRLiOSOpenBoardIntentV",
+      "openAppWhenRun": true,
+      "outputFlags": 0,
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 1,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "board",
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLiOSBoardEntity"
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [],
+      "supportedModes": 2,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Open Freeform Board",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLOpenBoardIntent": {
+      "assistantDefinedSchemas": [
+        {
+          "domain": "whiteboard",
+          "name": "OpenCanvasBoardIntent",
+          "version": "1.0.0"
+        }
+      ],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLOpenBoardIntent",
+      "identifier": "CRLOpenBoardIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform18CRLOpenBoardIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform18CRLOpenBoardIntentV",
+      "openAppWhenRun": true,
+      "outputFlags": 8,
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 2,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "target",
+          "resolvableInputTypes": [],
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 2,
+      "systemProtocolMetadata": [
+        "com.apple.link.systemProtocol.AssistantIntent",
+        {
+          "empty": {}
+        },
+        "com.apple.link.systemProtocol.OpenEntity",
+        {
+          "empty": {}
+        },
+        "com.apple.link.systemProtocol.URLRepresentable",
+        {
+          "empty": {}
+        }
+      ],
+      "systemProtocolMetadataV2": [
+        "com.apple.link.systemProtocol.AssistantIntent",
+        {
+          "empty": {}
+        },
+        "com.apple.link.systemProtocol.OpenEntity",
+        {
+          "empty": {}
+        },
+        "com.apple.link.systemProtocol.URLRepresentable",
+        {
+          "empty": {}
+        }
+      ],
+      "systemProtocols": [
+        "com.apple.link.systemProtocol.AssistantIntent",
+        "com.apple.link.systemProtocol.OpenEntity",
+        "com.apple.link.systemProtocol.URLRepresentable"
+      ],
+      "typeSpecificMetadata": [
+        "LNActionTypeMetadataKeyEntityType",
+        {
+          "string": {
+            "wrapper": "CRLBoardEntity"
+          }
+        },
+        "LNActionTypeMetadataKeyEntityMetadata",
+        {
+          "entityMetadata": {
+            "wrapper": {
+              "assistantDefinedSchemas": [
+                {
+                  "domain": "whiteboard",
+                  "name": "CanvasEntity",
+                  "version": "1.0.0"
+                }
+              ],
+              "availabilityAnnotations": {
+                "LNPlatformNameWildcard": {
+                  "introducedVersion": "*"
+                }
+              },
+              "defaultQueryIdentifier": "Freeform.CRLBoardQuery",
+              "displayTypeName": {
+                "alternatives": [],
+                "key": ""
+              },
+              "effectiveBundleIdentifiers": [],
+              "entitySyncMetadata": {
+                "entitySyncType": 1
+              },
+              "fullyQualifiedTypeName": "Freeform.CRLBoardEntity",
+              "mangledTypeName": "8Freeform14CRLBoardEntityV",
+              "mangledTypeNameByBundleIdentifier": {},
+              "properties": [
+                {
+                  "capabilities": 0,
+                  "identifier": "title",
+                  "isOptional": false,
+                  "spotlightAttributeKey": "title",
+                  "title": {
+                    "alternatives": [],
+                    "key": ""
+                  },
+                  "valueType": {
+                    "primitive": {
+                      "wrapper": {
+                        "typeIdentifier": 0
+                      }
+                    }
+                  }
+                },
+                {
+                  "capabilities": 0,
+                  "identifier": "creationDate",
+                  "isOptional": false,
+                  "spotlightAttributeKey": "contentCreationDate",
+                  "title": {
+                    "alternatives": [],
+                    "key": ""
+                  },
+                  "valueType": {
+                    "primitive": {
+                      "wrapper": {
+                        "typeIdentifier": 8
+                      }
+                    }
+                  }
+                },
+                {
+                  "capabilities": 0,
+                  "identifier": "lastModificationDate",
+                  "isOptional": false,
+                  "spotlightAttributeKey": "contentModificationDate",
+                  "title": {
+                    "alternatives": [],
+                    "key": ""
+                  },
+                  "valueType": {
+                    "primitive": {
+                      "wrapper": {
+                        "typeIdentifier": 8
+                      }
+                    }
+                  }
+                },
+                {
+                  "capabilities": 0,
+                  "identifier": "isFavorite",
+                  "isOptional": true,
+                  "valueType": {
+                    "primitive": {
+                      "wrapper": {
+                        "typeIdentifier": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "capabilities": 0,
+                  "identifier": "isCanvasDotGridEnabled",
+                  "isOptional": true,
+                  "valueType": {
+                    "primitive": {
+                      "wrapper": {
+                        "typeIdentifier": 1
+                      }
+                    }
+                  }
+                },
+                {
+                  "capabilities": 0,
+                  "identifier": "isConnectorModeEnabled",
+                  "isOptional": true,
+                  "valueType": {
+                    "primitive": {
+                      "wrapper": {
+                        "typeIdentifier": 1
+                      }
+                    }
+                  }
+                }
+              ],
+              "requiredCapabilities": [],
+              "systemProtocolMetadata": [
+                "com.apple.appintents.entity.URLRepresentable",
+                {
+                  "empty": {}
+                },
+                "com.apple.appintents.entity.Syncable",
+                {
+                  "empty": {}
+                },
+                "com.apple.appintents.entity.AssistantEntity",
+                {
+                  "empty": {}
+                },
+                "com.apple.appintents.entity.Indexed",
+                {
+                  "empty": {}
+                }
+              ],
+              "systemProtocolMetadataV2": [
+                "com.apple.appintents.entity.URLRepresentable",
+                {
+                  "empty": {}
+                },
+                "com.apple.appintents.entity.Syncable",
+                {
+                  "empty": {}
+                },
+                "com.apple.appintents.entity.AssistantEntity",
+                {
+                  "empty": {}
+                },
+                "com.apple.appintents.entity.Indexed",
+                {
+                  "empty": {}
+                }
+              ],
+              "transferableContentTypes": {
+                "exportableTypes": [
+                  {
+                    "contentType": "com.apple.cloudkit.sharingsupport.container"
+                  },
+                  {
+                    "contentType": "com.apple.cloudkit.sharingsupport.pre"
+                  },
+                  {
+                    "contentType": "com.apple.cloudkit.sharingsupport.post"
+                  },
+                  {
+                    "contentType": "UTCollaborationOptionsType"
+                  }
+                ],
+                "importableTypes": []
+              },
+              "transient": false,
+              "typeName": "CRLBoardEntity",
+              "typeSpecificMetadata": [],
+              "visibilityMetadata": {
+                "assistantOnly": false,
+                "isDiscoverable": true
+              }
+            }
+          }
+        }
+      ],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLRenameBoardIntent": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "Rename ${entity} to ${property}",
+              "parameterIdentifiers": [
+                "entity",
+                "property"
+              ]
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "deprecationMetadata": {
+        "messageText": {
+          "alternatives": [],
+          "key": "Deprecated"
+        }
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Renames a board.",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLRenameBoardIntent",
+      "identifier": "CRLRenameBoardIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": false,
+      "mangledTypeName": "8Freeform20CRLRenameBoardIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform20CRLRenameBoardIntentV",
+      "openAppWhenRun": false,
+      "outputFlags": 1,
+      "outputType": {
+        "entity": {
+          "wrapper": {
+            "typeName": "CRLBoardEntity"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 2,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "entity",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board to rename",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "property",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "New name for the board",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 2
+                  }
+                }
+              }
+            },
+            {
+              "kindValue": 0,
+              "valueType": {
+                "array": {
+                  "wrapper": {
+                    "capabilities": 3,
+                    "memberValueType": {
+                      "primitive": {
+                        "wrapper": {
+                          "typeIdentifier": 2
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 0
+                  }
+                }
+              }
+            }
+          ],
+          "title": {
+            "alternatives": [],
+            "key": "Name",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 0
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Rename Board",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": true,
+        "isDiscoverable": true
+      }
+    },
+    "CRLResizeSelectionFontIntent": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "${behavior} font size on ${board}",
+              "parameterIdentifiers": [
+                "behavior",
+                "board"
+              ]
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "deprecationMetadata": {
+        "messageText": {
+          "alternatives": [],
+          "key": "Deprecated"
+        }
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Increases or decreases the font size of the text selected on the board.",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLResizeSelectionFontIntent",
+      "identifier": "CRLResizeSelectionFontIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": false,
+      "mangledTypeName": "8Freeform28CRLResizeSelectionFontIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform28CRLResizeSelectionFontIntentV",
+      "openAppWhenRun": true,
+      "outputFlags": 0,
+      "parameters": [
+        {
+          "capabilities": 8,
+          "dynamicOptionsSupport": 1,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "board",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board containing the text to change",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "behavior",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Change to the selected text's font size (increase or decrease)",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Change",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "linkEnumeration": {
+              "wrapper": {
+                "identifier": "ResizeBehavior"
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [],
+      "supportedModes": 2,
+      "systemProtocolMetadata": [
+        "com.apple.link.systemProtocol.Resize",
+        {
+          "empty": {}
+        }
+      ],
+      "systemProtocolMetadataV2": [
+        "com.apple.link.systemProtocol.Resize",
+        {
+          "empty": {}
+        }
+      ],
+      "systemProtocols": [
+        "com.apple.link.systemProtocol.Resize"
+      ],
+      "title": {
+        "alternatives": [],
+        "key": "Resize Text",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": true,
+        "isDiscoverable": true
+      }
+    },
+    "CRLResizeSelectionFontIntent_v2": {
+      "actionConfiguration": {
+        "actionSummary": {
+          "wrapper": {
+            "otherParameterIdentifiers": [],
+            "summaryString": {
+              "formatString": "${operation} font size on ${board}",
+              "parameterIdentifiers": [
+                "operation",
+                "board"
+              ]
+            },
+            "table": "CRLAppIntents"
+          }
+        }
+      },
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "descriptionMetadata": {
+        "descriptionText": {
+          "alternatives": [],
+          "key": "Increases or decreases the font size of the text selected on the board.",
+          "table": "CRLAppIntents"
+        },
+        "searchKeywords": []
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLResizeSelectionFontIntent_v2",
+      "identifier": "CRLResizeSelectionFontIntent_v2",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": false,
+      "mangledTypeName": "8Freeform31CRLResizeSelectionFontIntent_v2V",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform31CRLResizeSelectionFontIntent_v2V",
+      "openAppWhenRun": true,
+      "outputFlags": 0,
+      "parameters": [
+        {
+          "capabilities": 8,
+          "dynamicOptionsSupport": 1,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "board",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Board containing the text to change",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Board",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "operation",
+          "parameterDescription": {
+            "alternatives": [],
+            "key": "Change to the selected text's font size (increase or decrease)",
+            "table": "CRLAppIntents"
+          },
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Change",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "linkEnumeration": {
+              "wrapper": {
+                "identifier": "CRLSizeChangeOperation"
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [],
+      "supportedModes": 2,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Resize Text",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": true,
+        "isDiscoverable": true
+      }
+    },
+    "CRLUpdateBoardIntent": {
+      "assistantDefinedSchemas": [
+        {
+          "domain": "whiteboard",
+          "name": "UpdateCanvasBoardIntent",
+          "version": "1.0.0"
+        }
+      ],
+      "assistantDefinedSchemaTraits": [
+        {
+          "entityUpdating": {
+            "entityIdentifier": "CRLBoardEntity"
+          }
+        }
+      ],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLUpdateBoardIntent",
+      "identifier": "CRLUpdateBoardIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": true,
+      "mangledTypeName": "8Freeform20CRLUpdateBoardIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform20CRLUpdateBoardIntentV",
+      "openAppWhenRun": false,
+      "outputFlags": 1,
+      "outputType": {
+        "entity": {
+          "wrapper": {
+            "typeName": "CRLBoardEntity"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 2,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "target",
+          "resolvableInputTypes": [],
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "entity": {
+              "wrapper": {
+                "typeName": "CRLBoardEntity"
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": true,
+          "name": "title",
+          "resolvableInputTypes": [
+            {
+              "kindValue": 0,
+              "valueType": {
+                "array": {
+                  "wrapper": {
+                    "capabilities": 3,
+                    "memberValueType": {
+                      "primitive": {
+                        "wrapper": {
+                          "typeIdentifier": 2
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 0
+                  }
+                }
+              }
+            },
+            {
+              "kindValue": 0,
+              "valueType": {
+                "primitive": {
+                  "wrapper": {
+                    "typeIdentifier": 2
+                  }
+                }
+              }
+            }
+          ],
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 0
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [
+        {
+          "domain": "FeatureFlag",
+          "key": "Freeform/AppIntents",
+          "value": true
+        }
+      ],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [
+        "com.apple.link.systemProtocol.AssistantIntent",
+        {
+          "empty": {}
+        }
+      ],
+      "systemProtocolMetadataV2": [
+        "com.apple.link.systemProtocol.AssistantIntent",
+        {
+          "empty": {}
+        }
+      ],
+      "systemProtocols": [
+        "com.apple.link.systemProtocol.AssistantIntent"
+      ],
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLUtilitiesIntent": {
+      "assistantDefinedSchemas": [],
+      "assistantDefinedSchemaTraits": [],
+      "authenticationPolicy": 0,
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLUtilitiesIntent",
+      "identifier": "CRLUtilitiesIntent",
+      "isAuthPolExplicit": false,
+      "isDiscoverable": false,
+      "mangledTypeName": "8Freeform18CRLUtilitiesIntentV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "mangledTypeNameByBundleIdentifierV2": {},
+      "mangledTypeNameV2": "8Freeform18CRLUtilitiesIntentV",
+      "openAppWhenRun": false,
+      "outputFlags": 0,
+      "outputType": {
+        "primitive": {
+          "wrapper": {
+            "typeIdentifier": 0
+          }
+        }
+      },
+      "parameters": [
+        {
+          "capabilities": 0,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "arguments",
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Input Arguments",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [],
+          "valueType": {
+            "array": {
+              "wrapper": {
+                "capabilities": 3,
+                "memberValueType": {
+                  "primitive": {
+                    "wrapper": {
+                      "typeIdentifier": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 1,
+          "dynamicOptionsSupport": 0,
+          "inputConnectionBehavior": 0,
+          "isInput": false,
+          "isOptional": false,
+          "name": "operation",
+          "resolvableInputTypes": [],
+          "title": {
+            "alternatives": [],
+            "key": "Operation",
+            "table": "CRLAppIntents"
+          },
+          "typeSpecificMetadata": [
+            "LNValueTypeSpecificMetadataKeyDefaultValue",
+            {
+              "string": {
+                "wrapper": "boardID"
+              }
+            }
+          ],
+          "valueType": {
+            "linkEnumeration": {
+              "wrapper": {
+                "identifier": "CRLUtilitiesOperation"
+              }
+            }
+          }
+        }
+      ],
+      "presentationStyle": 0,
+      "requiredCapabilities": [],
+      "supportedModes": 1,
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "systemProtocols": [],
+      "title": {
+        "alternatives": [],
+        "key": "Utilities Intent",
+        "table": "CRLAppIntents"
+      },
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": false
+      }
+    }
+  },
+  "assistantEntities": [],
+  "assistantIntentNegativePhrases": [],
+  "assistantIntents": [],
+  "autoShortcutProviderMangledName": "8Freeform20CRLShortcutsProviderV",
+  "autoShortcuts": [
+    {
+      "actionIdentifier": "CRLCreateBoardIntent",
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "phraseTemplates": [
+        {
+          "alternatives": [],
+          "key": "Create ${applicationName} board"
+        },
+        {
+          "alternatives": [],
+          "key": "Create ${applicationName} canvas"
+        },
+        {
+          "alternatives": [],
+          "key": "Create ${applicationName} document"
+        },
+        {
+          "alternatives": [],
+          "key": "Create new board"
+        },
+        {
+          "alternatives": [],
+          "key": "Create new canvas"
+        },
+        {
+          "alternatives": [],
+          "key": "Make new ${applicationName}"
+        },
+        {
+          "alternatives": [],
+          "key": "Make ${applicationName} board"
+        },
+        {
+          "alternatives": [],
+          "key": "Make ${applicationName} canvas"
+        },
+        {
+          "alternatives": [],
+          "key": "Make ${applicationName} document"
+        },
+        {
+          "alternatives": [],
+          "key": "Make new board"
+        },
+        {
+          "alternatives": [],
+          "key": "Make new canvas"
+        },
+        {
+          "alternatives": [],
+          "key": "New board"
+        },
+        {
+          "alternatives": [],
+          "key": "New ${applicationName} board"
+        },
+        {
+          "alternatives": [],
+          "key": "New ${applicationName} canvas"
+        },
+        {
+          "alternatives": [],
+          "key": "New ${applicationName} document"
+        },
+        {
+          "alternatives": [],
+          "key": "Start a new board in ${applicationName}"
+        },
+        {
+          "alternatives": [],
+          "key": "Begin new canvas with ${applicationName}"
+        },
+        {
+          "alternatives": [],
+          "key": "Start new ${applicationName}"
+        }
+      ],
+      "shortTitle": {
+        "alternatives": [],
+        "key": "New Board",
+        "table": "CRLAppIntents"
+      },
+      "systemImageName": "square.and.pencil"
+    },
+    {
+      "actionIdentifier": "CRLOpenBoardIntent",
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "parameterPresentation": {
+        "genericTitle": "",
+        "localizationTable": "CRLAppIntents",
+        "optionsCollection": [
+          {
+            "systemImageName": "rectangle.fill.on.rectangle.fill",
+            "title": {
+              "alternatives": [],
+              "key": "Boards",
+              "table": "CRLAppIntents"
+            }
+          }
+        ],
+        "parameterIdentifier": "target",
+        "specificTitle": {
+          "formatString": "Open ${target}",
+          "parameterIdentifiers": [
+            "target"
+          ]
+        }
+      },
+      "phraseTemplates": [
+        {
+          "alternatives": [],
+          "key": "Open ${target} in ${applicationName}"
+        }
+      ],
+      "shortTitle": {
+        "alternatives": [],
+        "key": "Open Board",
+        "table": "CRLAppIntents"
+      },
+      "systemImageName": "apple.freeform"
+    }
+  ],
+  "entities": {
+    "CRLBoardEntity": {
+      "assistantDefinedSchemas": [
+        {
+          "domain": "whiteboard",
+          "name": "CanvasEntity",
+          "version": "1.0.0"
+        }
+      ],
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "defaultQueryIdentifier": "Freeform.CRLBoardQuery",
+      "displayTypeName": {
+        "alternatives": [],
+        "key": ""
+      },
+      "effectiveBundleIdentifiers": [],
+      "entitySyncMetadata": {
+        "entitySyncType": 1
+      },
+      "fullyQualifiedTypeName": "Freeform.CRLBoardEntity",
+      "mangledTypeName": "8Freeform14CRLBoardEntityV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "properties": [
+        {
+          "capabilities": 0,
+          "identifier": "title",
+          "isOptional": false,
+          "spotlightAttributeKey": "title",
+          "title": {
+            "alternatives": [],
+            "key": ""
+          },
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 0
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "identifier": "creationDate",
+          "isOptional": false,
+          "spotlightAttributeKey": "contentCreationDate",
+          "title": {
+            "alternatives": [],
+            "key": ""
+          },
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 8
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "identifier": "lastModificationDate",
+          "isOptional": false,
+          "spotlightAttributeKey": "contentModificationDate",
+          "title": {
+            "alternatives": [],
+            "key": ""
+          },
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 8
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "identifier": "isFavorite",
+          "isOptional": true,
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 1
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "identifier": "isCanvasDotGridEnabled",
+          "isOptional": true,
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 1
+              }
+            }
+          }
+        },
+        {
+          "capabilities": 0,
+          "identifier": "isConnectorModeEnabled",
+          "isOptional": true,
+          "valueType": {
+            "primitive": {
+              "wrapper": {
+                "typeIdentifier": 1
+              }
+            }
+          }
+        }
+      ],
+      "requiredCapabilities": [],
+      "systemProtocolMetadata": [
+        "com.apple.appintents.entity.URLRepresentable",
+        {
+          "empty": {}
+        },
+        "com.apple.appintents.entity.Syncable",
+        {
+          "empty": {}
+        },
+        "com.apple.appintents.entity.AssistantEntity",
+        {
+          "empty": {}
+        },
+        "com.apple.appintents.entity.Indexed",
+        {
+          "empty": {}
+        }
+      ],
+      "systemProtocolMetadataV2": [
+        "com.apple.appintents.entity.URLRepresentable",
+        {
+          "empty": {}
+        },
+        "com.apple.appintents.entity.Syncable",
+        {
+          "empty": {}
+        },
+        "com.apple.appintents.entity.AssistantEntity",
+        {
+          "empty": {}
+        },
+        "com.apple.appintents.entity.Indexed",
+        {
+          "empty": {}
+        }
+      ],
+      "transferableContentTypes": {
+        "exportableTypes": [
+          {
+            "contentType": "com.apple.cloudkit.sharingsupport.container"
+          },
+          {
+            "contentType": "com.apple.cloudkit.sharingsupport.pre"
+          },
+          {
+            "contentType": "com.apple.cloudkit.sharingsupport.post"
+          },
+          {
+            "contentType": "UTCollaborationOptionsType"
+          }
+        ],
+        "importableTypes": []
+      },
+      "transient": false,
+      "typeName": "CRLBoardEntity",
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLiOSBoardEntity": {
+      "assistantDefinedSchemas": [],
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "defaultQueryIdentifier": "Freeform.CRLiOSBoardEntity.BoardQuery",
+      "displayTypeName": {
+        "alternatives": [],
+        "key": "Board",
+        "table": "CRLAppIntents"
+      },
+      "effectiveBundleIdentifiers": [],
+      "entitySyncMetadata": {
+        "entitySyncType": 0
+      },
+      "fullyQualifiedTypeName": "Freeform.CRLiOSBoardEntity",
+      "mangledTypeName": "8Freeform17CRLiOSBoardEntityV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "properties": [],
+      "requiredCapabilities": [],
+      "systemProtocolMetadata": [],
+      "systemProtocolMetadataV2": [],
+      "transient": false,
+      "typeName": "CRLiOSBoardEntity",
+      "typeSpecificMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    }
+  },
+  "enums": [
+    {
+      "assistantDefinedSchemas": [
+        {
+          "domain": "whiteboard",
+          "name": "CanvasItemType",
+          "version": "1.0.0"
+        }
+      ],
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "cases": [
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Circle",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "circle"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Line",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "line"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Rounded Rectangle",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "roundedRectangle"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Square",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "square"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Sticky Note",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "stickyNote"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Star",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "star"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Text Box",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "textBox"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Triangle",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "triangle"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "URL",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "url"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Media",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "media"
+        }
+      ],
+      "displayTypeName": {
+        "alternatives": [],
+        "key": ""
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLCanvasItemType",
+      "identifier": "CRLCanvasItemType",
+      "isSystem": false,
+      "mangledTypeName": "8Freeform17CRLCanvasItemTypeO",
+      "mangledTypeNameByBundleIdentifier": {},
+      "systemProtocolMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    {
+      "assistantDefinedSchemas": [
+        {
+          "domain": "whiteboard",
+          "name": "CanvasColor",
+          "version": "1.0.0"
+        }
+      ],
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "cases": [
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Black",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "black"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Blue",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "blue"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Gray",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "gray"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Green",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "green"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Orange",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "orange"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Purple",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "purple"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Red",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "red"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Yellow",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "yellow"
+        }
+      ],
+      "displayTypeName": {
+        "alternatives": [],
+        "key": ""
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLColorEnum",
+      "identifier": "CRLColorEnum",
+      "isSystem": false,
+      "mangledTypeName": "8Freeform12CRLColorEnumO",
+      "mangledTypeNameByBundleIdentifier": {},
+      "systemProtocolMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    {
+      "assistantDefinedSchemas": [],
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "cases": [
+        {
+          "displayRepresentation": {
+            "synonyms": [
+              {
+                "alternatives": [],
+                "key": "Love",
+                "table": "CRLAppIntents"
+              },
+              {
+                "alternatives": [],
+                "key": "Heart",
+                "table": "CRLAppIntents"
+              },
+              {
+                "alternatives": [],
+                "key": "Like",
+                "table": "CRLAppIntents"
+              }
+            ],
+            "title": {
+              "alternatives": [],
+              "key": "Favorite",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "favorite"
+        },
+        {
+          "displayRepresentation": {
+            "synonyms": [
+              {
+                "alternatives": [],
+                "key": "Unheart",
+                "table": "CRLAppIntents"
+              },
+              {
+                "alternatives": [],
+                "key": "Unlike",
+                "table": "CRLAppIntents"
+              },
+              {
+                "alternatives": [],
+                "key": "Dislike",
+                "table": "CRLAppIntents"
+              }
+            ],
+            "title": {
+              "alternatives": [],
+              "key": "Unfavorite",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "unfavorite"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Toggle",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "toggle"
+        }
+      ],
+      "displayTypeName": {
+        "alternatives": [],
+        "key": "Favorite",
+        "table": "CRLAppIntents"
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLFavoriteOperation",
+      "identifier": "CRLFavoriteOperation",
+      "isSystem": false,
+      "mangledTypeName": "8Freeform20CRLFavoriteOperationO",
+      "mangledTypeNameByBundleIdentifier": {},
+      "systemProtocolMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    {
+      "assistantDefinedSchemas": [],
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "cases": [
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "10",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "10"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "12",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "12"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "14",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "14"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "18",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "18"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "24",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "24"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "36",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "36"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "48",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "48"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "72",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "72"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "96",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "96"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "144",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "144"
+        }
+      ],
+      "displayTypeName": {
+        "alternatives": [],
+        "key": "Font Size",
+        "table": "CRLAppIntents"
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLFontSizeEnum",
+      "identifier": "CRLFontSizeEnum",
+      "isSystem": false,
+      "mangledTypeName": "8Freeform15CRLFontSizeEnumO",
+      "mangledTypeNameByBundleIdentifier": {},
+      "systemProtocolMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    {
+      "assistantDefinedSchemas": [],
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "cases": [
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Bold",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "bold"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Italic",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "italic"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Underline",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "underline"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Strike Through",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "strikethrough"
+        }
+      ],
+      "displayTypeName": {
+        "alternatives": [],
+        "key": "Font Style",
+        "table": "CRLAppIntents"
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLFontStyleEnum",
+      "identifier": "CRLFontStyleEnum",
+      "isSystem": false,
+      "mangledTypeName": "8Freeform16CRLFontStyleEnumO",
+      "mangledTypeNameByBundleIdentifier": {},
+      "systemProtocolMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    {
+      "assistantDefinedSchemas": [],
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "cases": [
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Simple Arrow",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "simpleArrow"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Filled Circle",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "filledCircle"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Filled Diamond",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "filledDiamond"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Open Arrow",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "openArrow"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Filled Arrow",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "filledArrow"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Filled Square",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "filledSquare"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Open Square",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "openSquare"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Open Circle",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "openCircle"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Inverted Arrow",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "invertedArrow"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Line",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "line"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "None",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "none"
+        }
+      ],
+      "displayTypeName": {
+        "alternatives": [],
+        "key": "Line End Type",
+        "table": "CRLAppIntents"
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLLineEndTypeEntity",
+      "identifier": "CRLLineEndTypeEntity",
+      "isSystem": false,
+      "mangledTypeName": "8Freeform20CRLLineEndTypeEntityO",
+      "mangledTypeNameByBundleIdentifier": {},
+      "systemProtocolMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    {
+      "assistantDefinedSchemas": [],
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "cases": [
+        {
+          "displayRepresentation": {
+            "subtitle": {
+              "alternatives": [],
+              "key": "Smooth curved line",
+              "table": "CRLAppIntents"
+            },
+            "title": {
+              "alternatives": [],
+              "key": "Curved",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "quadratic"
+        },
+        {
+          "displayRepresentation": {
+            "subtitle": {
+              "alternatives": [],
+              "key": "Right-angle line",
+              "table": "CRLAppIntents"
+            },
+            "title": {
+              "alternatives": [],
+              "key": "Orthogonal",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "orthogonal"
+        }
+      ],
+      "displayTypeName": {
+        "alternatives": [],
+        "key": "Line Routing Type",
+        "table": "CRLAppIntents"
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLLineRoutingTypeEntity",
+      "identifier": "CRLLineRoutingTypeEntity",
+      "isSystem": false,
+      "mangledTypeName": "8Freeform24CRLLineRoutingTypeEntityO",
+      "mangledTypeNameByBundleIdentifier": {},
+      "systemProtocolMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    {
+      "assistantDefinedSchemas": [],
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "cases": [
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Circle",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "circle"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Line",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "line"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Rounded Rectangle",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "roundedRectangle"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Square",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "square"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Star",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "star"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Triangle",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "triangle"
+        }
+      ],
+      "displayTypeName": {
+        "alternatives": [],
+        "key": "Shape",
+        "table": "CRLAppIntents"
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLShapeTypeEnum",
+      "identifier": "CRLShapeTypeEnum",
+      "isSystem": false,
+      "mangledTypeName": "8Freeform16CRLShapeTypeEnumO",
+      "mangledTypeNameByBundleIdentifier": {},
+      "systemProtocolMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    {
+      "assistantDefinedSchemas": [],
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "cases": [
+        {
+          "displayRepresentation": {
+            "synonyms": [
+              {
+                "alternatives": [],
+                "key": "Grow",
+                "table": "CRLAppIntents"
+              },
+              {
+                "alternatives": [],
+                "key": "Enlarge",
+                "table": "CRLAppIntents"
+              },
+              {
+                "alternatives": [],
+                "key": "Expand",
+                "table": "CRLAppIntents"
+              }
+            ],
+            "title": {
+              "alternatives": [],
+              "key": "Increase",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "increase"
+        },
+        {
+          "displayRepresentation": {
+            "synonyms": [
+              {
+                "alternatives": [],
+                "key": "Shrink",
+                "table": "CRLAppIntents"
+              },
+              {
+                "alternatives": [],
+                "key": "Reduce",
+                "table": "CRLAppIntents"
+              },
+              {
+                "alternatives": [],
+                "key": "Lower",
+                "table": "CRLAppIntents"
+              }
+            ],
+            "title": {
+              "alternatives": [],
+              "key": "Decrease",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "decrease"
+        }
+      ],
+      "displayTypeName": {
+        "alternatives": [],
+        "key": "Size Change",
+        "table": "CRLAppIntents"
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLSizeChangeOperation",
+      "identifier": "CRLSizeChangeOperation",
+      "isSystem": false,
+      "mangledTypeName": "8Freeform22CRLSizeChangeOperationO",
+      "mangledTypeNameByBundleIdentifier": {},
+      "systemProtocolMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    {
+      "assistantDefinedSchemas": [],
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "cases": [
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Text Box",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "textbox"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Sticky Note",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "stickyNote"
+        }
+      ],
+      "displayTypeName": {
+        "alternatives": [],
+        "key": "Text Container",
+        "table": "CRLAppIntents"
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLSupportedTextContainerEnum",
+      "identifier": "CRLSupportedTextContainerEnum",
+      "isSystem": false,
+      "mangledTypeName": "8Freeform29CRLSupportedTextContainerEnumO",
+      "mangledTypeNameByBundleIdentifier": {},
+      "systemProtocolMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    {
+      "assistantDefinedSchemas": [],
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "cases": [
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Get Board ID",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "boardID"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Get Board Download Status",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "downloadStatus"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Import a sideloaded board",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "importBoard"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Export a board to a local .freeform file",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "exportBoard"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Share a board",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "shareBoard"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Accept a shared board invitation",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "acceptSharedBoard"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Stop sharing a board",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "stopSharingBoard"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Download a board\u2019s content",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "downloadBoard"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Reset a board",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "resetBoard"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Manipulate items on a board",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "manipulate"
+        }
+      ],
+      "displayTypeName": {
+        "alternatives": [],
+        "key": "Internal Freeform Utilities",
+        "table": "CRLAppIntents"
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLUtilitiesOperation",
+      "identifier": "CRLUtilitiesOperation",
+      "isSystem": false,
+      "mangledTypeName": "8Freeform21CRLUtilitiesOperationO",
+      "mangledTypeNameByBundleIdentifier": {},
+      "systemProtocolMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    {
+      "assistantDefinedSchemas": [],
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "cases": [
+        {
+          "displayRepresentation": {
+            "synonyms": [
+              {
+                "alternatives": [],
+                "key": "Enable",
+                "table": "CRLAppIntents"
+              },
+              {
+                "alternatives": [],
+                "key": "Display",
+                "table": "CRLAppIntents"
+              },
+              {
+                "alternatives": [],
+                "key": "Turn on",
+                "table": "CRLAppIntents"
+              }
+            ],
+            "title": {
+              "alternatives": [],
+              "key": "Show",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "show"
+        },
+        {
+          "displayRepresentation": {
+            "synonyms": [
+              {
+                "alternatives": [],
+                "key": "Disable",
+                "table": "CRLAppIntents"
+              },
+              {
+                "alternatives": [],
+                "key": "Remove",
+                "table": "CRLAppIntents"
+              },
+              {
+                "alternatives": [],
+                "key": "Turn off",
+                "table": "CRLAppIntents"
+              }
+            ],
+            "title": {
+              "alternatives": [],
+              "key": "Hide",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "hide"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Toggle",
+              "table": "CRLAppIntents"
+            }
+          },
+          "identifier": "toggle"
+        }
+      ],
+      "displayTypeName": {
+        "alternatives": [],
+        "key": "Visibility",
+        "table": "CRLAppIntents"
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "Freeform.CRLVisibilityOperation",
+      "identifier": "CRLVisibilityOperation",
+      "isSystem": false,
+      "mangledTypeName": "8Freeform22CRLVisibilityOperationO",
+      "mangledTypeNameByBundleIdentifier": {},
+      "systemProtocolMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    {
+      "cases": [
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Larger"
+            }
+          },
+          "identifier": "larger"
+        },
+        {
+          "displayRepresentation": {
+            "title": {
+              "alternatives": [],
+              "key": "Smaller"
+            }
+          },
+          "identifier": "smaller"
+        }
+      ],
+      "displayTypeName": {
+        "alternatives": [],
+        "key": "ResizeBehavior"
+      },
+      "effectiveBundleIdentifiers": [],
+      "fullyQualifiedTypeName": "AppIntents.ResizeBehavior",
+      "identifier": "ResizeBehavior",
+      "isSystem": false,
+      "mangledTypeName": "ResizeBehavior",
+      "mangledTypeNameByBundleIdentifier": {},
+      "systemProtocolMetadata": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    }
+  ],
+  "generator": {
+    "name": "xcode-tools",
+    "version": "27A200c"
+  },
+  "negativePhrases": [],
+  "queries": {
+    "BoardQuery": {
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "capabilities": 66,
+      "defaultQueryForEntity": true,
+      "effectiveBundleIdentifiers": [],
+      "entityType": "CRLiOSBoardEntity",
+      "fullyQualifiedIdentifier": "Freeform.CRLiOSBoardEntity.BoardQuery",
+      "identifier": "BoardQuery",
+      "mangledTypeName": "8Freeform17CRLiOSBoardEntityV10BoardQueryV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "parameters": [],
+      "queryType": "BoardQuery",
+      "resultValueType": {
+        "entity": {
+          "wrapper": {
+            "typeName": "CRLiOSBoardEntity"
+          }
+        }
+      },
+      "sortingOptions": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    },
+    "CRLBoardQuery": {
+      "availabilityAnnotations": {
+        "LNPlatformNameWildcard": {
+          "introducedVersion": "*"
+        }
+      },
+      "capabilities": 70,
+      "defaultQueryForEntity": true,
+      "effectiveBundleIdentifiers": [],
+      "entityType": "CRLBoardEntity",
+      "fullyQualifiedIdentifier": "Freeform.CRLBoardQuery",
+      "identifier": "CRLBoardQuery",
+      "mangledTypeName": "8Freeform13CRLBoardQueryV",
+      "mangledTypeNameByBundleIdentifier": {},
+      "parameters": [],
+      "queryType": "CRLBoardQuery",
+      "resultValueType": {
+        "entity": {
+          "wrapper": {
+            "typeName": "CRLBoardEntity"
+          }
+        }
+      },
+      "sortingOptions": [],
+      "visibilityMetadata": {
+        "assistantOnly": false,
+        "isDiscoverable": true
+      }
+    }
+  },
+  "shortcutTileColor": 14,
+  "version": 1
+}

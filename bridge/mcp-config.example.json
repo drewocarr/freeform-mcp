@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "freeform": {
+      "command": "/opt/homebrew/opt/node@22/bin/node",
+      "args": ["/Users/drewcarr/freeform-mcp/bridge/src/server.mjs"]
+    }
+  }
+}
