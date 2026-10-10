@@ -1,0 +1,214 @@
+{
+ "mode": "contextCopy --last",
+ "precondition": "Pure Paste uninstalled",
+ "runs": [
+  {
+   "run": 1,
+   "ok": true,
+   "error": null,
+   "copied": true,
+   "clipboardRestored": true,
+   "frontAfter": "com.mitchellh.ghostty",
+   "activationEvents": [],
+   "clipboardTimeline": [
+    {
+     "changeCount": 1211,
+     "front": "com.mitchellh.ghostty",
+     "hasNativeJSON": true,
+     "nativeLength": 2,
+     "nativeObjectCount": 0,
+     "nativeSHA256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+     "purePasteMarker": false,
+     "selected": true,
+     "t": 0.00016391277313232422,
+     "types": [
+      "com.apple.apps.content-language.canvas-object-1.0"
+     ]
+    },
+    {
+     "changeCount": 1212,
+     "front": "com.mitchellh.ghostty",
+     "hasNativeJSON": true,
+     "nativeLength": 8178,
+     "nativeObjectCount": 1,
+     "nativeSHA256": "1c01bad6fe20cf84b08528c226e9d08b71e5e7205e5862b255761eaf29ce19b9",
+     "purePasteMarker": false,
+     "selected": true,
+     "t": 0.015489935874938965,
+     "types": [
+      "com.apple.freeform.CRLNativeMetadata",
+      "com.apple.freeform.CRLNativeData",
+      "com.apple.freeform.TSUDescription",
+      "com.apple.freeform.pasteboardState.hasNativeBoardItems",
+      "com.apple.freeform.pasteboardState.hasTextStoragesAttachmentsNotAllowed",
+      "com.apple.freeform.pasteboardState.hasNativeBoardItemsContainingText",
+      "com.apple.freeform.pasteboardState.hasNativeTypes",
+      "com.apple.apps.content-language.canvas-object-1.0",
+      "public.utf8-plain-text",
+      "NSStringPboardType"
+     ]
+    }
+   ],
+   "exactLabel": true
+  },
+  {
+   "run": 2,
+   "ok": true,
+   "error": null,
+   "copied": true,
+   "clipboardRestored": true,
+   "frontAfter": "com.mitchellh.ghostty",
+   "activationEvents": [],
+   "clipboardTimeline": [
+    {
+     "changeCount": 1214,
+     "front": "com.mitchellh.ghostty",
+     "hasNativeJSON": true,
+     "nativeLength": 2,
+     "nativeObjectCount": 0,
+     "nativeSHA256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+     "purePasteMarker": false,
+     "selected": true,
+     "t": 0.00016891956329345703,
+     "types": [
+      "com.apple.apps.content-language.canvas-object-1.0"
+     ]
+    },
+    {
+     "changeCount": 1215,
+     "front": "com.mitchellh.ghostty",
+     "hasNativeJSON": true,
+     "nativeLength": 8178,
+     "nativeObjectCount": 1,
+     "nativeSHA256": "469436902b921e6c5991dc929ed66d023cad0bf482ec77fb6731323fe8e45619",
+     "purePasteMarker": false,
+     "selected": true,
+     "t": 0.015316963195800781,
+     "types": [
+      "com.apple.freeform.CRLNativeMetadata",
+      "com.apple.freeform.CRLNativeData",
+      "com.apple.freeform.TSUDescription",
+      "com.apple.freeform.pasteboardState.hasNativeBoardItems",
+      "com.apple.freeform.pasteboardState.hasTextStoragesAttachmentsNotAllowed",
+      "com.apple.freeform.pasteboardState.hasNativeBoardItemsContainingText",
+      "com.apple.freeform.pasteboardState.hasNativeTypes",
+      "com.apple.apps.content-language.canvas-object-1.0",
+      "public.utf8-plain-text",
+      "NSStringPboardType"
+     ]
+    }
+   ],
+   "exactLabel": true
+  },
+  {
+   "run": 3,
+   "ok": true,
+   "error": null,
+   "copied": true,
+   "clipboardRestored": true,
+   "frontAfter": "com.mitchellh.ghostty",
+   "activationEvents": [],
+   "clipboardTimeline": [
+    {
+     "changeCount": 1217,
+     "front": "com.mitchellh.ghostty",
+     "hasNativeJSON": true,
+     "nativeLength": 2,
+     "nativeObjectCount": 0,
+     "nativeSHA256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+     "purePasteMarker": false,
+     "selected": true,
+     "t": 0.00016295909881591797,
+     "types": [
+      "com.apple.apps.content-language.canvas-object-1.0"
+     ]
+    },
+    {
+     "changeCount": 1218,
+     "front": "com.mitchellh.ghostty",
+     "hasNativeJSON": true,
+     "nativeLength": 8178,
+     "nativeObjectCount": 1,
+     "nativeSHA256": "a1476d874e3d44beb970c97d5947dee45fbfaa00b187e789f23166c0629a12f4",
+     "purePasteMarker": false,
+     "selected": true,
+     "t": 0.015200972557067871,
+     "types": [
+      "com.apple.freeform.CRLNativeMetadata",
+      "com.apple.freeform.CRLNativeData",
+      "com.apple.freeform.TSUDescription",
+      "com.apple.freeform.pasteboardState.hasNativeBoardItems",
+      "com.apple.freeform.pasteboardState.hasTextStoragesAttachmentsNotAllowed",
+      "com.apple.freeform.pasteboardState.hasNativeBoardItemsContainingText",
+      "com.apple.freeform.pasteboardState.hasNativeTypes",
+      "com.apple.apps.content-language.canvas-object-1.0",
+      "public.utf8-plain-text",
+      "NSStringPboardType"
+     ]
+    }
+   ],
+   "exactLabel": true
+  },
+  {
+   "run": 4,
+   "ok": false,
+   "error": "FOCUS_CHANGED",
+   "copied": null,
+   "clipboardRestored": true,
+   "frontAfter": "com.apple.finder",
+   "activationEvents": [],
+   "clipboardTimeline": null,
+   "exactLabel": false
+  },
+  {
+   "run": 5,
+   "ok": true,
+   "error": null,
+   "copied": true,
+   "clipboardRestored": true,
+   "frontAfter": "com.mitchellh.ghostty",
+   "activationEvents": [],
+   "clipboardTimeline": [
+    {
+     "changeCount": 1222,
+     "front": "com.mitchellh.ghostty",
+     "hasNativeJSON": true,
+     "nativeLength": 2,
+     "nativeObjectCount": 0,
+     "nativeSHA256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+     "purePasteMarker": false,
+     "selected": true,
+     "t": 0.00017404556274414062,
+     "types": [
+      "com.apple.apps.content-language.canvas-object-1.0"
+     ]
+    },
+    {
+     "changeCount": 1223,
+     "front": "com.mitchellh.ghostty",
+     "hasNativeJSON": true,
+     "nativeLength": 8178,
+     "nativeObjectCount": 1,
+     "nativeSHA256": "868c3431f57e3df3fb573cf5bc6387ff7f83542fd9eb47a3ba5c9380d57ff920",
+     "purePasteMarker": false,
+     "selected": true,
+     "t": 0.0155869722366333,
+     "types": [
+      "com.apple.freeform.CRLNativeMetadata",
+      "com.apple.freeform.CRLNativeData",
+      "com.apple.freeform.TSUDescription",
+      "com.apple.freeform.pasteboardState.hasNativeBoardItems",
+      "com.apple.freeform.pasteboardState.hasTextStoragesAttachmentsNotAllowed",
+      "com.apple.freeform.pasteboardState.hasNativeBoardItemsContainingText",
+      "com.apple.freeform.pasteboardState.hasNativeTypes",
+      "com.apple.apps.content-language.canvas-object-1.0",
+      "public.utf8-plain-text",
+      "NSStringPboardType"
+     ]
+    }
+   ],
+   "exactLabel": true
+  }
+ ],
+ "note": "Run 4 stopped at the first FOCUS_CHANGED guard before menu/Copy; Finder became frontmost for an unattributed reason; clipboard restored."
+}

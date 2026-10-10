@@ -113,3 +113,17 @@ Clipboard-free native creation and text editing avoid clipboard sharing. Context
 5. **Direct import/XPC:** continue only with a concrete callable endpoint. The inspected renderer protocols are not board-editing services. Context-menu import is currently the stronger empirical lead.
 
 The next production change should be an explicit background mode with no silent foreground fallback, serialized operations, exact board and selection guards, and verified outcomes. These probes do not yet supply that mode.
+
+
+## Round 3: Copy reliability and multi-object import
+
+Pure Paste was uninstalled by the user after `context-copy-timeline.json` showed it rewriting background Copy (see above). All runs below kept the non-Freeform app frontmost with no activation events.
+
+| Operation | Observed result | Evidence |
+| --- | --- | --- |
+| Context-menu Copy readback, repeated | 4 of 4 runs that reached Copy succeeded, plus the confirmation run: exactly two clipboard changes (placeholder, Freeform), exact label, clipboard restored. One run stopped at the initial `FOCUS_CHANGED` guard before any menu or Copy because Finder became frontmost for an unattributed reason; clipboard restored | `context-copy-no-purepaste.json`, `context-copy-repeats.json` |
+| Context-menu Paste of two generated objects | Exactly two added; exact labels and sizes; one common translation; seven existing objects unchanged; clipboard restored | `payload-two.json`, `context-paste-two.json` |
+| Context-menu Paste of a four-object diagram (rounded rectangle, arrow, rectangle, ellipse) | Exactly four added with exact labels, sizes, and common translation; existing nine unchanged; clipboard restored | `payload-diagram.json`, `context-paste-diagram.json` |
+| Window capture after Round 3 | Thirteen objects; fills and relative layout visually match the fixtures | `round3-screenshot-proof.json`, `round3-screenshot.png` |
+
+`contextPaste` now reads expected labels, model positions, and sizes from the payload, requires uniquely labeled objects, and verifies count, per-label match, size, a common screen translation, and unchanged pre-existing frames. This is Accessibility verification at 100% zoom; it does not compare fills or paths (the window capture is the only fill evidence). Paste placement follows the right-clicked object, so pasted objects overlap existing ones; absolute placement is not controlled. The initial-count guard was deliberately raised from 8 to 16 objects for these tests; the board now has 13.

@@ -20,7 +20,11 @@ Read [README.md](README.md) for the full results matrix and evidence filenames. 
 - Host execution needs Accessibility access and live GUI/clipboard access; screenshots need screen capture permission. Previous probes ran outside the restricted command sandbox using the host execution permission mechanism. A restricted-sandbox failure is not proof that Freeform lacks a capability.
 - The current probes require a running GUI session and an already-open board. “Background” means another application remains frontmost, not headless operation.
 
-## Last observed disposable board
+## Latest update (resume session, 2026-10-09)
+
+Pure Paste caused the Copy failure and the user uninstalled it. Background Copy readback then passed every run that reached Copy. Context-menu Paste imported a two-object payload and a four-object diagram with exact labels, sizes, and common relative layout. See README Round 3. **The board now has 13 objects**: the seven below plus `Multi paste one`, `Multi paste two`, `Diagram input`, `to` (arrow), `Diagram process`, `Diagram output` (frames in `round3-screenshot-proof.json`). Remaining step-2 work: empty-board paste, larger payloads, grouped payloads, fill/path readback of multi-object pastes (needs multi-selection or a per-object Copy loop), and duplicate prevention after timeouts.
+
+## Last observed disposable board (before Round 3)
 
 Exact title: **Background Bridge Probe — 2026-10-09**.
 
@@ -89,7 +93,7 @@ The build script extracts declarations before `var transaction: ClipboardTransac
 ## Probe limitations and traps
 
 - `ok: true` means the probe finished. Check operation-specific `inserted`, `copied`, `exactLabelVerified`, geometry, counts, foreground identity, activation events, and `clipboardRestored`. `context-copy-stable.json` is an explicit example of `ok: true` with a failed operation.
-- Current initial-count guard is **2 through 8 objects**. The current Paste verifier expects exactly **one** added object; Copy expects exactly **one** copied object. These must be deliberately adapted for empty-board or batch tests. Do not simply remove bounds.
+- Current initial-count guard is **2 through 16 objects** (raised from 8 for Round 3; board has 13). The current Paste verifier expects exactly **one** added object; Copy expects exactly **one** copied object. These must be deliberately adapted for empty-board or batch tests. Do not simply remove bounds.
 - Commands such as `chooseShape Circle`, `contextPaste`, and `createTextAndType` add objects every run. `resizeHandle` adds another 40 points of width. They are not idempotent. Inspect partial results before retries.
 - `--last` selects the last AX object, not a persistent object ID. It was the oval when tested. `replaceLabel 0/1` uses control indices. `layout` expects older descriptions and only five known objects; it is not a reset for the current board.
 - AXSize and AXTextArea AXValue returned success without effect. A Return-based text-edit experiment erased the first control's label; it was restored afterward. Direct selected-object Unicode typing worked instead.

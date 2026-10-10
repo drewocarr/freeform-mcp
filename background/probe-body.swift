@@ -33,7 +33,8 @@ do {
     AXUIElementSetMessagingTimeout(app, 3)
     let (window, area) = try boardWindow(app, title: title)
     let initial = layoutItems(area)
-    guard initial.count >= 2 && initial.count <= 8 else { throw BridgeError("UNEXPECTED_DISPOSABLE_BOARD") }
+    // Raised from 8 to 16 for multi-object paste tests on the disposable board.
+    guard initial.count >= 2 && initial.count <= 16 else { throw BridgeError("UNEXPECTED_DISPOSABLE_BOARD") }
     let mode = CommandLine.arguments.dropFirst().first ?? "inspect"
     let observer = NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main) { note in
         let activated = note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
@@ -111,8 +112,36 @@ do {
                 }, seconds: 3)
                 return ["axResult": result.rawValue, "copied": ready, "objects": objects, "clipboardTimeline": timeline]
             }
-            let added = waitUntil({ layoutItems(area).count == initial.count + 1 }, seconds: 5)
-            return ["axResult": result.rawValue, "inserted": added]
+            // Expected objects come from the payload itself: label, model position, and size.
+            let payload = try JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: CommandLine.arguments[2]))) as? [[String: Any]] ?? []
+            let expected: [(label: String, x: Double, y: Double, w: Double, h: Double)] = payload.compactMap { object in
+                guard let text = (object["text"] as? [String: Any])?["attributed_string"] as? [Any], let label = text.first as? String,
+                      let geometry = object["geometry"] as? [String: Any], let position = geometry["position"] as? [String: Any],
+                      let size = geometry["size"] as? [String: Any], let x = position["x"] as? Double, let y = position["y"] as? Double,
+                      let w = size["width"] as? Double, let h = size["height"] as? Double else { return nil }
+                return (label, x, y, w, h)
+            }
+            guard expected.count == payload.count, !expected.isEmpty, Set(expected.map(\.label)).count == expected.count else { throw BridgeError("PAYLOAD_NOT_UNIQUELY_LABELED") }
+            let initialFrames = initial.map { try? frame($0) }
+            let inserted = waitUntil({ layoutItems(area).count == initial.count + expected.count }, seconds: 10)
+            probeWait(1)
+            let added = layoutItems(area).filter { item in !initial.contains { CFEqual($0, item) } }
+            var matches: [[String: Any]] = []
+            var offsets: [(Double, Double)] = []
+            for e in expected {
+                let hits = added.filter { objectDescription($0).hasPrefix(e.label + ", ") }
+                guard hits.count == 1, let f = try? frame(hits[0]) else { matches.append(["label": e.label, "hits": hits.count]); continue }
+                offsets.append((Double(f.minX) - e.x, Double(f.minY) - e.y))
+                matches.append(["label": e.label, "description": objectDescription(hits[0]), "frame": [f.minX, f.minY, f.width, f.height],
+                                "sizeMatches": abs(Double(f.width) - e.w) < 0.5 && abs(Double(f.height) - e.h) < 0.5])
+            }
+            let commonOffset = offsets.count == expected.count && offsets.allSatisfy { abs($0.0 - offsets[0].0) < 0.5 && abs($0.1 - offsets[0].1) < 0.5 }
+            let existingUnchanged = zip(initial, initialFrames).allSatisfy { item, old in old != nil && (try? frame(item)) == old }
+            let verified = inserted && added.count == expected.count && commonOffset && existingUnchanged
+                && matches.allSatisfy { $0["sizeMatches"] as? Bool == true }
+            return ["axResult": result.rawValue, "inserted": inserted, "expectedCount": expected.count, "addedCount": added.count,
+                    "matches": matches, "translation": offsets.first.map { [$0.0, $0.1] } ?? [], "commonTranslation": commonOffset,
+                    "existingUnchanged": existingUnchanged, "verified": verified]
         })
         try targetedKey(running.processIdentifier, 53)
     } else if mode == "replaceLabel" {
