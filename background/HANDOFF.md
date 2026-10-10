@@ -12,8 +12,9 @@ As of 2026-10-09 the production MCP has a background mode: `freeform_bg_*` tools
 - **Hiding then unhiding Freeform puts its window just below the frontmost window.** This is the restore fallback for apps without Accessibility windows.
 - **AX edits are not possible while Freeform is hidden:** reading works, but popovers do not appear.
 
+**iPad sync confirmed** for the MCP-built Flowchart D, including attached connectors and the arrowhead (`../bridge/examples/background-mcp-ipad.png`).
+
 Next steps for the mode:
-- device-sync check of a background-built board
 - custom colors (paste route, with window restore)
 - removing arrowheads
 - multi-select and grouping

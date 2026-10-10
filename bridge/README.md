@@ -111,7 +111,7 @@ Two observed normalizations are explicitly handled: empty labels become one U+20
 - Labels use Freeform's default text formatting. Explicit fonts, rich styling, images, tables, and arbitrary imported paths are outside this API.
 - Guarded grouping/ungrouping and six alignment commands are available for explicitly listed unrotated, unflipped shapes; see below.
 - Tested on the installed Freeform/macOS version only. The content-language format is private and may change.
-- The user confirmed the test boards and their generated shapes appeared on iPhone. iPad delivery was confirmed for a background-probe board, not yet for one made by these tools. Cross-device editing remains unverified.
+- The user confirmed the test boards and their generated shapes appeared on iPhone. iPad delivery was confirmed for boards built by the background research probes and by the `freeform_bg_*` tools, not yet for boards made by these foreground tools. Cross-device editing remains unverified.
 
 ## Clipboard and failure handling
 
@@ -282,4 +282,4 @@ Every result includes `background`:
 node test/live-background-mcp.mjs 'Unique Disposable Title' /tmp/proof.json
 ```
 
-Device sync has not been checked for this board. An earlier board built by the research probes did reach the user's iPad. The server now advertises 25 tools: 11 regular-app, 10 background, and 4 isolated-lab. 30 automated tests pass.
+**iPad sync confirmed:** at 8:32 PM the user's iPad showed Flowchart D with its title, all three filled and labeled shapes, the text box, and both attached connectors including the filled arrowhead ([iPad screenshot](examples/background-mcp-ipad.png)). This is the first confirmation that native connectors sync. iPhone delivery and later edits to an already-synced board were not checked. The server now advertises 25 tools: 11 regular-app, 10 background, and 4 isolated-lab. 30 automated tests pass.
