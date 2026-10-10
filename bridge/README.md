@@ -174,7 +174,7 @@ Only run the example on a disposable board you intend to change. Moves create un
 
 The regular-app tools operate on the installed Apple Freeform app, so boards follow its normal saving and iCloud behavior. They do not use the isolated lab database. All devices need the same Apple Account and Freeform enabled in iCloud ([Apple setup instructions](https://support.apple.com/en-ie/guide/icloud/mmd1b86048ac/icloud)). Tool success is not a cloud-delivery receipt.
 
-On 2026-10-09 the user supplied an iPhone screenshot showing **Bridge iCloud Check — 2026-10-09** and **Mac Bridge Sync Test — 2026-10-09** in All Boards. The user subsequently confirmed that the shapes were present as well. This establishes Mac-to-iPhone board and content delivery in this test. iPad arrival remains unverified.
+On 2026-10-09 the user supplied an iPhone screenshot showing **Bridge iCloud Check — 2026-10-09** and **Mac Bridge Sync Test — 2026-10-09** in All Boards. The user subsequently confirmed that the shapes were present as well. This establishes Mac-to-iPhone board and content delivery in this test. iPad delivery was later confirmed for a board created by the background research probes (see [background/README.md](../background/README.md)), not for a board made by these regular-app tools.
 
 `freeform_move_object` requires an index and exact description from `freeform_list_objects`. `dx` and `dy` are integer arrow-key counts from -100 to 100. Read the returned geometry to determine the actual change. These are UI operations: avoid interacting with Freeform during a call. No mutation is automatically retried. Undo affects the latest normal app action, not a bridge-owned transaction.
 
