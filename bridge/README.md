@@ -282,4 +282,8 @@ Every result includes `background`:
 node test/live-background-mcp.mjs 'Unique Disposable Title' /tmp/proof.json
 ```
 
+**Restart persistence confirmed:** Freeform was quit normally (AppleScript `quit`) and relaunched in the background with `open -g -b com.apple.freeform`. Safari stayed frontmost. Flowchart D came back with all 6 objects: identical descriptions, including both attached connectors and the arrowhead, and zero frame changes ([before](examples/restart/before.json), [after](examples/restart/after.json), [window capture](examples/restart/after-restart.png)).
+
+**After a background launch,** Freeform's window is not placed on screen, and its Accessibility tree initially lacks the window list and the board canvas. The tools then return `CANVAS_NOT_READY` rather than acting. In this test the window came on screen, just below the frontmost window, after a hide/unhide attempt and about a minute of waiting. The canvas became available after that. The exact trigger was not isolated. Board switching identifies the library by the absence of the board's Go Back button, so an unloaded canvas is no longer mistaken for the library.
+
 **iPad sync confirmed:** at 8:32 PM the user's iPad showed Flowchart D with its title, all three filled and labeled shapes, the text box, and both attached connectors including the filled arrowhead ([iPad screenshot](examples/background-mcp-ipad.png)). This is the first confirmation that native connectors sync. Given iPhone and iPad confirmations across three boards, sync is treated as working. The server now advertises 25 tools: 11 regular-app, 10 background, and 4 isolated-lab. 30 automated tests pass.

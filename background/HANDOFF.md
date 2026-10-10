@@ -60,7 +60,7 @@ Taken together, you can create a board, name it, import a diagram, and move, res
 
 Other facts established this session:
 - **Pure Paste caused the earlier Copy failures.** Its Freeform exclusion only applies while Freeform is frontmost, so it stripped background copies about 0.4 s after they appeared (`context-copy-timeline.json`). The user uninstalled it, and background Copy then succeeded on every run that reached Copy.
-- **iPad sync confirmed for a background-created board:** at 7:35 PM on 2026-10-09 the user's iPad showed **Background Empty Paste — 2026-10-09** with its background rename and exactly the four pasted diagram objects (correct fills and layout, no bootstrap circle) (`ipad-sync-empty-paste.png`). Sync is treated as working (user decision, 2026-10-09); don't schedule further device checks. Restart persistence is unchecked. The production bridge uses foreground interaction and is unchanged.
+- **iPad sync confirmed for a background-created board:** at 7:35 PM on 2026-10-09 the user's iPad showed **Background Empty Paste — 2026-10-09** with its background rename and exactly the four pasted diagram objects (correct fills and layout, no bootstrap circle) (`ipad-sync-empty-paste.png`). Sync is treated as working (user decision, 2026-10-09); don't schedule further device checks. **Restart persistence confirmed** for Flowchart D: identical objects and zero frame changes after quit and a background relaunch (see the bridge README). The production bridge uses foreground interaction and is unchanged.
 
 ## Disposable boards
 
@@ -147,7 +147,7 @@ If `BOARD_MISMATCH` occurs, check Freeform's actual window and menu state. Don't
 3. **Import robustness.** Larger payloads, grouped payloads, fill/path readback of multi-object pastes (a per-object Copy loop or multi-selection), duplicate prevention after timeouts, and repeating paste placement then AXPosition layout.
 4. **Clipboard-free editing.** Both resize axes, other zoom levels, more picker shapes, format controls, and Connection Line endpoints. Prove an attachment by moving the connected shape.
 5. **Multi-selection, grouping, alignment.** Possibly process-targeted modified mouse events; check for cursor and window effects. Individual moves can align objects geometrically but don't count as native grouping.
-6. **Lifecycle and durability.** Open and switch boards in the background (library AXPress reopened a board), minimized or offscreen windows, Undo (including the bootstrap-circle delete), and restart persistence. Sync is treated as working; no further device checks are needed.
+6. **Lifecycle and durability.** Open and switch boards in the background (library AXPress reopened a board), minimized or offscreen windows, and Undo (including the bootstrap-circle delete). Restart persistence is confirmed. Open question: what reliably makes a background-launched Freeform place its window on screen and expose its canvas without activation. Sync is treated as working; no further device checks are needed.
 7. **Direct import/XPC (low priority).** Only with a specific new endpoint hypothesis. See the XPC section of [README.md](README.md).
 
 ## Before promoting into the MCP

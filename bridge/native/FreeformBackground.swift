@@ -113,7 +113,16 @@ struct Board {
     let window: AXUIElement
     let area: AXUIElement
     init(app: AXUIElement, title: String) throws {
-        (window, area) = try boardWindow(app, title: title)
+        // After a background launch Freeform can expose the board window before its canvas.
+        var found: (AXUIElement, AXUIElement)?
+        _ = waitUntil({ found = try? boardWindow(app, title: title); return found != nil }, seconds: 3)
+        guard let found else {
+            if let window = focusedWindow(app), string(window, kAXTitleAttribute) == title {
+                throw BridgeError("CANVAS_NOT_READY: The board is open but its canvas is not exposed to Accessibility yet. This happens after Freeform is launched in the background, until its window has been on screen; try again shortly.")
+            }
+            throw BridgeError("BOARD_MISMATCH: Open the requested board in Freeform.")
+        }
+        (window, area) = found
         self.app = app
     }
     var items: [AXUIElement] { layoutItems(area) }
@@ -348,17 +357,20 @@ do {
     if command == "openBoard" || command == "createBoard" || command == "renameBoard" {
         guard let title = request["title"] as? String, !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { throw BridgeError("BOARD_TITLE_REQUIRED") }
         guard let current = focusedWindow(app) else { throw BridgeError("NO_WINDOW") }
+        func onBoard(_ window: AXUIElement) -> Bool {
+            descendants(window).contains { string($0, kAXRoleAttribute) == "AXButton" && (string($0, kAXTitleAttribute) == "Go Back" || objectDescription($0) == "Go Back") }
+        }
         func cards(_ name: String) -> [AXUIElement] {
-            guard let library = focusedWindow(app), canvas(library) == nil else { return [] }
+            guard let library = focusedWindow(app), !onBoard(library) else { return [] }
             return descendants(library).filter { string($0, kAXRoleAttribute) == "AXButton" && (string($0, kAXDescriptionAttribute) ?? "").hasPrefix("Board: " + name + ", ") }
         }
         func toLibrary() throws {
             // A just-created board can ignore an immediate Go Back, so press again until the library appears.
             for _ in 0..<3 {
                 guard let window = focusedWindow(app) else { throw BridgeError("NO_WINDOW") }
-                if canvas(window) == nil { return }
+                if !onBoard(window) { return }
                 try pressButton(window, title: "Go Back")
-                if waitUntil({ focusedWindow(app).map { canvas($0) == nil } ?? false }, seconds: 2) { return }
+                if waitUntil({ focusedWindow(app).map { !onBoard($0) } ?? false }, seconds: 2) { return }
             }
             throw BridgeError("LIBRARY_UNAVAILABLE")
         }
@@ -366,10 +378,10 @@ do {
             let matches = cards(name)
             guard matches.count == 1 else { throw BridgeError("BOARD_NOT_UNIQUE: Expected one visible board titled \"\(name)\"; found \(matches.count).") }
             _ = AXUIElementPerformAction(matches[0], kAXPressAction as CFString)
-            guard waitUntil({ focusedWindow(app).map { string($0, kAXTitleAttribute) == name && canvas($0) != nil } ?? false }, seconds: 5) else { throw BridgeError("OPEN_UNVERIFIED") }
+            guard waitUntil({ focusedWindow(app).map { string($0, kAXTitleAttribute) == name && onBoard($0) } ?? false }, seconds: 10) else { throw BridgeError("OPEN_UNVERIFIED: Inspect Freeform; the board may still be opening.") }
         }
         if command == "openBoard" {
-            if string(current, kAXTitleAttribute) == title, canvas(current) != nil { finish(["boardTitle": title, "opened": true]) }
+            if string(current, kAXTitleAttribute) == title, onBoard(current) { finish(["boardTitle": title, "opened": true]) }
             try toLibrary(); try open(title)
             finish(["boardTitle": title, "opened": true])
         }
