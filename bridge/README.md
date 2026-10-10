@@ -282,4 +282,4 @@ Every result includes `background`:
 node test/live-background-mcp.mjs 'Unique Disposable Title' /tmp/proof.json
 ```
 
-**iPad sync confirmed:** at 8:32 PM the user's iPad showed Flowchart D with its title, all three filled and labeled shapes, the text box, and both attached connectors including the filled arrowhead ([iPad screenshot](examples/background-mcp-ipad.png)). This is the first confirmation that native connectors sync. iPhone delivery and later edits to an already-synced board were not checked. The server now advertises 25 tools: 11 regular-app, 10 background, and 4 isolated-lab. 30 automated tests pass.
+**iPad sync confirmed:** at 8:32 PM the user's iPad showed Flowchart D with its title, all three filled and labeled shapes, the text box, and both attached connectors including the filled arrowhead ([iPad screenshot](examples/background-mcp-ipad.png)). This is the first confirmation that native connectors sync. Given iPhone and iPad confirmations across three boards, sync is treated as working. The server now advertises 25 tools: 11 regular-app, 10 background, and 4 isolated-lab. 30 automated tests pass.
