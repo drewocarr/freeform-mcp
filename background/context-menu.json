@@ -1,0 +1,902 @@
+{
+  "boardTitle": "Background Bridge Probe \u2014 2026-10-09",
+  "clipboardRestored": null,
+  "events": [],
+  "frontAfter": "com.mitchellh.ghostty",
+  "log": [
+    {
+      "activations": [],
+      "after": [
+        {
+          "description": "Rectangle",
+          "frame": [
+            340,
+            327,
+            180,
+            70
+          ],
+          "selected": true
+        },
+        {
+          "description": "Background B, Rectangle",
+          "frame": [
+            580,
+            327,
+            140,
+            70
+          ],
+          "selected": false
+        },
+        {
+          "description": "Created in background without clipboard, sticky note",
+          "frame": [
+            340,
+            487,
+            200,
+            200
+          ],
+          "selected": false
+        },
+        {
+          "description": "Background text box \u2014 no clipboard, text box",
+          "frame": [
+            640.000017285347,
+            517.0000004172325,
+            298.30135703086853,
+            28.999999165534973
+          ],
+          "selected": false
+        },
+        {
+          "description": "Second background text \u2014 verified, text box",
+          "frame": [
+            640.0000256299973,
+            597.0000004172325,
+            289.141184091568,
+            28.999999165534973
+          ],
+          "selected": false
+        },
+        {
+          "description": "Circle",
+          "frame": [
+            779,
+            472,
+            149.99999618530273,
+            149.99999618530273
+          ],
+          "selected": false
+        }
+      ],
+      "before": [
+        {
+          "description": "Rectangle",
+          "frame": [
+            340,
+            327,
+            180,
+            70
+          ],
+          "selected": false
+        },
+        {
+          "description": "Background B, Rectangle",
+          "frame": [
+            580,
+            327,
+            140,
+            70
+          ],
+          "selected": false
+        },
+        {
+          "description": "Created in background without clipboard, sticky note",
+          "frame": [
+            340,
+            487,
+            200,
+            200
+          ],
+          "selected": false
+        },
+        {
+          "description": "Background text box \u2014 no clipboard, text box",
+          "frame": [
+            640.000017285347,
+            517.0000004172325,
+            298.30135703086853,
+            28.999999165534973
+          ],
+          "selected": false
+        },
+        {
+          "description": "Second background text \u2014 verified, text box",
+          "frame": [
+            640.0000256299973,
+            597.0000004172325,
+            289.141184091568,
+            28.999999165534973
+          ],
+          "selected": false
+        },
+        {
+          "description": "Circle",
+          "frame": [
+            779,
+            472,
+            149.99999618530273,
+            149.99999618530273
+          ],
+          "selected": false
+        }
+      ],
+      "frontAfter": "com.mitchellh.ghostty",
+      "frontBefore": "com.mitchellh.ghostty",
+      "operation": "Select control rectangle",
+      "result": {
+        "axResult": 0
+      }
+    },
+    {
+      "activations": [],
+      "after": [
+        {
+          "description": "Rectangle",
+          "frame": [
+            340,
+            327,
+            180,
+            70
+          ],
+          "selected": true
+        },
+        {
+          "description": "Background B, Rectangle",
+          "frame": [
+            580,
+            327,
+            140,
+            70
+          ],
+          "selected": false
+        },
+        {
+          "description": "Created in background without clipboard, sticky note",
+          "frame": [
+            340,
+            487,
+            200,
+            200
+          ],
+          "selected": false
+        },
+        {
+          "description": "Background text box \u2014 no clipboard, text box",
+          "frame": [
+            640.000017285347,
+            517.0000004172325,
+            298.30135703086853,
+            28.999999165534973
+          ],
+          "selected": false
+        },
+        {
+          "description": "Second background text \u2014 verified, text box",
+          "frame": [
+            640.0000256299973,
+            597.0000004172325,
+            289.141184091568,
+            28.999999165534973
+          ],
+          "selected": false
+        },
+        {
+          "description": "Circle",
+          "frame": [
+            779,
+            472,
+            149.99999618530273,
+            149.99999618530273
+          ],
+          "selected": false
+        }
+      ],
+      "before": [
+        {
+          "description": "Rectangle",
+          "frame": [
+            340,
+            327,
+            180,
+            70
+          ],
+          "selected": true
+        },
+        {
+          "description": "Background B, Rectangle",
+          "frame": [
+            580,
+            327,
+            140,
+            70
+          ],
+          "selected": false
+        },
+        {
+          "description": "Created in background without clipboard, sticky note",
+          "frame": [
+            340,
+            487,
+            200,
+            200
+          ],
+          "selected": false
+        },
+        {
+          "description": "Background text box \u2014 no clipboard, text box",
+          "frame": [
+            640.000017285347,
+            517.0000004172325,
+            298.30135703086853,
+            28.999999165534973
+          ],
+          "selected": false
+        },
+        {
+          "description": "Second background text \u2014 verified, text box",
+          "frame": [
+            640.0000256299973,
+            597.0000004172325,
+            289.141184091568,
+            28.999999165534973
+          ],
+          "selected": false
+        },
+        {
+          "description": "Circle",
+          "frame": [
+            779,
+            472,
+            149.99999618530273,
+            149.99999618530273
+          ],
+          "selected": false
+        }
+      ],
+      "frontAfter": "com.mitchellh.ghostty",
+      "frontBefore": "com.mitchellh.ghostty",
+      "operation": "Show object context menu",
+      "result": {
+        "axResult": -25204
+      }
+    },
+    {
+      "menus": [
+        [
+          {
+            "enabled": true,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Bring to Front"
+          },
+          {
+            "enabled": false,
+            "title": "Send to Back"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Cut"
+          },
+          {
+            "enabled": true,
+            "title": "Copy"
+          },
+          {
+            "enabled": true,
+            "title": "Paste"
+          },
+          {
+            "enabled": true,
+            "title": "Duplicate"
+          },
+          {
+            "enabled": true,
+            "title": "Lock"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Change Shape"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Copy Style"
+          },
+          {
+            "enabled": false,
+            "title": "Paste Style"
+          },
+          {
+            "enabled": true,
+            "title": "Save as Insert Style"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Constrain Proportions"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Description"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "AutoFill"
+          },
+          {
+            "enabled": true,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Contact\u2026"
+          },
+          {
+            "enabled": true,
+            "title": "Passwords\u2026"
+          },
+          {
+            "enabled": true,
+            "title": "Credit Card\u2026"
+          },
+          {
+            "enabled": true,
+            "title": "Import from iPhone or iPad"
+          },
+          {
+            "enabled": true,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Drews iPhone"
+          },
+          {
+            "enabled": false,
+            "title": "Take Photo"
+          },
+          {
+            "enabled": false,
+            "title": "Scan Documents"
+          },
+          {
+            "enabled": false,
+            "title": "Add Sketch"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "iPad (2)"
+          },
+          {
+            "enabled": false,
+            "title": "Take Photo"
+          },
+          {
+            "enabled": false,
+            "title": "Scan Documents"
+          },
+          {
+            "enabled": false,
+            "title": "Add Sketch"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Comment"
+          }
+        ],
+        [
+          {
+            "enabled": true,
+            "title": "Font"
+          },
+          {
+            "enabled": true,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Show Fonts"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Bold"
+          },
+          {
+            "enabled": true,
+            "title": "Italic"
+          },
+          {
+            "enabled": true,
+            "title": "Underline"
+          },
+          {
+            "enabled": true,
+            "title": "Strikethrough"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Bigger"
+          },
+          {
+            "enabled": false,
+            "title": "Smaller"
+          },
+          {
+            "enabled": true,
+            "title": "Text"
+          },
+          {
+            "enabled": true,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Align Left"
+          },
+          {
+            "enabled": true,
+            "title": "Align Center"
+          },
+          {
+            "enabled": true,
+            "title": "Align Right"
+          },
+          {
+            "enabled": true,
+            "title": "Justify"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Writing Direction"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Autosize Text"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Indentation"
+          },
+          {
+            "enabled": true,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Increase"
+          },
+          {
+            "enabled": false,
+            "title": "Decrease"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Shapes and Lines"
+          },
+          {
+            "enabled": true,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Change Shape"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Make Editable"
+          },
+          {
+            "enabled": true,
+            "title": "Reset Text and Object Handles"
+          },
+          {
+            "enabled": false,
+            "title": "Break Apart"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Unite Shapes"
+          },
+          {
+            "enabled": false,
+            "title": "Intersect Shapes"
+          },
+          {
+            "enabled": false,
+            "title": "Subtract Shapes"
+          },
+          {
+            "enabled": false,
+            "title": "Exclude Shapes"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Make Sharp Point"
+          },
+          {
+            "enabled": false,
+            "title": "Make Smooth Point"
+          },
+          {
+            "enabled": false,
+            "title": "Make B\u00e9zier Point"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Toggle Line Type"
+          },
+          {
+            "enabled": true,
+            "title": "Table"
+          },
+          {
+            "enabled": true,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Add Row Above"
+          },
+          {
+            "enabled": false,
+            "title": "Add Row Below"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Add Column Before"
+          },
+          {
+            "enabled": false,
+            "title": "Add Column After"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Delete Row"
+          },
+          {
+            "enabled": false,
+            "title": "Delete Column"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Resize Rows to Fit Content"
+          },
+          {
+            "enabled": false,
+            "title": "Resize Columns to Fit Content"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Distribute Rows Evenly"
+          },
+          {
+            "enabled": false,
+            "title": "Distribute Columns Evenly"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Select"
+          },
+          {
+            "enabled": true,
+            "title": "Image"
+          },
+          {
+            "enabled": true,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Generate from Image"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Edit Mask"
+          },
+          {
+            "enabled": false,
+            "title": "Reset Mask"
+          },
+          {
+            "enabled": true,
+            "title": "Mask with Shape"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Super Resolution"
+          },
+          {
+            "enabled": false,
+            "title": "Remove Background"
+          },
+          {
+            "enabled": true,
+            "title": "Drawing"
+          },
+          {
+            "enabled": true,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Resize"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Merge"
+          },
+          {
+            "enabled": false,
+            "title": "Separate"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Snap to Shapes"
+          },
+          {
+            "enabled": false,
+            "title": "Copy as Text"
+          },
+          {
+            "enabled": false,
+            "title": "Translate"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Shadow"
+          },
+          {
+            "enabled": false,
+            "title": "Round Corners"
+          },
+          {
+            "enabled": false,
+            "title": "Loop"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Copy Style"
+          },
+          {
+            "enabled": false,
+            "title": "Paste Style"
+          },
+          {
+            "enabled": true,
+            "title": "Save as Insert Style"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Show with Light Background"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Show Colors"
+          }
+        ],
+        [
+          {
+            "enabled": true,
+            "title": "Change Shape"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": true,
+            "title": "Make Editable"
+          },
+          {
+            "enabled": true,
+            "title": "Reset Text and Object Handles"
+          },
+          {
+            "enabled": false,
+            "title": "Break Apart"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Unite Shapes"
+          },
+          {
+            "enabled": false,
+            "title": "Intersect Shapes"
+          },
+          {
+            "enabled": false,
+            "title": "Subtract Shapes"
+          },
+          {
+            "enabled": false,
+            "title": "Exclude Shapes"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Make Sharp Point"
+          },
+          {
+            "enabled": false,
+            "title": "Make Smooth Point"
+          },
+          {
+            "enabled": false,
+            "title": "Make B\u00e9zier Point"
+          },
+          {
+            "enabled": false,
+            "title": ""
+          },
+          {
+            "enabled": false,
+            "title": "Toggle Line Type"
+          }
+        ]
+      ]
+    }
+  ],
+  "mode": "contextMenu",
+  "ok": true
+}

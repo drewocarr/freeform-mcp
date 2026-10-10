@@ -1,0 +1,23 @@
+{
+  "CRLUSDRenderingExtensionAPIEndpointProtocol": [
+    "getExtensionProcessIDWithResponse:",
+    "makeCoreRERendererProxyForUUID:delegateProxy:flags:response:",
+    "didTeardownCoreRERendererForUUID:"
+  ],
+  "RealitySnapshotExtensionXPCProtocol": [
+    "createSnapshot:response:",
+    "createSurfaceSnapshot:response:",
+    "createSurfaceModel:response:",
+    "compressModel:response:"
+  ],
+  "_CRLUSDAsyncRenderingXPC": [
+    "getUUID:",
+    "loadScene:response:",
+    "updateScene:response:",
+    "performActions:response:",
+    "takeSnapshotAt:response:",
+    "createSurfaceSnapshot:response:",
+    "createSurfaceModel:response:",
+    "compressModel:response:"
+  ]
+}

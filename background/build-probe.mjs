@@ -1,0 +1,15 @@
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+const helper = await readFile(new URL('../bridge/native/FreeformBridge.swift', import.meta.url), 'utf8');
+const boundary = helper.indexOf('\nvar transaction: ClipboardTransaction?');
+if (boundary < 0) throw new Error('Helper declarations boundary missing');
+const directory = fileURLToPath(new URL('./.build/', import.meta.url));
+await mkdir(directory, { recursive: true });
+const source = join(directory, 'probe.swift');
+const binary = join(directory, 'probe');
+await writeFile(source, helper.slice(0, boundary) + '\n' + await readFile(new URL('./probe-body.swift', import.meta.url), 'utf8'));
+execFileSync('swiftc', ['-module-cache-path', join(tmpdir(), 'freeform-background-module-cache'), source, '-o', binary], { stdio: 'inherit' });
+console.log(binary);
