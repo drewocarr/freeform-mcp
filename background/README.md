@@ -159,3 +159,18 @@ So every context-menu Copy/Paste run in Rounds 2–4 very likely raised Freeform
 **Background rename works through the library:** Go Back (AXPress), then the board card's custom AX action `Show Menu` (the standard AXShowMenu returned -25200), revealing Open in New Tab, Open in New Window, Move to, Duplicate, Rename, Delete, Favorite, Share, New Folder. AXPress **Rename** produced a text field holding the old title; setting AXValue plus AXConfirm renamed the card, and AXPress on the card reopened the board. **Untitled 6** is now **Background Empty Paste — 2026-10-09**. Frontmost app unchanged, no activation. The menu search must exclude menu-bar menus (the first attempt matched the disabled Edit ▸ Rename).
 
 **Device sync (user-confirmed):** the user's iPad showed **Background Empty Paste — 2026-10-09**, created, renamed and populated entirely through background probes, with exactly the four diagram objects, matching fills and relative layout, and no bootstrap circle (`ipad-sync-empty-paste.png`, 7:35 PM). This is the first iPad delivery confirmation in the project.
+
+## Round 6: window order for clipboard-free operations
+
+The same sampler ran around each probe, restoring the user's window on top first (Freeform started at index 15). Safari stayed frontmost, with no activation, in every run. All edits were verified.
+
+| Operation | Edit verified | Freeform window | Evidence (`zorder-clipboard-free/`) |
+| --- | --- | --- | --- |
+| `openBoard` (library Go Back, card AXPress) | Switched to the original probe board | Stayed at 15 | `openBoard.*` |
+| `replaceLabel 1` (select + PID Unicode) | Exact label | Stayed at 15 | `replaceLabel.*` |
+| `positionSelected` (AXPosition) | Background A moved exactly +20 | Stayed at 15 | `positionSelected.*` |
+| `resizeHandle` (AXPosition on handle) | Width +40, height unchanged | **Index 1 for ~0.3 s** (just below Safari's key window), then back to 15 | `resizeHandle.*` |
+| `createTextAndType` (toolbar + PID Unicode) | One text box added, exact label | Stayed at 15 | `createTextAndType.*` |
+| `chooseShape Circle` (picker popover) | One circle added | Stayed at 15 | `chooseShapeCircle.*` |
+
+**Conclusion:** the clipboard-free paths keep Freeform both inactive and hidden. Context menus are what raise the window. A hidden diagram builder could rely on picker inserts, typing and moves; fills and sizing without handles are still open. The probe board now has 15 objects (adds a second "Second background text — verified" text box and a Circle), and Background A is 220 wide and shifted +20.

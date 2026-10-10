@@ -18,10 +18,13 @@ Drew wants a model to create and edit native boards in the regular Freeform app 
 
 | Capability | Activation | Window | Clipboard | Evidence |
 | --- | --- | --- | --- | --- |
-| Insert sticky note / text box (toolbar AXPress) | none | **not sampled** | none | `insert-sticky-ax.json`, `create-text-complete.json` |
-| Insert shape from the picker | none | **not sampled** | none | `insert-circle.json` |
-| Type or replace a label (PID Unicode) | none | **not sampled** | none | `type-sticky-pid.json`, `replace-existing-label.json` |
-| Move one object (AXPosition) / resize via handle | none | **not sampled** | none | `position-selected.json`, `resize-handle.json` |
+| Insert text box and type its label (toolbar AXPress + PID Unicode) | none | **stays hidden** | none | `zorder-clipboard-free/createTextAndType.*` |
+| Insert sticky note (toolbar AXPress) | none | not sampled (same toolbar path) | none | `insert-sticky-ax.json` |
+| Insert shape from the picker popover | none | **stays hidden** | none | `zorder-clipboard-free/chooseShapeCircle.*` |
+| Type or replace a label (PID Unicode) | none | **stays hidden** | none | `zorder-clipboard-free/replaceLabel.*` |
+| Move one object (AXPosition) | none | **stays hidden** | none | `zorder-clipboard-free/positionSelected.*` |
+| Resize via middle-right handle | none | **brief rise to just below the key window (~0.3 s), then back** | none | `zorder-clipboard-free/resizeHandle.*` |
+| Switch boards (library Go Back + card AXPress) | none | **stays hidden** | none | `zorder-clipboard-free/openBoard.*` |
 | Window screenshot | none | **stays hidden** | none | `zorder-screenshot.txt` |
 | Context-menu Copy readback | none | **raised to top** | temporary, restored | `context-copy-repeats.json`, `zorder-context-copy.txt` |
 | Context-menu Paste of N objects (verified up to 4) | none | **raised (same menu path; not separately sampled)** | temporary, restored | `context-paste-two.json`, `context-paste-diagram.json` |
@@ -29,7 +32,7 @@ Drew wants a model to create and edit native boards in the regular Freeform app 
 | Paste onto an empty board (bootstrap circle, then delete) | none | **raised (context menu)** | temporary, restored | `empty-paste.json` |
 | Rename board (library card Show Menu → Rename) and reopen | none | **raised to top** | none | `rename-board-bg-2.json`, `rename-zorder-2.txt` |
 
-Taken together, you can create a board, name it, import a diagram, and move, resize and relabel objects without activating Freeform. Every context-menu step (Copy, Paste, card menu) **visibly raises Freeform's window** over the user's work and leaves it there. The window rose about 0.6–1.7 s after the menu call. One manual test of the mitigation worked: AXRaise on the frontmost app's main window put it back on top with no activation, and Freeform dropped to second place, ahead of that app's other windows. A brief visible flash per menu operation would remain.
+Taken together, you can create a board, name it, import a diagram, and move, resize and relabel objects without activating Freeform. **The clipboard-free paths (toolbar and picker inserts, typing, moving, switching boards) also keep Freeform's window hidden**, so they're invisible to the user. Handle resize briefly lifts the window to just below the key window. Every context-menu step (Copy, Paste, card menu) **visibly raises Freeform's window** over the user's work and leaves it there. The window rose about 0.6–1.7 s after the menu call. One manual test of the mitigation worked: AXRaise on the frontmost app's main window put it back on top with no activation, and Freeform dropped to second place, ahead of that app's other windows. A brief visible flash per menu operation would remain.
 
 Other facts established this session:
 - **Pure Paste caused the earlier Copy failures.** Its Freeform exclusion only applies while Freeform is frontmost, so it stripped background copies about 0.4 s after they appeared (`context-copy-timeline.json`). The user uninstalled it, and background Copy then succeeded on every run that reached Copy.
@@ -83,6 +86,7 @@ If `BOARD_MISMATCH` occurs, check Freeform's actual window and menu state. Don't
 | `emptyPaste <payload>` | Requires an empty board; bootstrap circle → Paste → deletes the circle with a PID Delete key |
 | `createBoard "Background …"` | Presses New Board; tries an AX-only rename (fails: title has no actions); leaves the board as `Untitled N` |
 | `renameBoard "Background …"` | Library → card `Show Menu` → Rename → AXConfirm → reopens the board |
+| `openBoard "<exact title>"` | Library → card AXPress; switches boards without activation or raising the window |
 | `chooseShape`, `createTextAndType`, `replaceLabel`, `resizeHandle`, `positionSelected`, … | Earlier clipboard-free mutations; not idempotent |
 
 | File | Purpose |
@@ -108,7 +112,7 @@ If `BOARD_MISMATCH` occurs, check Freeform's actual window and menu state. Don't
 
 ## Next experiments
 
-1. **Window order for clipboard-free paths.** Sample toolbar insert, picker insert, PID typing, AXPosition, handle resize and New Board. If they keep the window hidden, they're fully invisible. Restore Ghostty's order first (see Round 5), and keep each run on a disposable board.
+1. **A fully invisible diagram builder.** Clipboard-free paths stay hidden (Round 6), so a diagram could be built from picker shapes, typed labels and AXPosition moves without any context menu. Open questions: setting fill colors and shape size without context menus or handle drags (format controls may be popovers; sample them), New Board's window behavior (not sampled), and speed relative to a single paste.
 2. **Built-in window restoration.** Record the window that was topmost before each context-menu step, AXRaise it afterward, and measure how long Freeform stays visible. Find out whether hiding the menu sooner, or skipping the extra wait, shortens it. Consider whether showing a menu without raising is possible at all; that hasn't been explored.
 3. **Import robustness.** Larger payloads, grouped payloads, fill/path readback of multi-object pastes (a per-object Copy loop or multi-selection), duplicate prevention after timeouts, and repeating paste placement then AXPosition layout.
 4. **Clipboard-free editing.** Both resize axes, other zoom levels, more picker shapes, format controls, and Connection Line endpoints. Prove an attachment by moving the connected shape.

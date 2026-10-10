@@ -91,6 +91,25 @@ do {
         }
         emit(["ok": true, "mode": mode, "front": front(), "boardAttributes": describe(board), "toolbar": toolbarItems, "menuItems": menuItems]); exit(0)
     }
+    if mode == "openBoard" {
+        // Switch boards via the library: Go Back, then AXPress the uniquely matching card. No click fallback.
+        let target = CommandLine.arguments[2]
+        guard front() != "com.apple.freeform", let current = focusedWindow(app) else { throw BridgeError("UNAVAILABLE") }
+        let start = front()
+        var activations: [String] = []
+        let watcher = NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main) { note in
+            activations.append((note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication)?.bundleIdentifier ?? "unknown")
+        }
+        defer { NSWorkspace.shared.notificationCenter.removeObserver(watcher) }
+        if canvas(current) != nil { try pressButton(current, title: "Go Back") }
+        let atLibrary = waitUntil({ focusedWindow(app).map { canvas($0) == nil } ?? false }, seconds: 5)
+        let cards = focusedWindow(app).map { descendants($0).filter { string($0, kAXRoleAttribute) == "AXButton" && (string($0, kAXDescriptionAttribute) ?? "").hasPrefix("Board: " + target + ", ") } } ?? []
+        guard atLibrary, cards.count == 1 else { throw BridgeError("CARD_NOT_UNIQUE: \(cards.count)") }
+        let press = AXUIElementPerformAction(cards[0], kAXPressAction as CFString)
+        let opened = waitUntil({ focusedWindow(app).map { string($0, kAXTitleAttribute) == target && canvas($0) != nil } ?? false }, seconds: 5)
+        emit(["ok": opened && front() == start && !activations.contains("com.apple.freeform"), "mode": mode, "axResult": press.rawValue, "opened": opened,
+              "frontBefore": start, "frontAfter": front(), "activations": activations]); exit(opened ? 0 : 1)
+    }
     if mode == "renameBoard" {
         // Library route: Go Back, board card context menu, Rename. No click or keyboard-activation fallbacks.
         let newTitle = CommandLine.arguments[2]
