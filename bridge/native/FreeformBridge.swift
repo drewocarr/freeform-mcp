@@ -2,6 +2,8 @@ import AppKit
 import ApplicationServices
 import Foundation
 import Darwin
+import CryptoKit
+import ScreenCaptureKit
 
 let contentType = NSPasteboard.PasteboardType("com.apple.apps.content-language.canvas-object-1.0")
 struct BridgeError: Error, CustomStringConvertible {
@@ -261,6 +263,82 @@ final class ClipboardTransaction {
     }
 }
 
+func frame(_ element: AXUIElement) throws -> CGRect {
+    guard let p = attribute(element, kAXPositionAttribute), let s = attribute(element, kAXSizeAttribute),
+          CFGetTypeID(p) == AXValueGetTypeID(), CFGetTypeID(s) == AXValueGetTypeID() else { throw BridgeError("BOUNDS_UNAVAILABLE") }
+    var position = CGPoint.zero; var size = CGSize.zero
+    guard AXValueGetValue(unsafeBitCast(p, to: AXValue.self), .cgPoint, &position),
+          AXValueGetValue(unsafeBitCast(s, to: AXValue.self), .cgSize, &size) else { throw BridgeError("BOUNDS_UNAVAILABLE") }
+    return CGRect(origin: position, size: size)
+}
+func snapshot(_ area: AXUIElement) throws -> String {
+    let values = try layoutItems(area).map { item -> [String: Any] in
+        let r = try frame(item)
+        return ["description": objectDescription(item), "frame": [r.minX, r.minY, r.width, r.height]]
+    }
+    return SHA256.hash(data: try JSONSerialization.data(withJSONObject: values, options: [.sortedKeys])).map { String(format: "%02x", $0) }.joined()
+}
+func selectionMatches(_ area: AXUIElement, _ targets: [AXUIElement]) -> Bool {
+    let selected = layoutItems(area).filter { (attribute($0, kAXSelectedAttribute) as? Bool) == true }
+    return selected.count == targets.count && selected.allSatisfy { item in targets.contains { CFEqual(item, $0) } }
+}
+func selectTargets(_ targets: [AXUIElement], area: AXUIElement, app: AXUIElement, window: AXUIElement, title: String, pid: pid_t) throws {
+    _ = AXUIElementSetAttributeValue(area, kAXFocusedAttribute as CFString, kCFBooleanTrue)
+    _ = AXUIElementSetAttributeValue(area, kAXSelectedChildrenAttribute as CFString, targets as CFArray)
+    if !waitUntil({ selectionMatches(area, targets) }, seconds: 0.4) {
+        for (index, item) in targets.enumerated() {
+            let (current, _) = try requireBoard(app, title: title)
+            guard CFEqual(current, window) else { throw BridgeError("BOARD_CHANGED") }
+            try clickElement(item, pid: pid, modifiers: index == 0 ? [] : .maskShift)
+        }
+    }
+    guard waitUntil({ selectionMatches(area, targets) }) else { throw BridgeError("SELECTION_UNVERIFIED: Could not select exactly the requested objects.") }
+}
+func arrangementItem(_ app: AXUIElement, action: String) throws -> AXUIElement {
+    guard let raw = attribute(app, kAXMenuBarAttribute), CFGetTypeID(raw) == AXUIElementGetTypeID() else { throw BridgeError("NO_MENU_BAR") }
+    let bar = unsafeBitCast(raw, to: AXUIElement.self)
+    guard let arrange = children(bar).first(where: { string($0, kAXTitleAttribute) == "Arrange" }) else { throw BridgeError("MENU_UNAVAILABLE: English Arrange menu required.") }
+    let names = ["group": "Group", "ungroup": "Ungroup", "left": "Left", "center": "Center", "right": "Right", "top": "Top", "middle": "Middle", "bottom": "Bottom"]
+    guard let name = names[action] else { throw BridgeError("INVALID_ARRANGEMENT") }
+    var root = arrange
+    if action != "group" && action != "ungroup" {
+        guard let submenu = descendants(arrange, depth: 3).first(where: { string($0, kAXTitleAttribute) == "Align Objects" }) else { throw BridgeError("MENU_UNAVAILABLE") }
+        root = submenu
+    }
+    guard let item = descendants(root, depth: 3).first(where: { string($0, kAXTitleAttribute) == name }),
+          (attribute(item, kAXEnabledAttribute) as? Bool) == true else { throw BridgeError("COMMAND_DISABLED: Arrange → \(name) unavailable.") }
+    return item
+}
+func screenshot(_ app: AXUIElement, window: AXUIElement, title: String, pid: pid_t) throws -> [String: Any] {
+    guard CGPreflightScreenCaptureAccess() else { throw BridgeError("SCREEN_RECORDING_REQUIRED: Enable Screen Recording for the host launching the bridge. No permission settings were changed.") }
+    let expectedFrame = try frame(window)
+    var content: SCShareableContent?; var captureError: Error?; var done = false
+    SCShareableContent.getExcludingDesktopWindows(true, onScreenWindowsOnly: true) { value, error in
+        DispatchQueue.main.async { content = value; captureError = error; done = true }
+    }
+    guard waitUntil({ done }, seconds: 15), let content else { throw BridgeError("SCREENSHOT_UNAVAILABLE: \(captureError?.localizedDescription ?? "Window discovery timed out")") }
+    let matches = content.windows.filter { $0.owningApplication?.processID == pid && $0.title == title &&
+        abs($0.frame.minX - expectedFrame.minX) < 2 && abs($0.frame.minY - expectedFrame.minY) < 2 &&
+        abs($0.frame.width - expectedFrame.width) < 2 && abs($0.frame.height - expectedFrame.height) < 2 }
+    guard matches.count == 1 else { throw BridgeError("SCREENSHOT_WINDOW_AMBIGUOUS: Cannot identify exactly the requested board window.") }
+    let filter = SCContentFilter(desktopIndependentWindow: matches[0])
+    let config = SCStreamConfiguration()
+    let scale = min(1, 1600 / max(expectedFrame.width, expectedFrame.height))
+    config.width = max(1, Int(expectedFrame.width * scale)); config.height = max(1, Int(expectedFrame.height * scale))
+    config.showsCursor = false; config.ignoreShadowsSingleWindow = true
+    let (current, _) = try boardWindow(app, title: title)
+    guard CFEqual(current, window), try frame(window) == expectedFrame else { throw BridgeError("BOARD_CHANGED") }
+    var captured: CGImage?; done = false; captureError = nil
+    SCScreenshotManager.captureImage(contentFilter: filter, configuration: config) { image, error in
+        DispatchQueue.main.async { captured = image; captureError = error; done = true }
+    }
+    guard waitUntil({ done }, seconds: 15), let captured else { throw BridgeError("SCREENSHOT_FAILED: \(captureError?.localizedDescription ?? "Capture timed out")") }
+    let (final, _) = try boardWindow(app, title: title)
+    guard CFEqual(final, window), try frame(window) == expectedFrame else { throw BridgeError("BOARD_CHANGED: Screenshot discarded.") }
+    guard let png = NSBitmapImageRep(cgImage: captured).representation(using: .png, properties: [:]), png.count <= 8_000_000 else { throw BridgeError("SCREENSHOT_ENCODING_FAILED") }
+    return ["ok": true, "boardTitle": title, "mimeType": "image/png", "imageBase64": png.base64EncodedString(), "width": captured.width, "height": captured.height, "scope": "visible board window", "clipboardUsed": false]
+}
+
 var transaction: ClipboardTransaction?
 var mayHaveInserted = false
 var mayHaveChanged = false
@@ -286,7 +364,7 @@ do {
         emit(result)
         exit(0)
     }
-    guard ["insert", "readSelection", "createBoard", "renameBoard", "openBoard", "listObjects", "moveObject", "undo"].contains(command) else { throw BridgeError("UNKNOWN_COMMAND") }
+    guard ["insert", "readSelection", "createBoard", "renameBoard", "openBoard", "listObjects", "moveObject", "undo", "screenshot", "arrangeObjects"].contains(command) else { throw BridgeError("UNKNOWN_COMMAND") }
     guard trusted else { throw BridgeError("ACCESSIBILITY_REQUIRED: Grant Accessibility to the host launching this helper in System Settings, then retry. This helper does not request or change permissions.") }
     guard let running else { throw BridgeError("FREEFORM_NOT_RUNNING: Open Freeform and the intended board first.") }
     let app = AXUIElementCreateApplication(running.processIdentifier)
@@ -362,7 +440,78 @@ do {
     guard let title = request["expectedBoardTitle"] as? String, !title.isEmpty else { throw BridgeError("BOARD_TITLE_REQUIRED") }
     if command == "listObjects" {
         let (_, area) = try boardWindow(app, title: title)
-        emit(["ok": true, "boardTitle": title, "objects": objectList(area)])
+        emit(["ok": true, "boardTitle": title, "objects": objectList(area), "snapshotToken": try snapshot(area)])
+        exit(0)
+    }
+    if command == "screenshot" {
+        let (window, _) = try boardWindow(app, title: title)
+        emit(try screenshot(app, window: window, title: title, pid: running.processIdentifier)); exit(0)
+    }
+    if command == "arrangeObjects" {
+        let (window, area) = try requireBoard(app, title: title)
+        guard let action = request["action"] as? String,
+              ["group", "ungroup", "left", "center", "right", "top", "middle", "bottom"].contains(action),
+              let expected = request["expectedSnapshot"] as? String,
+              let requested = request["targets"] as? [[String: Any]],
+              (action == "ungroup" ? requested.count == 1 : (2...100).contains(requested.count)) else { throw BridgeError("INVALID_ARRANGEMENT") }
+        guard try snapshot(area) == expected else { throw BridgeError("STALE_BOARD: Read objects again before arranging.") }
+        let all = layoutItems(area)
+        var indices = Set<Int>()
+        let targets = try requested.map { target -> AXUIElement in
+            guard let index = target["objectIndex"] as? Int, all.indices.contains(index), indices.insert(index).inserted,
+                  let description = target["expectedDescription"] as? String, !description.isEmpty,
+                  objectDescription(all[index]) == description,
+                  all.filter({ objectDescription($0) == description }).count == 1 else { throw BridgeError("STALE_OR_AMBIGUOUS_OBJECT: Targets require unique current descriptions.") }
+            return all[index]
+        }
+        let untouched = all.filter { item in !targets.contains { CFEqual(item, $0) } }
+        let untouchedFrames = try untouched.map { try frame($0) }
+        try selectTargets(targets, area: area, app: app, window: window, title: title, pid: running.processIdentifier)
+        let clip = try ClipboardTransaction(); transaction = clip
+        let before = try clip.copiedObjects(app: app, window: window, title: title)
+        guard before.count == targets.count else { throw BridgeError("SELECTION_UNVERIFIED") }
+        func plainShapes(_ objects: [[String: Any]]) -> Bool {
+            objects.allSatisfy { object in
+                guard object["type_identifier"] as? String == "com.apple.apps.content-language.shape",
+                      let g = object["geometry"] as? [String: Any] else { return false }
+                return (g["angle"] as? Double ?? 0) == 0 && (g["flip_horizontally"] as? Bool ?? false) == false
+            }
+        }
+        var groupChildren: [[String: Any]] = []
+        if action == "ungroup" {
+            guard before.count == 1, before[0]["type_identifier"] as? String == "com.apple.apps.content-language.group",
+                  let wrappers = before[0]["children"] as? [[String: Any]],
+                  let g = before[0]["geometry"] as? [String: Any], (g["angle"] as? Double ?? 0) == 0,
+                  (g["flip_horizontally"] as? Bool ?? false) == false else { throw BridgeError("UNSUPPORTED_OBJECT: Select one unrotated group of shapes.") }
+            groupChildren = wrappers.compactMap { $0["shape"] as? [String: Any] }
+            guard (2...100).contains(groupChildren.count), groupChildren.count == wrappers.count, plainShapes(groupChildren) else { throw BridgeError("UNSUPPORTED_OBJECT: Nested groups and non-shape children are not supported yet.") }
+        } else {
+            guard plainShapes(before) else { throw BridgeError("UNSUPPORTED_OBJECT: This version arranges only unrotated, unflipped shapes.") }
+        }
+        let item = try arrangementItem(app, action: action)
+        let (current, _) = try requireBoard(app, title: title)
+        guard CFEqual(window, current), try snapshot(area) == expected, selectionMatches(area, targets),
+              clip.board.changeCount == clip.expected else { throw BridgeError("STATE_CHANGED: Arrangement cancelled before dispatch.") }
+        mayHaveChanged = true
+        if action == "group" || action == "ungroup" {
+            try key(running.processIdentifier, 5, modifiers: action == "group" ? [.maskCommand, .maskAlternate] : [.maskCommand, .maskAlternate, .maskShift])
+        } else {
+            guard AXUIElementPerformAction(item, kAXPressAction as CFString) == .success else { throw BridgeError("ARRANGE_DISPATCH_FAILED") }
+            waitForUI()
+            try key(running.processIdentifier, 53)
+        }
+        let expectedCount = action == "group" ? all.count - targets.count + 1 : action == "ungroup" ? all.count - 1 + groupChildren.count : all.count
+        guard waitUntil({ layoutItems(area).count == expectedCount }) else { throw BridgeError("ARRANGE_UNVERIFIED: Unexpected object count; inspect before retrying.") }
+        let remaining = layoutItems(area)
+        for (index, other) in untouched.enumerated() {
+            guard remaining.contains(where: { CFEqual($0, other) }), try frame(other) == untouchedFrames[index] else { throw BridgeError("ARRANGE_UNVERIFIED: An unrequested object changed.") }
+        }
+        let resultTargets = action == "group" || action == "ungroup" ? remaining.filter { item in !untouched.contains { CFEqual(item, $0) } } : targets
+        try selectTargets(resultTargets, area: area, app: app, window: window, title: title, pid: running.processIdentifier)
+        let after = try clip.copiedObjects(app: app, window: window, title: title)
+        let restored = clip.restore(); transaction = nil
+        emit(["ok": true, "boardTitle": title, "action": action, "before": before, "after": after,
+              "clipboardRestored": restored, "objects": objectList(area), "snapshotToken": try snapshot(area), "mayHaveChanged": true])
         exit(0)
     }
     if command == "moveObject" {

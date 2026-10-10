@@ -88,7 +88,7 @@ npm run build:native
 npm test
 ```
 
-**21 automated tests passed**, covering generated geometry/content, rejected inputs, observed Freeform normalization, MCP tool schemas/errors, and actual stdio initialization/discovery.
+**27 automated tests passed**, covering generated geometry/content, rejected inputs, observed Freeform normalization, MCP tool schemas/errors, and actual stdio initialization/discovery.
 
 The opt-in live test inserts into the supplied board:
 
@@ -109,7 +109,7 @@ Two observed normalizations are explicitly handled: empty labels become one U+20
 - Arrows are independent editable vector shapes. They do not attach to boxes or follow moved boxes. Native attached connectors remain a separate reverse-engineering task.
 - Rounded rectangles use vector curves; the special corner-radius handle is not preserved.
 - Labels use Freeform's default text formatting. Explicit fonts, rich styling, images, tables, and arbitrary imported paths are outside this API.
-- Native grouping was verified through Freeform's UI and readback; a group-creation tool is not included.
+- Guarded grouping/ungrouping and six alignment commands are available for explicitly listed unrotated, unflipped shapes; see below.
 - Tested on the installed Freeform/macOS version only. The content-language format is private and may change.
 - The user confirmed the test boards and their generated shapes appeared on iPhone. iPad delivery and cross-device editing remain unverified.
 
@@ -192,6 +192,47 @@ Readback no longer adopts arbitrary clipboard change counts as safe to restore o
 
 The follow-up populated-board test also passed on the same board without a restart: added two objects, verified only those two were selected and copied, then undid the insertion and confirmed the original five descriptions remained.
 
-22 automated tests pass. `npm run test:clipboard` separately uses a unique private AppKit pasteboard to verify multi-format restoration, preservation of a newer copy, rejection of a conflicting write, and empty-clipboard restoration. It does not touch the general clipboard. The live populated-board test is `node test/live-existing-board.mjs 'Disposable Board Title'`; inspect its [evidence](examples/existing-board-proof.json) before rerunning after any failure.
+27 automated tests pass. `npm run test:clipboard` separately uses a unique private AppKit pasteboard to verify multi-format restoration, preservation of a newer copy, rejection of a conflicting write, and empty-clipboard restoration. It does not touch the general clipboard. The live populated-board test is `node test/live-existing-board.mjs 'Disposable Board Title'`; inspect its [evidence](examples/existing-board-proof.json) before rerunning after any failure.
 
 Partial native errors now retain machine-readable outcome flags and `retryAutomatically:false` in MCP responses. No mutation is automatically retried. This prevents the bridge itself from blindly duplicating an uncertain insertion; it does not deduplicate a caller's repeated request or automatically recover an interrupted call. `freeform_undo` still reports `verified:false`; the full live test independently verifies its effect. Killing or timing out the helper can still interrupt clipboard restoration.
+
+
+## Screenshots, grouping, and alignment
+
+`freeform_screenshot` returns a PNG as MCP image content, so a client can see the board directly. It captures only the requested Freeform window, including its controls and current viewport, with a maximum dimension of 1600 pixels. It does not fit or export the whole infinite board, use the clipboard, or change board content. It brings Freeform forward and requires existing Accessibility and Screen Recording access. It refuses ambiguous window matches and discards the capture if the focused board/window bounds change. There is no desktop-capture fallback. Window capture uses [Apple ScreenCaptureKit](https://developer.apple.com/documentation/screencapturekit/scscreenshotmanager).
+
+```sh
+node src/cli.mjs screenshot 'Exact Board Title' /tmp/board.png
+```
+
+For edits, call `freeform_list_objects` first. Choose the exact objects and pass its `snapshotToken` as `expectedSnapshot`, alongside their indices and descriptions:
+
+```js
+import { listObjects, arrangeObjects } from './src/bridge.mjs';
+const expectedBoardTitle = 'Disposable Board';
+const current = await listObjects({ expectedBoardTitle });
+const targets = current.objects.slice(0, 2).map(object => ({
+  objectIndex: object.objectIndex,
+  expectedDescription: object.description,
+}));
+const result = await arrangeObjects({
+  expectedBoardTitle,
+  expectedSnapshot: current.snapshotToken,
+  targets,
+  action: 'left',
+});
+```
+
+MCP tools:
+
+- `freeform_group_objects`: `action: "group"` for 2–100 shapes, or `"ungroup"` for one simple group.
+- `freeform_align_objects`: `action: "left" | "center" | "right" | "top" | "middle" | "bottom"` for 2–100 shapes. Alignment uses the selection's collective bounds.
+- `freeform_screenshot`: `expectedBoardTitle` only.
+
+The edits reject stale layout snapshots, duplicate indices, ambiguous descriptions, wrong boards, text-editing focus, disabled commands, rotated/flipped shapes, and nested groups. The snapshot covers Accessibility descriptions and screen bounds; zoom, scrolling, and window changes may invalidate it. It is not a persistent object identity or an atomic lock against human activity. Re-list after each edit. Only objects exposed by Accessibility are eligible.
+
+The bridge selects exactly the requested objects, reads their native data, performs one command, and reads back the result. Verification checks preserved content/styles/dimensions, positions for grouping, and the requested alignment plus unchanged opposite-axis positions. Unrequested objects must retain their Accessibility identities and screen bounds. Selection changes are not restored. Verification uses the existing shared-clipboard transaction; the prior Universal Clipboard and concurrent-user limitations still apply. An error may follow a completed edit: inspect before retrying. There is no automatic rollback or mutation retry.
+
+Live MCP verification passed on **Bridge Arrangement Test — 2026-10-09 A**: window screenshot (visually inspected), grouping three shapes while leaving a fourth untouched, ungrouping, all six alignments with Undo between them, stale-snapshot rejection before mutation, and wrong-board screenshot rejection. All arrangement calls reported successful clipboard restoration. Evidence: [live proof](examples/arrangement-mcp-proof.json), [screenshot](examples/arrangement-screenshot.png). This test did not verify iCloud delivery.
+
+The opt-in test `node test/live-arrangement-mcp.mjs 'Unique Disposable Title'` creates a board with four test objects and stops on any failure. The server now advertises 15 tools: 11 regular-app tools and four isolated-lab tools.

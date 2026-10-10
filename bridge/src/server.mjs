@@ -19,6 +19,11 @@ const objectSchema = z.object({
 }).strict();
 
 function result(value) {
+  if (value?.mimeType === 'image/png' && typeof value.imageBase64 === 'string') {
+    const { imageBase64, ...metadata } = value;
+    return { content: [{ type: 'image', mimeType: 'image/png', data: imageBase64 },
+      { type: 'text', text: JSON.stringify(metadata) }], structuredContent: metadata };
+  }
   return {
     content: [{ type: 'text', text: JSON.stringify(value ?? null) }],
     ...(value && typeof value === 'object' && !Array.isArray(value)
@@ -40,7 +45,7 @@ function handler(operation) {
   };
 }
 
-export function createServer({ getStatus, insertObjects, readSelection, createBoard, openBoard, listObjects, moveObject, undo }, native = createNativeBridge()) {
+export function createServer({ getStatus, insertObjects, readSelection, createBoard, openBoard, listObjects, moveObject, undo, screenshot, arrangeObjects }, native = createNativeBridge()) {
   const server = new McpServer({ name: 'freeform-js-bridge', version: '0.1.0' });
   server.registerTool('freeform_status', {
     description: 'Inspect Freeform availability, permissions, and the current board without changing board content.',
@@ -72,7 +77,7 @@ export function createServer({ getStatus, insertObjects, readSelection, createBo
     annotations: { ...uiMutation, idempotentHint: true },
   }, handler(openBoard));
   server.registerTool('freeform_list_objects', {
-    description: 'Inspect objects exposed by Accessibility on the already open regular Freeform board. Returned indices and descriptions refer to the current UI, not persistent object IDs. Read again after edits before choosing an object.',
+    description: 'Inspect objects exposed by Accessibility on the already open regular Freeform board. Returned indices and descriptions refer to the current UI, not persistent object IDs. Includes snapshotToken for guarded grouping/alignment. Read again after edits, zooming, or scrolling before choosing an object.',
     inputSchema: z.object({ expectedBoardTitle: regularTitle }).strict(),
     annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
   }, handler(listObjects));
@@ -92,6 +97,26 @@ export function createServer({ getStatus, insertObjects, readSelection, createBo
     inputSchema: z.object({ expectedBoardTitle: regularTitle }).strict(),
     annotations: { ...uiMutation, destructiveHint: true },
   }, handler(undo));
+  server.registerTool('freeform_screenshot', {
+    description: 'Capture only the exact open Freeform board window as a PNG image. Captures the current viewport including window controls, not the entire infinite board. Does not use the clipboard or change content. Requires existing Screen Recording permission; does not request it.',
+    inputSchema: z.object({ expectedBoardTitle: regularTitle }).strict(),
+    annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  }, handler(screenshot));
+  const target = z.object({ objectIndex: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+    expectedDescription: z.string().min(1).max(10000).refine(s => s.trim().length > 0) }).strict();
+  const arrangement = { expectedBoardTitle: regularTitle, expectedSnapshot: z.string().regex(/^[a-f0-9]{64}$/), targets: z.array(target).min(1).max(100) };
+  const validTargets = args => new Set(args.targets.map(t => t.objectIndex)).size === args.targets.length;
+  server.registerTool('freeform_group_objects', {
+    description: 'Group 2–100 explicitly listed shapes, or ungroup one simple group. Requires snapshotToken and exact unique descriptions from a fresh freeform_list_objects. Refuses stale board layout, ambiguous targets, rotated/flipped shapes, and nested groups. Changes selection, temporarily uses/restores the clipboard, verifies content and positions, and creates undo history. Inspect after any error; never automatically retry.',
+    inputSchema: z.object({ ...arrangement, action: z.enum(['group', 'ungroup']) }).strict()
+      .refine(validTargets, 'Targets must be distinct').refine(a => a.action === 'ungroup' ? a.targets.length === 1 : a.targets.length >= 2, 'Grouping needs at least two objects; ungrouping needs one group'),
+    annotations: uiMutation,
+  }, handler(arrangeObjects));
+  server.registerTool('freeform_align_objects', {
+    description: 'Align 2–100 explicitly listed unrotated/unflipped shapes to left, center, right, top, middle, or bottom of their collective bounds. Requires snapshotToken and exact unique descriptions from a fresh freeform_list_objects. Refuses stale or ambiguous targets. Changes selection, temporarily uses/restores the clipboard, verifies content and geometry, and creates undo history. Inspect after any error; never automatically retry.',
+    inputSchema: z.object({ ...arrangement, targets: z.array(target).min(2).max(100), action: z.enum(['left', 'center', 'right', 'top', 'middle', 'bottom']) }).strict().refine(validTargets, 'Targets must be distinct'),
+    annotations: uiMutation,
+  }, handler(arrangeObjects));
   const nativeId = z.string().min(1).max(512);
   const position = z.number().finite().min(-100000).max(100000);
   const geometry = z.object({ x: position, y: position, width: z.number().finite().positive(), height: z.number().finite().positive() }).strict();

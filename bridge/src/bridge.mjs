@@ -1,3 +1,4 @@
+import { validateArrangement, verifyArrangement } from './arrange.mjs';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { encodeObjects } from './encode.mjs';
@@ -105,4 +106,23 @@ export function moveObject({ expectedBoardTitle, objectIndex, expectedDescriptio
 export function undo({ expectedBoardTitle }) {
   const title = boardTitle(expectedBoardTitle);
   return serialized(() => runNative({ command: 'undo', expectedBoardTitle: title }));
+}
+
+export function screenshot({ expectedBoardTitle }) {
+  const title = boardTitle(expectedBoardTitle);
+  return serialized(() => runNative({ command: 'screenshot', expectedBoardTitle: title }));
+}
+export function arrangeObjects({ expectedBoardTitle, expectedSnapshot, targets, action }) {
+  const title = boardTitle(expectedBoardTitle);
+  validateArrangement({ expectedSnapshot, targets, action });
+  const request = structuredClone({ command: 'arrangeObjects', expectedBoardTitle: title, expectedSnapshot, targets, action });
+  return serialized(async () => {
+    const value = await runNative(request);
+    try { return { ...value, verification: verifyArrangement(action, value.before, value.after) }; }
+    catch (error) {
+      throw Object.assign(new Error(`ARRANGE_UNVERIFIED: ${error.message}. Inspect the board before retrying.`), {
+        nativeResult: { ...value, ok: false, error: 'ARRANGE_UNVERIFIED', mayHaveChanged: true, retryAutomatically: false },
+      });
+    }
+  });
 }

@@ -31,7 +31,7 @@ const valid = {
 test('MCP advertises the clipboard and native lab tools and their mutation behavior', async (t) => {
   const { client } = await harness(t);
   const { tools } = await client.listTools();
-  assert.deepEqual(tools.map(tool => tool.name).sort(), ['freeform_create_board', 'freeform_insert_objects', 'freeform_list_objects', 'freeform_move_object', 'freeform_native_list_boards', 'freeform_native_list_objects', 'freeform_native_move_object', 'freeform_native_status', 'freeform_open_board', 'freeform_read_selection', 'freeform_status', 'freeform_undo']);
+  assert.deepEqual(tools.map(tool => tool.name).sort(), ['freeform_align_objects', 'freeform_create_board', 'freeform_group_objects', 'freeform_insert_objects', 'freeform_list_objects', 'freeform_move_object', 'freeform_native_list_boards', 'freeform_native_list_objects', 'freeform_native_move_object', 'freeform_native_status', 'freeform_open_board', 'freeform_read_selection', 'freeform_screenshot', 'freeform_status', 'freeform_undo']);
   const insertion = tools.find(tool => tool.name === 'freeform_insert_objects');
   assert.equal(insertion.annotations.readOnlyHint, false);
   assert.equal(insertion.annotations.destructiveHint, false);
@@ -83,7 +83,7 @@ test('real stdio entry point initializes and lists tools without touching Freefo
   const client = new Client({ name: 'freeform-stdio-smoke', version: '1.0.0' });
   t.after(async () => { await client.close(); });
   await client.connect(transport);
-  assert.equal((await client.listTools()).tools.length, 12);
+  assert.equal((await client.listTools()).tools.length, 15);
   assert.equal(stderr, '');
 });
 
@@ -147,4 +147,24 @@ test('partial insertion errors retain non-retryable outcome details for MCP clie
   assert.equal(response.isError, true);
   assert.deepEqual(response.structuredContent, nativeResult);
   assert.equal(attempts, 1);
+});
+
+test('screenshots return native MCP image content without duplicating base64 in metadata', async t => {
+  const { client } = await harness(t, { screenshot: async args => ({ ok: true, boardTitle: args.expectedBoardTitle, mimeType: 'image/png', imageBase64: 'aGVsbG8=', width: 100, height: 50 }) });
+  const result = await client.callTool({ name: 'freeform_screenshot', arguments: { expectedBoardTitle: 'Test' } });
+  assert.deepEqual(result.content[0], { type: 'image', mimeType: 'image/png', data: 'aGVsbG8=' });
+  assert.equal(result.structuredContent.imageBase64, undefined);
+  assert.equal(result.structuredContent.boardTitle, 'Test');
+});
+test('guarded arrangement schemas reject unsafe requests before mutation', async t => {
+  const calls = [];
+  const { client } = await harness(t, { arrangeObjects: async args => { calls.push(args); return { ok: true }; } });
+  const args = { expectedBoardTitle: 'Test', expectedSnapshot: 'a'.repeat(64), targets: [{ objectIndex: 0, expectedDescription: 'A' }, { objectIndex: 1, expectedDescription: 'B' }], action: 'group' };
+  for (const invalid of [{ ...args, expectedSnapshot: '' }, { ...args, targets: [args.targets[0]] }, { ...args, targets: [args.targets[0], args.targets[0]] }, { ...args, action: 'delete' }]) {
+    assert.equal((await client.callTool({ name: 'freeform_group_objects', arguments: invalid })).isError, true);
+  }
+  assert.deepEqual(calls, []);
+  assert.equal((await client.callTool({ name: 'freeform_group_objects', arguments: args })).isError, undefined);
+  assert.equal((await client.callTool({ name: 'freeform_align_objects', arguments: { ...args, action: 'left' } })).isError, undefined);
+  assert.equal(calls.length, 2);
 });
