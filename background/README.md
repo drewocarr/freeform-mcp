@@ -152,7 +152,7 @@ The empty canvas exposes no context menu (`canvas` actions are empty in `inspect
 | Window screenshot | Stayed behind (index 8) | Ghostty throughout | `zorder-screenshot.txt` |
 | contextCopy (object context menu via AXShowMenu) | **Rose to topmost (index 0) about 1.7 s in and stayed there** | Ghostty throughout; no activation | `zorder-context-copy.txt`, `context-copy-zorder.json` |
 | renameBoard (card Show Menu → Rename) | Rose to topmost about 0.6 s in and stayed there | Ghostty throughout; no activation | `rename-zorder-2.txt`, `rename-board-bg-2.json` |
-| Failed first rename (Go Back only; AXShowMenu rejected) | Stayed behind | Ghostty | `rename-zorder.txt`, `rename-board-bg.json` |
+| Failed first rename (Go Back only; AXShowMenu rejected) | Stayed behind | Ghostty | `rename-zorder.txt` (the probe's JSON log captured the whole system menu bar and was kept local for privacy) |
 
 So every context-menu Copy/Paste run in Rounds 2–4 very likely raised Freeform's window over the user's work, without taking keyboard focus. Clipboard-free toolbar/typing/position operations have not yet been sampled. **Mitigation observed once:** AXRaise on the frontmost app's main window (Ghostty) put it back on top with no activation; Freeform dropped to index 1 (behind that window, ahead of the app's other windows). That leaves a brief visible flash per context-menu operation.
 
