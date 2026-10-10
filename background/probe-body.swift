@@ -75,17 +75,41 @@ do {
                 var lastCount = transaction.board.changeCount
                 var lastData: Data?
                 var stableSince = Date()
+                // Timeline of clipboard transitions: type names, payload length/hash, and foreground only; never contents.
+                let copyStart = Date()
+                var timeline: [[String: Any]] = []
+                func snapshot(_ count: Int, _ data: Data?) {
+                    let types = (transaction.board.types ?? []).map(\.rawValue)
+                    var entry: [String: Any] = ["t": Date().timeIntervalSince(copyStart), "changeCount": count, "types": types,
+                                                "hasNativeJSON": data != nil, "front": front(),
+                                                "selected": selectionMatches(area, [item]),
+                                                "purePasteMarker": types.contains("com.sindresorhus.Pure-Paste.hasRun")]
+                    if let data {
+                        entry["nativeLength"] = data.count
+                        entry["nativeSHA256"] = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+                        entry["nativeObjectCount"] = (try? JSONSerialization.jsonObject(with: data) as? [Any])?.count ?? -1
+                    }
+                    timeline.append(entry)
+                }
+                snapshot(lastCount, transaction.board.data(forType: contentType))
                 let ready = waitUntil({
                     let count = transaction.board.changeCount
                     let data = transaction.board.data(forType: contentType)
                     if count != lastCount || data != lastData {
                         lastCount = count; lastData = data; stableSince = Date()
+                        snapshot(count, data)
                     }
                     guard let data, let copied = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]], copied.count == 1,
                           transaction.board.changeCount == count, Date().timeIntervalSince(stableSince) >= 0.5 else { return false }
                     objects = copied; transaction.expected = count; return true
                 }, seconds: 15)
-                return ["axResult": result.rawValue, "copied": ready, "objects": objects]
+                // Keep observing briefly to catch a later rewrite by another clipboard client.
+                _ = waitUntil({
+                    let count = transaction.board.changeCount
+                    if count != lastCount { lastCount = count; snapshot(count, transaction.board.data(forType: contentType)) }
+                    return false
+                }, seconds: 3)
+                return ["axResult": result.rawValue, "copied": ready, "objects": objects, "clipboardTimeline": timeline]
             }
             let added = waitUntil({ layoutItems(area).count == initial.count + 1 }, seconds: 5)
             return ["axResult": result.rawValue, "inserted": added]

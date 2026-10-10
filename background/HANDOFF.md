@@ -38,7 +38,7 @@ The last screenshot shows seven objects at 100% zoom. This is saved evidence, **
 
 Evidence: `round2-screenshot.png` and `round2-screenshot-proof.json`. Circle and oval overlap some text deliberately as a consequence of insertion tests; this is not a finished layout. AX screen coordinates differ from native model coordinates. The oval's copied model position was (594, 403), size 140 × 70.
 
-The last completed experiment was `contextCopy --last`, saved as `context-copy-stable.json`. Safari stayed frontmost, with no activation events, but `copied` and `clipboardRestored` were both false. Expected clipboard change count was 1202; actual count before restoration was 1204. No probe process was left running. Do not assume today's clipboard still belongs to this experiment or attempt a delayed restoration over it.
+The last completed experiment was `contextCopy --last` with a clipboard timeline, saved as `context-copy-timeline.json`. It **identified the readback failure**: Freeform published the native one-object payload at 17 ms; Pure Paste rewrote it to plain text (adding `com.sindresorhus.Pure-Paste.hasRun`) at 437 ms. Pure Paste excludes Freeform only when Freeform is frontmost, so background Copy is always stripped. Safari stayed frontmost with no activation; restoration was correctly declined (1205 expected, 1207 observed). The earlier `context-copy-stable.json` failure has the same shape. **The user then uninstalled Pure Paste**, and a repeat (`context-copy-no-purepaste.json`) succeeded: exact label, 140 × 70, position (594, 403), clipboard restored, Ghostty frontmost, no activation. One run only; repeat a few times before calling Copy reliable. A live inspect and window capture immediately beforehand showed the same seven objects and frames as the table above. No probe process was left running.
 
 ## What is established
 
@@ -102,7 +102,9 @@ The build script extracts declarations before `var transaction: ClipboardTransac
 
 ## Experiments to do next
 
-### 1. Diagnose background Copy/readback first
+### 1. Background Copy/readback: cause found, decide on a route
+
+**Resolved diagnosis:** Pure Paste rewrites Freeform's background Copy about 0.4 s after publication (see `context-copy-timeline.json`). The user resolved this by uninstalling Pure Paste; background Copy readback then succeeded once. Remaining work: repeat it several times, and keep the probe/production detection of the `com.sindresorhus.Pure-Paste.hasRun` marker (or any other rewrite) so a future clipboard utility produces an explicit conflict error rather than a timeout. Next priority is step 2. The historical notes below predate the diagnosis.
 
 Latest code waits for stable native JSON for 0.5 seconds, with a 15-second timeout. This change did **not** fix the latest run. The source of the subsequent clipboard changes is unknown: do not attribute them to Pure Paste, Freeform, Universal Clipboard, or user activity without evidence.
 
