@@ -127,3 +127,14 @@ Pure Paste was uninstalled by the user after `context-copy-timeline.json` showed
 | Window capture after Round 3 | Thirteen objects; fills and relative layout visually match the fixtures | `round3-screenshot-proof.json`, `round3-screenshot.png` |
 
 `contextPaste` now reads expected labels, model positions, and sizes from the payload, requires uniquely labeled objects, and verifies count, per-label match, size, a common screen translation, and unchanged pre-existing frames. This is Accessibility verification at 100% zoom; it does not compare fills or paths (the window capture is the only fill evidence). Paste placement follows the right-clicked object, so pasted objects overlap existing ones; absolute placement is not controlled. The initial-count guard was deliberately raised from 8 to 16 objects for these tests; the board now has 13.
+
+## Round 4: background board creation and empty-board import
+
+| Operation | Observed result | Evidence |
+| --- | --- | --- |
+| `createBoard`: AXPress **New Board** from the probe board | Created an empty board, **Untitled 6**, with Ghostty frontmost and no activation | `create-board-bg.json` |
+| Rename via toolbar title | Title is an AXStaticText with no actions (AXPress returned -25206); no text field appeared. Production's click fallback was deliberately omitted, so the probe stopped with `TITLE_EDITOR_NEEDS_FOREGROUND` | `create-board-bg.json`, `inspect-title.json` |
+| Edit ▸ Rename | Present but disabled in the background, like the other main-menu commands | `inspect-title.json` |
+| `emptyPaste` of the four-object diagram onto the empty board | Bootstrap circle inserted from the shape picker, context-menu Paste added exactly four objects (labels, sizes, common translation verified), then a PID-addressed Delete removed only the circle; four pasted objects intact; clipboard restored; frontmost app unchanged; no activation | `empty-paste.json`, `empty-paste-screenshot.png`, `empty-paste-screenshot-proof.json` |
+
+The empty canvas exposes no context menu (`canvas` actions are empty in `inspect`), so a temporary native shape supplies one. Deleting the bootstrap is part of the board's undo history; Undo behavior was not tested. The probe now reads its board title from `FREEFORM_PROBE_BOARD` (default: the original probe board), and `emptyPaste` requires zero initial objects. Board naming in the background remains unsolved; candidate next route: the board card's context menu in the library view.

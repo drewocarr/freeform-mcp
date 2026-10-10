@@ -1,5 +1,5 @@
 _ = NSApplication.shared.setActivationPolicy(.prohibited)
-let title = "Background Bridge Probe — 2026-10-09"
+let title = ProcessInfo.processInfo.environment["FREEFORM_PROBE_BOARD"] ?? "Background Bridge Probe — 2026-10-09"
 var log: [[String: Any]] = []
 var events: [[String: Any]] = []
 var clip: ClipboardTransaction?
@@ -27,15 +27,121 @@ func editItem(_ app: AXUIElement, _ name: String) throws -> AXUIElement {
           let item = descendants(edit, depth: 3).first(where: { string($0, kAXTitleAttribute) == name }) else { throw BridgeError("NO_COMMAND") }
     return item
 }
+// Verifies a context-menu Paste from Accessibility: payload labels, sizes, a common translation, and unchanged baseline frames.
+func verifyPaste(_ area: AXUIElement, baseline: [AXUIElement], baselineFrames: [CGRect?], payloadPath: String) throws -> [String: Any] {
+    // Expected objects come from the payload itself: label, model position, and size.
+    let payload = try JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: payloadPath))) as? [[String: Any]] ?? []
+    let expected: [(label: String, x: Double, y: Double, w: Double, h: Double)] = payload.compactMap { object in
+        guard let text = (object["text"] as? [String: Any])?["attributed_string"] as? [Any], let label = text.first as? String,
+              let geometry = object["geometry"] as? [String: Any], let position = geometry["position"] as? [String: Any],
+              let size = geometry["size"] as? [String: Any], let x = position["x"] as? Double, let y = position["y"] as? Double,
+              let w = size["width"] as? Double, let h = size["height"] as? Double else { return nil }
+        return (label, x, y, w, h)
+    }
+    guard expected.count == payload.count, !expected.isEmpty, Set(expected.map(\.label)).count == expected.count else { throw BridgeError("PAYLOAD_NOT_UNIQUELY_LABELED") }
+    let inserted = waitUntil({ layoutItems(area).count == baseline.count + expected.count }, seconds: 10)
+    probeWait(1)
+    let added = layoutItems(area).filter { item in !baseline.contains { CFEqual($0, item) } }
+    var matches: [[String: Any]] = []
+    var offsets: [(Double, Double)] = []
+    for e in expected {
+        let hits = added.filter { objectDescription($0).hasPrefix(e.label + ", ") }
+        guard hits.count == 1, let f = try? frame(hits[0]) else { matches.append(["label": e.label, "hits": hits.count]); continue }
+        offsets.append((Double(f.minX) - e.x, Double(f.minY) - e.y))
+        matches.append(["label": e.label, "description": objectDescription(hits[0]), "frame": [f.minX, f.minY, f.width, f.height],
+                        "sizeMatches": abs(Double(f.width) - e.w) < 0.5 && abs(Double(f.height) - e.h) < 0.5])
+    }
+    let commonOffset = offsets.count == expected.count && offsets.allSatisfy { abs($0.0 - offsets[0].0) < 0.5 && abs($0.1 - offsets[0].1) < 0.5 }
+    let existingUnchanged = zip(baseline, baselineFrames).allSatisfy { item, old in old != nil && (try? frame(item)) == old }
+    let verified = inserted && added.count == expected.count && commonOffset && existingUnchanged
+        && matches.allSatisfy { $0["sizeMatches"] as? Bool == true }
+    return ["inserted": inserted, "expectedCount": expected.count, "addedCount": added.count,
+            "matches": matches, "translation": offsets.first.map { [$0.0, $0.1] } ?? [], "commonTranslation": commonOffset,
+            "existingUnchanged": existingUnchanged, "verified": verified]
+}
 do {
     guard AXIsProcessTrusted(), let running = runningApp() else { throw BridgeError("UNAVAILABLE") }
     let app = AXUIElementCreateApplication(running.processIdentifier)
     AXUIElementSetMessagingTimeout(app, 3)
+    let mode = CommandLine.arguments.dropFirst().first ?? "inspect"
+    if mode == "inspectTitle" {
+        // Read-only: title-related toolbar elements and menu-bar items that could rename a board.
+        guard let board = focusedWindow(app), string(board, kAXTitleAttribute) == title else { throw BridgeError("BOARD_MISMATCH") }
+        func describe(_ e: AXUIElement) -> [String: Any] {
+            var names: CFArray?; var acts: CFArray?
+            AXUIElementCopyAttributeNames(e, &names); AXUIElementCopyActionNames(e, &acts)
+            var settable: [String] = []
+            for name in (names as? [String]) ?? [] { var ok = DarwinBoolean(false); if AXUIElementIsAttributeSettable(e, name as CFString, &ok) == .success, ok.boolValue { settable.append(name) } }
+            return ["role": string(e, kAXRoleAttribute) ?? "", "title": string(e, kAXTitleAttribute) ?? "", "value": string(e, kAXValueAttribute) ?? "",
+                    "description": string(e, kAXDescriptionAttribute) ?? "", "identifier": string(e, kAXIdentifierAttribute) ?? "",
+                    "actions": (acts as? [String]) ?? [], "settable": settable]
+        }
+        let toolbar = descendants(board).first(where: { string($0, kAXRoleAttribute) == "AXToolbar" })
+        let toolbarItems = toolbar.map { descendants($0).filter { ["AXStaticText", "AXTextField", "AXButton", "AXMenuButton", "AXGroup"].contains(string($0, kAXRoleAttribute) ?? "") }.map(describe) } ?? []
+        var menuItems: [[String: Any]] = []
+        if let raw = attribute(app, kAXMenuBarAttribute), CFGetTypeID(raw) == AXUIElementGetTypeID() {
+            for top in children(unsafeBitCast(raw, to: AXUIElement.self)) where ["File", "Edit", "Board", "View"].contains(string(top, kAXTitleAttribute) ?? "") {
+                for item in descendants(top, depth: 3) where string(item, kAXRoleAttribute) == "AXMenuItem" {
+                    let name = string(item, kAXTitleAttribute) ?? ""
+                    if name.localizedCaseInsensitiveContains("rename") || name.localizedCaseInsensitiveContains("title") || name.localizedCaseInsensitiveContains("name") {
+                        menuItems.append(["menu": string(top, kAXTitleAttribute) ?? "", "title": name, "enabled": attribute(item, kAXEnabledAttribute) as? Bool ?? false])
+                    }
+                }
+            }
+        }
+        emit(["ok": true, "mode": mode, "front": front(), "boardAttributes": describe(board), "toolbar": toolbarItems, "menuItems": menuItems]); exit(0)
+    }
+    if mode == "createBoard" {
+        // Production createBoard minus its click/keyboard fallbacks, which activate Freeform.
+        let newTitle = CommandLine.arguments[2]
+        guard newTitle.hasPrefix("Background ") else { throw BridgeError("DISPOSABLE_TITLE_REQUIRED") }
+        let (window, _) = try boardWindow(app, title: title)
+        guard front() != "com.apple.freeform" else { throw BridgeError("FREEFORM_FRONTMOST") }
+        let start = front()
+        var activations: [String] = []
+        let watcher = NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main) { note in
+            activations.append((note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication)?.bundleIdentifier ?? "unknown")
+        }
+        defer { NSWorkspace.shared.notificationCenter.removeObserver(watcher) }
+        var steps: [[String: Any]] = []
+        func finish(_ ok: Bool, _ error: String? = nil) -> Never {
+            emit(["ok": ok, "mode": mode, "error": error as Any? ?? NSNull(), "steps": steps, "frontBefore": start, "frontAfter": front(),
+                  "activations": activations, "focusedTitle": focusedWindow(app).flatMap { string($0, kAXTitleAttribute) } ?? ""])
+            exit(ok ? 0 : 1)
+        }
+        try pressButton(window, title: "New Board")
+        let created = waitUntil({
+            guard let current = focusedWindow(app), let area = canvas(current) else { return false }
+            return string(current, kAXTitleAttribute) != title && layoutItems(area).isEmpty
+        }, seconds: 5)
+        steps.append(["step": "New Board", "emptyCanvas": created, "title": focusedWindow(app).flatMap { string($0, kAXTitleAttribute) } ?? ""])
+        guard created, let board = focusedWindow(app),
+              let toolbar = descendants(board).first(where: { string($0, kAXRoleAttribute) == "AXToolbar" }) else { finish(false, "CREATE_UNVERIFIED") }
+        var field = descendants(toolbar).first { string($0, kAXRoleAttribute) == "AXTextField" }
+        if field == nil, let name = descendants(toolbar).first(where: {
+            string($0, kAXRoleAttribute) == "AXStaticText" && (string($0, kAXValueAttribute) == string(board, kAXTitleAttribute) || string($0, kAXTitleAttribute) == string(board, kAXTitleAttribute))
+        }) {
+            steps.append(["step": "Press title", "axResult": AXUIElementPerformAction(name, kAXPressAction as CFString).rawValue])
+        }
+        guard waitUntil({ field = descendants(toolbar).first { string($0, kAXRoleAttribute) == "AXTextField" }; return field != nil }, seconds: 2),
+              let field else { finish(false, "TITLE_EDITOR_NEEDS_FOREGROUND") }
+        steps.append(["step": "Set title", "axResult": AXUIElementSetAttributeValue(field, kAXValueAttribute as CFString, newTitle as CFString).rawValue])
+        _ = AXUIElementSetAttributeValue(field, kAXFocusedAttribute as CFString, kCFBooleanTrue)
+        let confirm = AXUIElementPerformAction(field, "AXConfirm" as CFString)
+        steps.append(["step": "AXConfirm", "axResult": confirm.rawValue])
+        if confirm != .success { try targetedKey(running.processIdentifier, 36); steps.append(["step": "PID Return"]) }
+        let renamed = waitUntil({ focusedWindow(app).map { string($0, kAXTitleAttribute) == newTitle } ?? false }, seconds: 5)
+        steps.append(["step": "Verify title", "renamed": renamed])
+        finish(renamed && front() == start && !activations.contains("com.apple.freeform"), renamed ? nil : "RENAME_UNVERIFIED")
+    }
     let (window, area) = try boardWindow(app, title: title)
     let initial = layoutItems(area)
-    // Raised from 8 to 16 for multi-object paste tests on the disposable board.
-    guard initial.count >= 2 && initial.count <= 16 else { throw BridgeError("UNEXPECTED_DISPOSABLE_BOARD") }
-    let mode = CommandLine.arguments.dropFirst().first ?? "inspect"
+    // Raised from 8 to 16 for multi-object paste tests; emptyPaste requires an empty board.
+    if mode == "emptyPaste" {
+        guard initial.isEmpty else { throw BridgeError("BOARD_NOT_EMPTY") }
+    } else {
+        guard initial.count >= 2 && initial.count <= 16 else { throw BridgeError("UNEXPECTED_DISPOSABLE_BOARD") }
+    }
     let observer = NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main) { note in
         let activated = note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
         events.append(["bundle": activated?.bundleIdentifier ?? "unknown", "time": Date().timeIntervalSince1970])
@@ -57,9 +163,24 @@ do {
         log.append(["operation": name, "result": result, "before": before, "after": state(area), "frontBefore": start, "frontAfter": front(), "activations": Array(events.dropFirst(startEvents))])
         guard front() == sentinel, !events.dropFirst(startEvents).contains(where: { $0["bundle"] as? String == "com.apple.freeform" }) else { throw BridgeError("FOCUS_CHANGED_DURING_PROBE") }
     }
-    if mode == "contextCopy" || mode == "contextPaste" {
+    if mode == "contextCopy" || mode == "contextPaste" || mode == "emptyPaste" {
         try targetedKey(running.processIdentifier, 53)
-        let item = CommandLine.arguments.contains("--last") ? initial.last! : initial[0]
+        // An empty canvas exposes no context menu, so emptyPaste pastes from a temporary circle and then deletes it.
+        var bootstrap: AXUIElement?
+        if mode == "emptyPaste" {
+            try record("Insert bootstrap circle", {
+                try pressButton(window, title: "Insert Shape")
+                guard waitUntil({ descendants(app, depth: 15).contains { string($0, kAXRoleAttribute) == "AXPopover" } }),
+                      let popover = descendants(app, depth: 15).first(where: { string($0, kAXRoleAttribute) == "AXPopover" }) else { throw BridgeError("NO_PICKER") }
+                try pressButton(popover, title: "Circle")
+                return ["inserted": waitUntil({ layoutItems(area).count == 1 })]
+            })
+            guard layoutItems(area).count == 1 else { throw BridgeError("BOOTSTRAP_UNVERIFIED") }
+            bootstrap = layoutItems(area)[0]
+            try targetedKey(running.processIdentifier, 53)
+        }
+        let item = bootstrap ?? (CommandLine.arguments.contains("--last") ? initial.last! : initial[0])
+        let baseline = bootstrap.map { [$0] } ?? initial
         _ = AXUIElementSetAttributeValue(area, kAXSelectedChildrenAttribute as CFString, [item] as CFArray)
         guard selectionMatches(area, [item]) else { throw BridgeError("SELECTION_UNVERIFIED") }
         let transaction = try ClipboardTransaction(); clip = transaction
@@ -70,6 +191,7 @@ do {
               let command = children(menu).first(where: { string($0, kAXTitleAttribute) == (mode == "contextCopy" ? "Copy" : "Paste") }),
               attribute(command, kAXEnabledAttribute) as? Bool == true else { throw BridgeError("NO_ENABLED_CONTEXT_COMMAND") }
         try record(mode, allowContextMenu: true, {
+            let baselineFrames = baseline.map { try? frame($0) }
             let result = AXUIElementPerformAction(command, kAXPressAction as CFString)
             if mode == "contextCopy" {
                 var objects: [[String: Any]] = []
@@ -112,38 +234,26 @@ do {
                 }, seconds: 3)
                 return ["axResult": result.rawValue, "copied": ready, "objects": objects, "clipboardTimeline": timeline]
             }
-            // Expected objects come from the payload itself: label, model position, and size.
-            let payload = try JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: CommandLine.arguments[2]))) as? [[String: Any]] ?? []
-            let expected: [(label: String, x: Double, y: Double, w: Double, h: Double)] = payload.compactMap { object in
-                guard let text = (object["text"] as? [String: Any])?["attributed_string"] as? [Any], let label = text.first as? String,
-                      let geometry = object["geometry"] as? [String: Any], let position = geometry["position"] as? [String: Any],
-                      let size = geometry["size"] as? [String: Any], let x = position["x"] as? Double, let y = position["y"] as? Double,
-                      let w = size["width"] as? Double, let h = size["height"] as? Double else { return nil }
-                return (label, x, y, w, h)
-            }
-            guard expected.count == payload.count, !expected.isEmpty, Set(expected.map(\.label)).count == expected.count else { throw BridgeError("PAYLOAD_NOT_UNIQUELY_LABELED") }
-            let initialFrames = initial.map { try? frame($0) }
-            let inserted = waitUntil({ layoutItems(area).count == initial.count + expected.count }, seconds: 10)
-            probeWait(1)
-            let added = layoutItems(area).filter { item in !initial.contains { CFEqual($0, item) } }
-            var matches: [[String: Any]] = []
-            var offsets: [(Double, Double)] = []
-            for e in expected {
-                let hits = added.filter { objectDescription($0).hasPrefix(e.label + ", ") }
-                guard hits.count == 1, let f = try? frame(hits[0]) else { matches.append(["label": e.label, "hits": hits.count]); continue }
-                offsets.append((Double(f.minX) - e.x, Double(f.minY) - e.y))
-                matches.append(["label": e.label, "description": objectDescription(hits[0]), "frame": [f.minX, f.minY, f.width, f.height],
-                                "sizeMatches": abs(Double(f.width) - e.w) < 0.5 && abs(Double(f.height) - e.h) < 0.5])
-            }
-            let commonOffset = offsets.count == expected.count && offsets.allSatisfy { abs($0.0 - offsets[0].0) < 0.5 && abs($0.1 - offsets[0].1) < 0.5 }
-            let existingUnchanged = zip(initial, initialFrames).allSatisfy { item, old in old != nil && (try? frame(item)) == old }
-            let verified = inserted && added.count == expected.count && commonOffset && existingUnchanged
-                && matches.allSatisfy { $0["sizeMatches"] as? Bool == true }
-            return ["axResult": result.rawValue, "inserted": inserted, "expectedCount": expected.count, "addedCount": added.count,
-                    "matches": matches, "translation": offsets.first.map { [$0.0, $0.1] } ?? [], "commonTranslation": commonOffset,
-                    "existingUnchanged": existingUnchanged, "verified": verified]
+            var verification = try verifyPaste(area, baseline: baseline, baselineFrames: baselineFrames, payloadPath: CommandLine.arguments[2])
+            verification["axResult"] = result.rawValue
+            return verification
         })
         try targetedKey(running.processIdentifier, 53)
+        if let bootstrap {
+            _ = AXUIElementSetAttributeValue(area, kAXSelectedChildrenAttribute as CFString, [bootstrap] as CFArray)
+            guard selectionMatches(area, [bootstrap]) else { throw BridgeError("BOOTSTRAP_SELECTION_UNVERIFIED") }
+            let pasted = layoutItems(area).filter { !CFEqual($0, bootstrap) }
+            let pastedFrames = pasted.map { try? frame($0) }
+            try record("Delete bootstrap circle", {
+                try targetedKey(running.processIdentifier, 51)
+                let removed = waitUntil({ !layoutItems(area).contains { CFEqual($0, bootstrap) } })
+                let remaining = layoutItems(area)
+                let pastedIntact = remaining.count == pasted.count && zip(pasted, pastedFrames).allSatisfy { item, old in
+                    old != nil && remaining.contains { CFEqual($0, item) } && (try? frame(item)) == old
+                }
+                return ["bootstrapRemoved": removed, "remainingCount": remaining.count, "pastedIntact": pastedIntact]
+            })
+        }
     } else if mode == "replaceLabel" {
         let index = Int(CommandLine.arguments[2])!
         guard [0, 1].contains(index) else { throw BridgeError("CONTROL_ONLY") }

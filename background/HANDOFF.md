@@ -24,6 +24,8 @@ Read [README.md](README.md) for the full results matrix and evidence filenames. 
 
 Pure Paste caused the Copy failure and the user uninstalled it. Background Copy readback then passed every run that reached Copy. Context-menu Paste imported a two-object payload and a four-object diagram with exact labels, sizes, and common relative layout. See README Round 3. **The board now has 13 objects**: the seven below plus `Multi paste one`, `Multi paste two`, `Diagram input`, `to` (arrow), `Diagram process`, `Diagram output` (frames in `round3-screenshot-proof.json`). Remaining step-2 work: empty-board paste, larger payloads, grouped payloads, fill/path readback of multi-object pastes (needs multi-selection or a per-object Copy loop), and duplicate prevention after timeouts.
 
+**Round 4 (same session):** a board was created in the background (**Untitled 6**, not yet renamed) and a four-object diagram was imported onto its empty canvas via a temporary bootstrap circle that was then deleted. That board now holds exactly the four diagram objects. Naming boards in the background is unsolved: the toolbar title has no AX actions and Edit ▸ Rename is disabled. Next: try the library board card's context menu, then open/switch boards in the background. Use `FREEFORM_PROBE_BOARD="Untitled 6"` to target it. See README Round 4.
+
 ## Last observed disposable board (before Round 3)
 
 Exact title: **Background Bridge Probe — 2026-10-09**.
