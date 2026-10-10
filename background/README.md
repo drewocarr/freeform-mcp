@@ -190,3 +190,17 @@ Window order was sampled around every run. The user's app stayed frontmost (Safa
 | New Board (AXPress) | Created an empty board (`Untitled 6` again, since the earlier one was renamed); AX rename failed as before | **Rose to index 1 (just below the key window) and stayed**; reported window y moved 107 → 386 (`new-board.*`) |
 
 **What a hidden diagram builder can do:** picker shapes, typed labels, moves, and fills from the 12 named swatches all keep Freeform inactive and hidden. Sizing via handles works on both axes, with a ~0.2 s rise to just below the key window. Custom (hex) colors are **not** available this way. The Color Picker is inert in the background, so arbitrary colors still require context-menu Paste, which raises the window. Board creation leaves the window just below the key window, and rename (card context menu) raises it to the top. Connectors and stroke/text styling were not tested. The probe board's Circle is now red and 170×200, and a new empty `Untitled 6` exists in the library.
+
+## Round 8: attached connectors without context menus
+
+`connectorTest` ran on the empty **Untitled 6** with window sampling. Safari stayed frontmost with no activation, and **Freeform's window stayed at index 11 throughout** (`round8/connector-zorder.txt`).
+
+| Step | Result |
+| --- | --- |
+| Picker **Square** ×2, moved apart with AXPosition | Squares at x 529 and 929 (150×150) |
+| Picker **Connection Line** | `connection line, curved`; actions AXShowMenu, AXPress, Show format options. Selected, it exposes **Tail handle**, **Head handle**, and **Curvature control** |
+| AXPosition of Tail handle onto A's right edge, Head handle onto B's left edge | Handle descriptions became `Tail handle, Connected from Square` / `Head handle, Connected to Square`. Line: `connection line, Connected from Square to Square, curved` |
+| Move B down 100 (AXPosition) | **The line followed**: frame height 66 → 122, top 761 → 804 |
+| Picker **Line Arrow** | Inserted a free arrow line (AX description `Line`), not attached |
+
+The window capture (`round8/connector-screenshot.png`) shows the curved connector joining both squares after the move. **Native attached connectors therefore work with Freeform inactive and hidden, without clipboard or context menus.** Still open: arrowheads and straight/elbow style for connection lines (likely Stroke Inspector or format bar), attaching to labeled shapes and specific edges, and whether connectors survive sync (the paste route's flat arrows were never attached).

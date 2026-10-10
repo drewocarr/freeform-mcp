@@ -223,7 +223,7 @@ do {
     let (window, area) = try boardWindow(app, title: title)
     let initial = layoutItems(area)
     // Raised from 8 to 16 for multi-object paste tests; emptyPaste requires an empty board.
-    if mode == "emptyPaste" {
+    if mode == "emptyPaste" || mode == "connectorTest" {
         guard initial.isEmpty else { throw BridgeError("BOARD_NOT_EMPTY") }
     } else {
         guard initial.count >= 2 && initial.count <= 16 else { throw BridgeError("UNEXPECTED_DISPOSABLE_BOARD") }
@@ -340,6 +340,89 @@ do {
                 return ["bootstrapRemoved": removed, "remainingCount": remaining.count, "pastedIntact": pastedIntact]
             })
         }
+    } else if mode == "connectorTest" {
+        // On an empty board: two picker squares, a Connection Line with endpoints dragged onto them, then move one square to test attachment.
+        func insertFromPicker(_ name: String) throws -> AXUIElement {
+            let before = layoutItems(area)
+            try record("Insert " + name, {
+                if !descendants(app, depth: 15).contains(where: { string($0, kAXRoleAttribute) == "AXPopover" }) { try pressButton(window, title: "Insert Shape") }
+                guard waitUntil({ descendants(app, depth: 15).contains { string($0, kAXRoleAttribute) == "AXPopover" } }),
+                      let popover = descendants(app, depth: 15).first(where: { string($0, kAXRoleAttribute) == "AXPopover" }) else { throw BridgeError("NO_PICKER") }
+                try pressButton(popover, title: name)
+                return ["inserted": waitUntil({ layoutItems(area).count == before.count + 1 })]
+            })
+            let added = layoutItems(area).filter { item in !before.contains { CFEqual($0, item) } }
+            guard added.count == 1 else { throw BridgeError("INSERT_UNVERIFIED: " + name) }
+            try targetedKey(running.processIdentifier, 53)
+            return added[0]
+        }
+        func moveTo(_ item: AXUIElement, _ x: Double, _ y: Double, _ label: String) throws {
+            _ = AXUIElementSetAttributeValue(area, kAXSelectedChildrenAttribute as CFString, [item] as CFArray)
+            guard selectionMatches(area, [item]) else { throw BridgeError("SELECTION_UNVERIFIED") }
+            try record("Move " + label, {
+                var point = CGPoint(x: x, y: y)
+                let result = AXUIElementSetAttributeValue(item, kAXPositionAttribute as CFString, AXValueCreate(.cgPoint, &point)!)
+                probeWait()
+                let f = try frame(item)
+                return ["axResult": result.rawValue, "frame": [f.minX, f.minY, f.width, f.height]]
+            })
+            try targetedKey(running.processIdentifier, 53)
+        }
+        func handleInfo(_ item: AXUIElement) -> [[String: Any]] {
+            ((attribute(item, "AXHandles") as? [AXUIElement]) ?? []).map { h in
+                let f = try? frame(h)
+                return ["description": objectDescription(h), "frame": f.map { [$0.minX, $0.minY, $0.width, $0.height] } ?? []]
+            }
+        }
+        guard initial.isEmpty else { throw BridgeError("BOARD_NOT_EMPTY") }
+        let a = try insertFromPicker("Square")
+        let origin = try frame(a).origin
+        try moveTo(a, Double(origin.x) - 250, Double(origin.y), "square A")
+        let b = try insertFromPicker("Square")
+        try moveTo(b, Double(origin.x) + 150, Double(origin.y), "square B")
+        let line = try insertFromPicker("Connection Line")
+        var lineActions: CFArray?; AXUIElementCopyActionNames(line, &lineActions)
+        let lineFrame = try frame(line)
+        log.append(["line": ["description": objectDescription(line), "frame": [lineFrame.minX, lineFrame.minY, lineFrame.width, lineFrame.height],
+                             "actions": ((lineActions as? [String]) ?? []).map { $0.components(separatedBy: "\n").first ?? $0 }, "handlesUnselected": handleInfo(line)]])
+        _ = AXUIElementSetAttributeValue(area, kAXSelectedChildrenAttribute as CFString, [line] as CFArray)
+        guard selectionMatches(area, [line]) else { throw BridgeError("LINE_SELECTION_UNVERIFIED") }
+        let handles = (attribute(line, "AXHandles") as? [AXUIElement]) ?? []
+        log.append(["lineHandlesSelected": handleInfo(line)])
+        // Endpoints: the two handles farthest apart; drag the left one onto A's right edge and the right one onto B's left edge.
+        let framed = handles.compactMap { h in (try? frame(h)).map { (h, $0) } }
+        var best: (AXUIElement, CGRect, AXUIElement, CGRect)?
+        var bestDistance = -1.0
+        for i in framed.indices { for j in framed.indices where j > i {
+            let d = hypot(Double(framed[i].1.midX - framed[j].1.midX), Double(framed[i].1.midY - framed[j].1.midY))
+            if d > bestDistance { bestDistance = d; best = (framed[i].0, framed[i].1, framed[j].0, framed[j].1) }
+        } }
+        guard let (h1, f1, h2, f2) = best else { throw BridgeError("NO_LINE_HANDLES") }
+        let (startHandle, startFrame, endHandle, endFrame) = f1.midX <= f2.midX ? (h1, f1, h2, f2) : (h2, f2, h1, f1)
+        let fa = try frame(a), fb = try frame(b)
+        try record("Drag line start onto A", {
+            var p = CGPoint(x: fa.maxX - 10 - startFrame.width / 2, y: fa.midY - startFrame.height / 2)
+            let r = AXUIElementSetAttributeValue(startHandle, kAXPositionAttribute as CFString, AXValueCreate(.cgPoint, &p)!)
+            probeWait()
+            return ["axResult": r.rawValue, "handle": objectDescription(startHandle), "lineFrame": (try? frame(line)).map { [$0.minX, $0.minY, $0.width, $0.height] } ?? []]
+        })
+        try record("Drag line end onto B", {
+            var p = CGPoint(x: fb.minX + 10 - endFrame.width / 2, y: fb.midY - endFrame.height / 2)
+            let r = AXUIElementSetAttributeValue(endHandle, kAXPositionAttribute as CFString, AXValueCreate(.cgPoint, &p)!)
+            probeWait()
+            return ["axResult": r.rawValue, "handle": objectDescription(endHandle), "lineFrame": (try? frame(line)).map { [$0.minX, $0.minY, $0.width, $0.height] } ?? []]
+        })
+        try targetedKey(running.processIdentifier, 53)
+        let lineBefore = try frame(line)
+        log.append(["lineAfterDrags": ["description": objectDescription(line), "frame": [lineBefore.minX, lineBefore.minY, lineBefore.width, lineBefore.height]]])
+        try moveTo(b, Double(fb.minX), Double(fb.minY) + 100, "square B down 100")
+        let lineAfter = try frame(line)
+        log.append(["attachmentTest": ["lineBefore": [lineBefore.minX, lineBefore.minY, lineBefore.width, lineBefore.height],
+                                       "lineAfter": [lineAfter.minX, lineAfter.minY, lineAfter.width, lineAfter.height],
+                                       "followed": abs(lineAfter.height - lineBefore.height) > 50 || abs(lineAfter.minY - lineBefore.minY) > 50,
+                                       "lineDescription": objectDescription(line)]])
+        let arrow = try insertFromPicker("Line Arrow")
+        log.append(["lineArrow": objectDescription(arrow), "lineArrowFrame": (try? frame(arrow)).map { [$0.minX, $0.minY, $0.width, $0.height] } ?? []])
     } else if mode == "resizeAny" {
         // resizeAny "<handle name>" dx dy: drags one handle of the last object via AXPosition and reports the size change.
         let item = initial.last!
