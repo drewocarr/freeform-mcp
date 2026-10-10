@@ -26,6 +26,8 @@ Pure Paste caused the Copy failure and the user uninstalled it. Background Copy 
 
 **Round 4 (same session):** a board was created in the background (**Untitled 6**, not yet renamed) and a four-object diagram was imported onto its empty canvas via a temporary bootstrap circle that was then deleted. That board now holds exactly the four diagram objects. Naming boards in the background is unsolved: the toolbar title has no AX actions and Edit ▸ Rename is disabled. Next: try the library board card's context menu, then open/switch boards in the background. Use `FREEFORM_PROBE_BOARD="Untitled 6"` to target it. See README Round 4.
 
+**Round 5 (same session):** background rename works via the library card's custom `Show Menu` action → Rename; the board is now **Background Empty Paste — 2026-10-09**. **Important correction:** AX context menus (object and card) raise Freeform's *window* to the top of the window order without activating the app or taking keyboard focus. The user saw this. Earlier "Finder/Safari/Ghostty remained frontmost" results are accurate only about app activation, not window visibility. AXRaise of the frontmost app's main window afterward restored it on top once. Next: sample window order for the clipboard-free paths (toolbar insert, typing, AXPosition, handle resize), add measured window-order restoration to the probe, and treat "window stayed hidden" as a separate success criterion. See README Round 5.
+
 ## Last observed disposable board (before Round 3)
 
 Exact title: **Background Bridge Probe — 2026-10-09**.
@@ -103,7 +105,7 @@ The build script extracts declarations before `var transaction: ClipboardTransac
 - Context-menu opening sometimes returned -25204 even though the menu appeared. It is not grounds for blind retry. Menu discovery is currently English/title-based (`Change Shape`, `Copy`, `Paste`).
 - The menu-aware guard checks the cached board title, weaker than a production identity check. Selection and clipboard state also need revalidation immediately before dispatch. Error exits do not guarantee menu cleanup.
 - Production `key`, `clickElement`, `menuAction`, and `ClipboardTransaction.copiedObjects` activate Freeform. Do not reuse those paths as background operations. The transaction's snapshot/put/restore methods can be reused independently.
-- Capture the foreground identity and activation notifications throughout a test. A user switching between Safari and Ghostty invalidates “same foreground throughout” but does not prove Freeform stole focus. Never silently fall back to foreground execution.
+- Capture the foreground identity, activation notifications, **and Freeform's window order** (`background/zsample.swift`) throughout a test. Context menus raise the window without activation. A user switching between Safari and Ghostty invalidates “same foreground throughout” but does not prove Freeform stole focus. Never silently fall back to foreground execution.
 - Our clipboard payload writes use `.currentHostOnly`; **Freeform's own Copy is not proven excluded from Universal Clipboard**. Do not claim this route is clipboard-free. Never overwrite newer clipboard contents to force a successful restore.
 
 ## Experiments to do next

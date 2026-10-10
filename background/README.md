@@ -138,3 +138,18 @@ Pure Paste was uninstalled by the user after `context-copy-timeline.json` showed
 | `emptyPaste` of the four-object diagram onto the empty board | Bootstrap circle inserted from the shape picker, context-menu Paste added exactly four objects (labels, sizes, common translation verified), then a PID-addressed Delete removed only the circle; four pasted objects intact; clipboard restored; frontmost app unchanged; no activation | `empty-paste.json`, `empty-paste-screenshot.png`, `empty-paste-screenshot-proof.json` |
 
 The empty canvas exposes no context menu (`canvas` actions are empty in `inspect`), so a temporary native shape supplies one. Deleting the bootstrap is part of the board's undo history; Undo behavior was not tested. The probe now reads its board title from `FREEFORM_PROBE_BOARD` (default: the original probe board), and `emptyPaste` requires zero initial objects. Board naming in the background remains unsolved; candidate next route: the board card's context menu in the library view.
+
+## Round 5: background rename, and window raising
+
+**Correction to earlier rounds:** "background" in this document has meant *the frontmost (key) application did not change and Freeform did not activate*. It did **not** mean Freeform's window stayed hidden. The user observed Freeform's window on screen during these tests. A 100 ms window-order sampler (`zsample.swift`, CGWindowList index of Freeform among on-screen layer-0 windows, plus the frontmost app) showed:
+
+| Operation | Freeform window order | Frontmost app | Evidence |
+| --- | --- | --- | --- |
+| Window screenshot | Stayed behind (index 8) | Ghostty throughout | `zorder-screenshot.txt` |
+| contextCopy (object context menu via AXShowMenu) | **Rose to topmost (index 0) about 1.7 s in and stayed there** | Ghostty throughout; no activation | `zorder-context-copy.txt`, `context-copy-zorder.json` |
+| renameBoard (card Show Menu → Rename) | Rose to topmost about 0.6 s in and stayed there | Ghostty throughout; no activation | `rename-zorder-2.txt`, `rename-board-bg-2.json` |
+| Failed first rename (Go Back only; AXShowMenu rejected) | Stayed behind | Ghostty | `rename-zorder.txt`, `rename-board-bg.json` |
+
+So every context-menu Copy/Paste run in Rounds 2–4 very likely raised Freeform's window over the user's work, without taking keyboard focus. Clipboard-free toolbar/typing/position operations have not yet been sampled. **Mitigation observed once:** AXRaise on the frontmost app's main window (Ghostty) put it back on top with no activation; Freeform dropped to index 1 (behind that window, ahead of the app's other windows). That leaves a brief visible flash per context-menu operation.
+
+**Background rename works through the library:** Go Back (AXPress), then the board card's custom AX action `Show Menu` (the standard AXShowMenu returned -25200), revealing Open in New Tab, Open in New Window, Move to, Duplicate, Rename, Delete, Favorite, Share, New Folder. AXPress **Rename** produced a text field holding the old title; setting AXValue plus AXConfirm renamed the card, and AXPress on the card reopened the board. **Untitled 6** is now **Background Empty Paste — 2026-10-09**. Frontmost app unchanged, no activation. The menu search must exclude menu-bar menus (the first attempt matched the disabled Edit ▸ Rename).

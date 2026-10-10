@@ -91,6 +91,73 @@ do {
         }
         emit(["ok": true, "mode": mode, "front": front(), "boardAttributes": describe(board), "toolbar": toolbarItems, "menuItems": menuItems]); exit(0)
     }
+    if mode == "renameBoard" {
+        // Library route: Go Back, board card context menu, Rename. No click or keyboard-activation fallbacks.
+        let newTitle = CommandLine.arguments[2]
+        guard newTitle.hasPrefix("Background "), title.hasPrefix("Untitled") || title.hasPrefix("Background ") else { throw BridgeError("DISPOSABLE_TITLE_REQUIRED") }
+        let window = try? boardWindow(app, title: title).0
+        guard window != nil || (focusedWindow(app).map { canvas($0) == nil } ?? false) else { throw BridgeError("BOARD_MISMATCH") }
+        guard front() != "com.apple.freeform" else { throw BridgeError("FREEFORM_FRONTMOST") }
+        let start = front()
+        var activations: [String] = []
+        let watcher = NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main) { note in
+            activations.append((note.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication)?.bundleIdentifier ?? "unknown")
+        }
+        defer { NSWorkspace.shared.notificationCenter.removeObserver(watcher) }
+        var steps: [[String: Any]] = []
+        var reopenTitle: String?
+        func cards(_ name: String) -> [AXUIElement] {
+            guard let library = focusedWindow(app) else { return [] }
+            return descendants(library).filter { string($0, kAXRoleAttribute) == "AXButton" && (string($0, kAXDescriptionAttribute) ?? "").hasPrefix("Board: " + name + ", ") }
+        }
+        func finish(_ ok: Bool, _ error: String? = nil) -> Never {
+            // Leave the board open again whether or not renaming succeeded.
+            if let name = reopenTitle, let card = cards(name).first, focusedWindow(app).map({ canvas($0) == nil }) ?? false {
+                let open = AXUIElementPerformAction(card, kAXPressAction as CFString)
+                steps.append(["step": "Reopen board", "title": name, "axResult": open.rawValue,
+                              "reopened": waitUntil({ focusedWindow(app).map { string($0, kAXTitleAttribute) == name && canvas($0) != nil } ?? false }, seconds: 5)])
+            }
+            emit(["ok": ok, "mode": mode, "error": error as Any? ?? NSNull(), "steps": steps, "frontBefore": start, "frontAfter": front(),
+                  "activations": activations, "focusedTitle": focusedWindow(app).flatMap { string($0, kAXTitleAttribute) } ?? ""])
+            exit(ok ? 0 : 1)
+        }
+        reopenTitle = title
+        if let window { try pressButton(window, title: "Go Back") }
+        let atLibrary = waitUntil({ focusedWindow(app).map { canvas($0) == nil } ?? false }, seconds: 5)
+        steps.append(["step": "Go Back", "library": atLibrary])
+        guard atLibrary else { finish(false, "LIBRARY_UNVERIFIED") }
+        let matches = cards(title)
+        steps.append(["step": "Find card", "matches": matches.count, "actions": matches.first.map { card -> [String] in var a: CFArray?; AXUIElementCopyActionNames(card, &a); return (a as? [String]) ?? [] } ?? []])
+        guard matches.count == 1 else { finish(false, "CARD_NOT_UNIQUE") }
+        let card = matches[0]
+        // Only menus that appear after showing the card menu count; the menu bar's own menus are excluded.
+        let menusBefore = descendants(app, depth: 15).filter { string($0, kAXRoleAttribute) == "AXMenu" }
+        var cardActions: CFArray?; AXUIElementCopyActionNames(card, &cardActions)
+        let showMenu = ((cardActions as? [String]) ?? []).first { $0.hasPrefix("Name:Show Menu") } ?? (kAXShowMenuAction as String)
+        steps.append(["step": "Show card menu", "action": showMenu, "axResult": AXUIElementPerformAction(card, showMenu as CFString).rawValue])
+        probeWait()
+        let menus = descendants(app, depth: 15).filter { menu in string(menu, kAXRoleAttribute) == "AXMenu" && !menusBefore.contains { CFEqual($0, menu) } }
+        let titles = menus.flatMap { children($0).compactMap { string($0, kAXTitleAttribute) } }.filter { !$0.isEmpty }
+        steps.append(["step": "Menu titles", "titles": titles])
+        guard let rename = menus.lazy.flatMap({ children($0) }).first(where: { (string($0, kAXTitleAttribute) ?? "").hasPrefix("Rename") }),
+              attribute(rename, kAXEnabledAttribute) as? Bool == true else {
+            try targetedKey(running.processIdentifier, 53); finish(false, "NO_ENABLED_RENAME")
+        }
+        steps.append(["step": "Press Rename", "axResult": AXUIElementPerformAction(rename, kAXPressAction as CFString).rawValue])
+        var field: AXUIElement?
+        let editor = waitUntil({ field = descendants(app, depth: 20).first { string($0, kAXRoleAttribute) == "AXTextField" && (attribute($0, kAXFocusedAttribute) as? Bool == true || string($0, kAXValueAttribute) == title) }; return field != nil }, seconds: 3)
+        steps.append(["step": "Find editor", "found": editor, "value": field.flatMap { string($0, kAXValueAttribute) } ?? ""])
+        guard editor, let field else { try targetedKey(running.processIdentifier, 53); finish(false, "NO_RENAME_EDITOR") }
+        steps.append(["step": "Set title", "axResult": AXUIElementSetAttributeValue(field, kAXValueAttribute as CFString, newTitle as CFString).rawValue])
+        let confirm = AXUIElementPerformAction(field, "AXConfirm" as CFString)
+        steps.append(["step": "AXConfirm", "axResult": confirm.rawValue])
+        if confirm != .success { try targetedKey(running.processIdentifier, 36); steps.append(["step": "PID Return"]) }
+        let renamed = waitUntil({ cards(newTitle).count == 1 && cards(title).isEmpty }, seconds: 5)
+        steps.append(["step": "Verify card renamed", "renamed": renamed])
+        guard renamed else { finish(false, "RENAME_UNVERIFIED") }
+        reopenTitle = newTitle
+        finish(front() == start && !activations.contains("com.apple.freeform"))
+    }
     if mode == "createBoard" {
         // Production createBoard minus its click/keyboard fallbacks, which activate Freeform.
         let newTitle = CommandLine.arguments[2]
