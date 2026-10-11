@@ -24,6 +24,13 @@ test('background requests are validated and compacted before reaching the helper
   ]);
 });
 
+test('wake requires explicit consent to a brief activation', async () => {
+  const { bridge, requests } = recording();
+  assert.throws(() => bridge.wake({}), /allowActivation/);
+  await bridge.wake({ allowActivation: true });
+  assert.deepEqual(requests, [{ command: 'wake', allowActivation: true }]);
+});
+
 test('background rejects inputs that would raise the window without consent or cannot be typed', () => {
   const { bridge, requests } = recording();
   const base = { expectedBoardTitle: 'Board', expectedSnapshot: snapshot, from: { objectIndex: 0, expectedDescription: 'A' }, to: { objectIndex: 1, expectedDescription: 'B' } };

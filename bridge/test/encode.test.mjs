@@ -43,6 +43,16 @@ test('arrow is a closed filled vector with a right-facing tip and no endpoint at
   assert.equal(result.type_identifier, 'com.apple.apps.content-language.shape');
 });
 
+test('arrows point in the requested direction within their box', () => {
+  const path = direction => encodeObjects([{ ...box, shape: 'arrow', width: 50, height: 30, direction }])[0].path.bezier.path;
+  assert.equal(path('right'), 'M 0 10 L 30 10 L 30 0 L 50 15 L 30 30 L 30 20 L 0 20 Z');
+  assert.equal(path('left'), 'M 50 10 L 20 10 L 20 0 L 0 15 L 20 30 L 20 20 L 50 20 Z');
+  assert.match(path('down'), / L 25 30 L /);
+  assert.match(path('up'), / L 25 0 L /);
+  assert.throws(() => encodeObjects([{ ...box, direction: 'down' }]), /only to arrows/);
+  assert.throws(() => encodeObjects([{ ...box, shape: 'arrow', direction: 'sideways' }]), /direction/);
+});
+
 test('multiple objects retain relative spacing and independent models', () => {
   const [a, b] = encodeObjects([box, { ...box, x: 300, text: 'Second' }]);
   assert.equal(b.geometry.position.x - a.geometry.position.x, 320);

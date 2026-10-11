@@ -47,7 +47,7 @@ const result = await insertObjects({
 console.log(result.translation, result.verification);
 ```
 
-`objects` accepts 1–100 objects. Supported `shape` values are `rectangle`, `roundedRectangle`, `ellipse`, and `arrow`. Coordinates must be finite within ±100,000; dimensions must be greater than zero and at most 10,000. Colors use `#RRGGBB`; text is optional, at most 10,000 UTF-16 code units. Unknown object fields are rejected.
+`objects` accepts 1–100 objects. Supported `shape` values are `rectangle`, `roundedRectangle`, `ellipse`, and `arrow`. Arrows take an optional `direction`: `right` (default), `left`, `up` or `down`; the arrow points that way inside its box. Coordinates must be finite within ±100,000; dimensions must be greater than zero and at most 10,000. Colors use `#RRGGBB`; text is optional, at most 10,000 UTF-16 code units. Unknown object fields are rejected.
 
 Positions define **relative layout**, not guaranteed absolute board placement. Freeform translates the pasted selection. The bridge verifies one common translation, returns it as `translation`, and returns actual geometry in `objects`. It checks labels, fill RGB, dimensions, relative positions, and native shape representation. It does not compare every curve point or prove all styling fidelity.
 
@@ -260,9 +260,12 @@ Every result includes `background`:
 | `freeform_bg_update_object` | Move, resize, relabel, recolor; restyle a connection line (`style`, `arrowhead`) | Hidden, except arrowheads |
 | `freeform_bg_connect` | Native Connection Line attached to two objects (follows them when moved); `style` straight/corner/curve | Hidden; `arrowhead` raises it |
 | `freeform_bg_delete_object` | Delete one object | Hidden |
+| `freeform_bg_wake` | Makes the canvas available after a background launch: asks Freeform for its full Accessibility tree, and only if its window is off screen activates it for about 1 s and reactivates your app. Requires `allowActivation: true` | **Activates** only in the off-screen case |
 | `freeform_bg_create_board`, `freeform_bg_rename_board` | Create and name, or rename, a board | **Raises** (board card context menu) |
 
 **Limits:**
+- Edits need their targets on screen. Connect and update scroll the canvas (and zoom out only if needed) to bring targets into view; add and move refuse x/y outside the visible area with `TARGET_NOT_VISIBLE`. A connector that does not attach to exactly the requested objects is deleted and reported.
+- After a background launch, call `freeform_bg_wake` if tools report `CANVAS_NOT_READY` or `WINDOW_NOT_ON_SCREEN`.
 - Fills are limited to Freeform's 12 named swatches. Custom hex colors need `freeform_insert_objects`, which runs in the foreground.
 - Text cannot contain newlines.
 - Coordinates are points from the top-left of the visible canvas at the current zoom and scroll.

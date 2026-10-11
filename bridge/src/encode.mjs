@@ -1,5 +1,6 @@
 const PREFIX = 'com.apple.apps.content-language.';
-const FIELDS = new Set(['shape', 'x', 'y', 'width', 'height', 'fill', 'text']);
+const FIELDS = new Set(['shape', 'x', 'y', 'width', 'height', 'fill', 'text', 'direction']);
+const DIRECTIONS = new Set(['right', 'left', 'up', 'down']);
 const SHAPES = new Set(['rectangle', 'roundedRectangle', 'ellipse', 'arrow']);
 
 const model = (type, fields, version = '1.0') => ({
@@ -21,12 +22,27 @@ function validate(object, index) {
   }
   if (typeof object.fill !== 'string' || !/^#[0-9a-f]{6}$/i.test(object.fill)) fail('fill must be #RRGGBB');
   if (object.text !== undefined && (typeof object.text !== 'string' || object.text.length > 10000)) fail('text must be a string of at most 10000 UTF-16 code units');
+  if (object.direction !== undefined) {
+    if (object.shape !== 'arrow') fail('direction applies only to arrows');
+    if (!DIRECTIONS.has(object.direction)) fail('direction must be right, left, up, or down');
+  }
 }
 
-function pathFor(shape, w, h) {
+// A filled vector arrow is independent of neighboring shapes; it has no attached endpoints.
+// The same seven-point outline, pointing along the box's width (right/left) or height (up/down).
+function arrowPath(w, h, direction = 'right') {
+  const right = [[0, h / 3], [w * 0.6, h / 3], [w * 0.6, 0], [w, h / 2], [w * 0.6, h], [w * 0.6, h * 2 / 3], [0, h * 2 / 3]];
+  const down = [[w / 3, 0], [w / 3, h * 0.6], [0, h * 0.6], [w / 2, h], [w, h * 0.6], [w * 2 / 3, h * 0.6], [w * 2 / 3, 0]];
+  const points = direction === 'left' ? right.map(([x, y]) => [w - x, y])
+    : direction === 'down' ? down
+    : direction === 'up' ? down.map(([x, y]) => [x, h - y])
+    : right;
+  return `M ${points.map(([x, y]) => `${x} ${y}`).join(' L ')} Z`;
+}
+
+function pathFor(shape, w, h, direction) {
   if (shape === 'rectangle') return `M 0 0 L ${w} 0 L ${w} ${h} L 0 ${h} Z`;
-  // A filled vector arrow is independent of neighboring shapes; it has no attached endpoints.
-  if (shape === 'arrow') return `M 0 ${h / 3} L ${w * 0.6} ${h / 3} L ${w * 0.6} 0 L ${w} ${h / 2} L ${w * 0.6} ${h} L ${w * 0.6} ${h * 2 / 3} L 0 ${h * 2 / 3} Z`;
+  if (shape === 'arrow') return arrowPath(w, h, direction);
   const k = 0.5522847498307936;
   if (shape === 'ellipse') {
     const rx = w / 2, ry = h / 2;
@@ -37,7 +53,7 @@ function pathFor(shape, w, h) {
   return `M ${r} 0 L ${w - r} 0 C ${w - r + d} 0 ${w} ${r - d} ${w} ${r} L ${w} ${h - r} C ${w} ${h - r + d} ${w - r + d} ${h} ${w - r} ${h} L ${r} ${h} C ${r - d} ${h} 0 ${h - r + d} 0 ${h - r} L 0 ${r} C 0 ${r - d} ${r - d} 0 ${r} 0 Z`;
 }
 
-function encodeObject({ shape, x, y, width, height, fill, text = '' }) {
+function encodeObject({ shape, x, y, width, height, fill, text = '', direction }) {
   const channels = [1, 3, 5].map(start => parseInt(fill.slice(start, start + 2), 16) / 255);
   return model('shape', {
     description: '',
@@ -58,7 +74,7 @@ function encodeObject({ shape, x, y, width, height, fill, text = '' }) {
     }),
     path: model('path', {
       primary_case: 'bezier',
-      bezier: model('path.bezier-path', { path: pathFor(shape, width, height) }),
+      bezier: model('path.bezier-path', { path: pathFor(shape, width, height, direction) }),
     }),
     text: model('text', { primary_case: 'attributed_string', attributed_string: [text, {}] }),
     geometry: model('geometry', {

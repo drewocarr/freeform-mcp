@@ -17,6 +17,8 @@ const objectSchema = z.object({
   height: z.number().finite().positive().max(10000),
   fill: color,
   text: z.string().max(10000).optional(),
+  direction: z.enum(['right', 'left', 'up', 'down']).optional()
+    .describe('Arrows only: which way the arrow points. Defaults to right.'),
 }).strict();
 
 function result(value) {
@@ -161,6 +163,10 @@ function registerBackgroundTools(server, background) {
     description: 'Report whether background editing is possible: Freeform running, Accessibility trust, the frontmost app, and the focused board. Does not change anything.',
     inputSchema: z.object({}).strict(), annotations: readOnly,
   }, handler(() => background.getStatus()));
+  server.registerTool('freeform_bg_wake', {
+    description: 'Make Freeform\'s board canvas available to the background tools after Freeform was launched in the background (they report CANVAS_NOT_READY). Briefly activates Freeform (about half a second, until the canvas exists), then reactivates the app you were using. Does nothing if the canvas or library is already available. Requires allowActivation true. Results report background.activated and background.wokeWithActivationSeconds.',
+    inputSchema: z.object({ allowActivation: z.literal(true) }).strict(), annotations: { ...mutation, idempotentHint: true },
+  }, handler(args => background.wake(args)));
   server.registerTool('freeform_bg_list_objects', {
     description: `List objects on the board with temporary indices, Accessibility descriptions, and frames in visible-canvas coordinates, plus a snapshotToken for edits. Read-only. ${guarantees}`,
     inputSchema: z.object({ expectedBoardTitle: title }).strict(), annotations: readOnly,

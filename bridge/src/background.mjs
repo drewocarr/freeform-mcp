@@ -57,6 +57,10 @@ export function createBackgroundBridge({ run = request => runHelper(executable, 
   const call = request => serialized(() => run(request));
   return {
     getStatus: () => call({ command: 'status' }),
+    wake: ({ allowActivation = false } = {}) => {
+      if (allowActivation !== true) fail('allowActivation must be true: waking Freeform briefly activates it, then reactivates your app');
+      return call({ command: 'wake', allowActivation: true });
+    },
     listObjects: ({ expectedBoardTitle }) => call({ command: 'listObjects', expectedBoardTitle: title(expectedBoardTitle) }),
     screenshot: ({ expectedBoardTitle }) => call({ command: 'screenshot', expectedBoardTitle: title(expectedBoardTitle) }),
     openBoard: ({ title: name }) => call({ command: 'openBoard', title: title(name, 'title') }),
